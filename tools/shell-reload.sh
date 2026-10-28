@@ -7,8 +7,30 @@ set -euo pipefail
 UUID=dusk@local
 since=$(date '+%Y-%m-%d %H:%M:%S')
 
-gnome-extensions disable "$UUID"
-gnome-extensions enable "$UUID"
+# The extension's state as Shell reports it (ACTIVE, INACTIVE, ...).
+state() {
+  gnome-extensions info "$UUID" | sed -n 's/^ *State: //p'
+}
+
+# wait_for STATE: give Shell up to 5 seconds to get there.
+wait_for() {
+  local _
+  for _ in $(seq 1 20); do
+    [ "$(state)" = "$1" ] && return 0
+    sleep 0.25
+  done
+  return 1
+}
+
+# Shell ignores an enable that lands while it is still disabling, leaving the
+# extension "Enabled: Yes" but INACTIVE (seen live), and a plain enable can't
+# fix that. So wait for each state change, and try once more if needed.
+for _ in 1 2; do
+  gnome-extensions disable "$UUID"
+  wait_for INACTIVE || true
+  gnome-extensions enable "$UUID"
+  wait_for ACTIVE && break
+done
 sleep 1
 
 lines=$(journalctl --user -b _COMM=gnome-shell --since "$since" -o cat \
@@ -19,9 +41,9 @@ if [ -n "$lines" ]; then
   exit 1
 fi
 
-state=$(gnome-extensions info "$UUID" | sed -n 's/^ *State: //p')
-if [ "$state" != ACTIVE ]; then
-  echo "$UUID is not active (State: ${state:-unknown}); its stylesheet is not loaded." >&2
+current=$(state)
+if [ "$current" != ACTIVE ]; then
+  echo "$UUID is not active (State: ${current:-unknown}); its stylesheet is not loaded." >&2
   echo "If it was just installed, log out and back in once." >&2
   exit 1
 fi

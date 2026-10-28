@@ -1,11 +1,30 @@
 #!/usr/bin/env bash
-# Test stub: logs its arguments; `enable` fails when DUSK_STUB_ENABLE_FAIL=1;
-# `info` reports state DUSK_STUB_STATE (default ACTIVE).
+# Test stub: logs its arguments. Keeps the extension's state in a file:
+# `disable` → INACTIVE, `enable` → ACTIVE, `info` reports it.
+#   DUSK_STUB_ENABLE_FAIL=1          `enable` fails ("doesn't exist")
+#   DUSK_STUB_STATE=X                `info` always reports X
+#   DUSK_STUB_IGNORE_FIRST_ENABLE=1  the first `enable` leaves it INACTIVE, like
+#                                    Shell does when an enable lands mid-disable
 echo "gnome-extensions $*" >> "${DUSK_STUB_LOG:?}"
-if [ "${1:-}" = enable ] && [ "${DUSK_STUB_ENABLE_FAIL:-}" = 1 ]; then
-  echo "Extension “$2” doesn't exist" >&2
-  exit 1
-fi
-if [ "${1:-}" = info ]; then
-  printf '%s\n  Enabled: Yes\n  State: %s\n' "$2" "${DUSK_STUB_STATE:-ACTIVE}"
-fi
+state_file="$DUSK_STUB_LOG.state"
+case "${1:-}" in
+  enable)
+    if [ "${DUSK_STUB_ENABLE_FAIL:-}" = 1 ]; then
+      echo "Extension “$2” doesn't exist" >&2
+      exit 1
+    fi
+    if [ "${DUSK_STUB_IGNORE_FIRST_ENABLE:-}" = 1 ] && [ ! -e "$state_file.ignored" ]; then
+      touch "$state_file.ignored"
+      echo INACTIVE > "$state_file"
+    else
+      echo ACTIVE > "$state_file"
+    fi
+    ;;
+  disable)
+    echo INACTIVE > "$state_file"
+    ;;
+  info)
+    printf '%s\n  Enabled: Yes\n  State: %s\n' "$2" \
+      "${DUSK_STUB_STATE:-$(cat "$state_file" 2> /dev/null || echo ACTIVE)}"
+    ;;
+esac

@@ -77,3 +77,15 @@ test_shell_reload_fails_if_not_active() {
   assert_eq "$rc" 1 "exit code"
   [[ "$out" == *"not active"* ]] || fail "no 'not active' message: $out"
 }
+
+# Shell ignores an enable that lands while it is still disabling, leaving the
+# extension "Enabled: Yes, State: INACTIVE" (seen live). The reload waits for
+# each state and retries once.
+test_shell_reload_retries_an_ignored_enable() {
+  local out rc=0
+  export DUSK_STUB_LOG; DUSK_STUB_LOG=$(mktemp)
+  out=$(DUSK_STUB_IGNORE_FIRST_ENABLE=1 reload_with_stubs 2>&1) || rc=$?
+  assert_eq "$rc" 0 "exit code"
+  assert_eq "$out" "clean"
+  assert_eq "$(grep -c 'gnome-extensions enable dusk@local' "$DUSK_STUB_LOG")" 2 "enable calls"
+}
