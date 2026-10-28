@@ -45,3 +45,11 @@ test_inventory_skips_media_blocks() {
   inventory --include-media > "$out"
   assert_contains "$out" $'3px\tborder-radius\t.hc'
 }
+
+# --source-order keeps the order of each selector's last (effective)
+# declaration, which is what the cascade uses for ties.
+test_inventory_source_order() {
+  local out; out=$(mktemp)
+  inventory --source-order > "$out"
+  assert_eq "$(cut -f3 "$out" | tr '\n' ' ')" ".r .a .q .d .e .f:not(.x, .y) " "selector order"
+}

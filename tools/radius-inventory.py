@@ -2,7 +2,7 @@
 """List the effective corner radius of every selector in a stylesheet.
 
 Usage: radius-inventory.py FILE.css [--include-zero] [--include-media]
-                                    [--exclude REGEX]
+                                    [--exclude REGEX] [--source-order]
 
 Prints one tab-separated line per selector and radius property:
     value<TAB>property<TAB>selector
@@ -16,6 +16,8 @@ after all lengths, INVALID last), then by selector.
 --include-media  also list rules inside @media blocks (skipped by default:
                  in libadwaita they are high-contrast rules)
 --exclude REGEX  drop selectors matching REGEX
+--source-order   keep the order of each selector's last declaration (the
+                 order the cascade uses for ties) instead of sorting
 """
 import argparse
 import re
@@ -92,6 +94,7 @@ def main():
     ap.add_argument("--include-zero", action="store_true")
     ap.add_argument("--include-media", action="store_true")
     ap.add_argument("--exclude")
+    ap.add_argument("--source-order", action="store_true")
     ap.add_argument("-h", "--help", action="store_true")
     args = ap.parse_args()
     if args.help:
@@ -119,7 +122,7 @@ def main():
         if zero and not args.include_zero:
             continue
         rows.append((key, sel, shown, prop))
-    for key, sel, shown, prop in sorted(rows):
+    for key, sel, shown, prop in (rows if args.source_order else sorted(rows)):
         print(f"{shown}\t{prop}\t{sel}")
     return 0
 

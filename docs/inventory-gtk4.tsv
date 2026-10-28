@@ -1,0 +1,425 @@
+# libadwaita 1.9.1 (Yaru, Ubuntu 26.04) radius rules in source order, from
+# tools/radius-inventory.py --include-zero --source-order on default-dark-yaru-<accent>.css.
+# selector<TAB>property<TAB>libadwaita value<TAB>dusk token (0 = stays square)
+avatar	border-radius	9999px	round
+bottom-sheet > sheet > stack > widget > drag-handle	border-radius	99px	round
+bottom-sheet > sheet > stack > button	border-radius	0	0
+bottom-sheet > sheet	border-top-left-radius	15px	window
+bottom-sheet > sheet > outline	border-top-left-radius	15px	window
+bottom-sheet > sheet > stack > widget	border-top-left-radius	15px	window
+bottom-sheet > sheet > stack > button	border-top-left-radius	15px	window
+bottom-sheet > sheet > stack > button > widget	border-top-left-radius	15px	window
+bottom-sheet > sheet	border-top-right-radius	15px	window
+bottom-sheet > sheet > outline	border-top-right-radius	15px	window
+bottom-sheet > sheet > stack > widget	border-top-right-radius	15px	window
+bottom-sheet > sheet > stack > button	border-top-right-radius	15px	window
+bottom-sheet > sheet > stack > button > widget	border-top-right-radius	15px	window
+bottom-sheet > sheet.bottom-bar.flush-left	border-top-left-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-left > outline	border-top-left-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-left > stack > widget	border-top-left-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-left > stack > button	border-top-left-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-left > stack > button > widget	border-top-left-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-right	border-top-right-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-right > outline	border-top-right-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-right > stack > widget	border-top-right-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-right > stack > button	border-top-right-radius	0	0
+bottom-sheet > sheet.bottom-bar.flush-right > stack > button > widget	border-top-right-radius	0	0
+button	border-radius	9px	button
+row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child	border-radius	9999px	icon-button
+row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child:dir(ltr):last-child	border-radius	9999px	icon-button
+row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child:dir(rtl):first-child	border-radius	9999px	icon-button
+row.spin spinbutton > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque)	border-radius	9999px	icon-button
+row.spin spinbutton > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(ltr):last-child	border-radius	9999px	icon-button
+row.spin spinbutton > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(rtl):first-child	border-radius	9999px	icon-button
+button.emoji-section.image-button:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque)	border-radius	9999px	icon-button
+menubutton.circular > button	border-radius	9999px	icon-button
+button.circular	border-radius	9999px	icon-button
+menubutton.pill > button	border-radius	9999px	pill-button
+button.pill	border-radius	9999px	pill-button
+button.color > colorswatch:only-child	border-radius	4.5px	small
+button.color > colorswatch:only-child > overlay	border-radius	4px	small
+menubutton.suggested-action	border-radius	9px	button
+menubutton.opaque	border-radius	9px	button
+menubutton.suggested-action.circular	border-radius	9999px	icon-button
+menubutton.suggested-action.pill	border-radius	9999px	pill-button
+menubutton.opaque.circular	border-radius	9999px	icon-button
+menubutton.opaque.pill	border-radius	9999px	pill-button
+menubutton.card > button	border-radius	12px	card
+splitbutton	border-radius	9px	button
+splitbutton > button:dir(ltr)	border-top-right-radius	0	0
+splitbutton > menubutton > button:dir(rtl)	border-top-right-radius	0	0
+splitbutton > button:dir(ltr)	border-bottom-right-radius	0	0
+splitbutton > menubutton > button:dir(rtl)	border-bottom-right-radius	0	0
+splitbutton > button:dir(rtl)	border-top-left-radius	0	0
+splitbutton > menubutton > button:dir(ltr)	border-top-left-radius	0	0
+splitbutton > button:dir(rtl)	border-bottom-left-radius	0	0
+splitbutton > menubutton > button:dir(ltr)	border-bottom-left-radius	0	0
+actionbar > revealer > box splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > button	border-radius	9px	button
+searchbar > revealer > box splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > button	border-radius	9px	button
+.toolbar splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > button	border-radius	9px	button
+headerbar splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > button	border-radius	9px	button
+actionbar > revealer > box splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > menubutton > button	border-radius	9px	button
+searchbar > revealer > box splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > menubutton > button	border-radius	9px	button
+.toolbar splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > menubutton > button	border-radius	9px	button
+headerbar splitbutton:not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque) > menubutton > button	border-radius	9px	button
+splitbutton.flat > button	border-radius	9px	button
+splitbutton.flat > menubutton > button	border-radius	9px	button
+calendar > header > button	border-radius	0	0
+calendar > grid > label.day-number:checked	border-radius	9px	row
+calendar > grid > label.day-number:selected	border-radius	9px	row
+checkbutton	border-radius	9px	button
+checkbutton.grouped	border-radius	999px	radio
+check	border-radius	6px	checkbox
+radio	border-radius	100%	radio
+checkbutton.selection-mode	border-radius	100px	round
+checkbutton.selection-mode check	border-radius	100px	round
+checkbutton.selection-mode radio	border-radius	100px	round
+colorswatch.top	border-top-left-radius	9.5px	swatch
+colorswatch.top	border-top-right-radius	9.5px	swatch
+colorswatch.top > overlay	border-top-left-radius	9px	swatch
+colorswatch.top > overlay	border-top-right-radius	9px	swatch
+colorswatch.bottom	border-bottom-left-radius	9.5px	swatch
+colorswatch.bottom	border-bottom-right-radius	9.5px	swatch
+colorswatch.bottom > overlay	border-bottom-left-radius	9px	swatch
+colorswatch.bottom > overlay	border-bottom-right-radius	9px	swatch
+colorswatch.left	border-top-left-radius	9.5px	swatch
+colorswatch:first-child:not(.top)	border-top-left-radius	9.5px	swatch
+colorswatch.left	border-bottom-left-radius	9.5px	swatch
+colorswatch:first-child:not(.top)	border-bottom-left-radius	9.5px	swatch
+colorswatch.left > overlay	border-top-left-radius	9px	swatch
+colorswatch:first-child:not(.top) > overlay	border-top-left-radius	9px	swatch
+colorswatch.left > overlay	border-bottom-left-radius	9px	swatch
+colorswatch:first-child:not(.top) > overlay	border-bottom-left-radius	9px	swatch
+colorswatch.right	border-top-right-radius	9.5px	swatch
+colorswatch:last-child:not(.bottom)	border-top-right-radius	9.5px	swatch
+colorswatch.right	border-bottom-right-radius	9.5px	swatch
+colorswatch:last-child:not(.bottom)	border-bottom-right-radius	9.5px	swatch
+colorswatch.right > overlay	border-top-right-radius	9px	swatch
+colorswatch:last-child:not(.bottom) > overlay	border-top-right-radius	9px	swatch
+colorswatch.right > overlay	border-bottom-right-radius	9px	swatch
+colorswatch:last-child:not(.bottom) > overlay	border-bottom-right-radius	9px	swatch
+colorswatch#add-color-button > overlay	border-radius	9px 0 0 9px	swatch
+colorswatch#add-color-button:only-child > overlay	border-radius	9px	swatch
+colorswatch#editor-color-sample	border-radius	9px	swatch
+colorswatch#editor-color-sample > overlay	border-radius	9.5px	swatch
+colorchooser .popover.osd	border-radius	15px	popover
+columnview > header > button	border-radius	0	0
+treeview.view > header > button	border-radius	0	0
+window.print:not(.ssd-frame) treeview.dialog-action-box > header > button	border-radius	0	0
+floating-sheet > sheet	border-radius	15px	window
+window.assistant .sidebar > label	border-radius	9px	row
+infobar .close	border-radius	50%	icon-button
+treeview.view:selected:focus	border-radius	0	0
+treeview.view:selected	border-radius	0	0
+window.print:not(.ssd-frame) treeview.dialog-action-box:selected	border-radius	0	0
+treeview entry.flat	border-radius	0	0
+treeview entry	border-radius	0	0
+treeview spinbutton:not(.vertical)	border-radius	0	0
+shortcut	border-radius	6px	small
+shortcut > .keycap	border-radius	6px	small
+.app-notification	border-radius	0 0 15px 15px	notification
+popover.emoji-picker emoji	border-radius	9px	menu-item
+emoji-completion-row	border-radius	9px	menu-item
+spinbutton	border-radius	9px	entry
+entry	border-radius	9px	entry
+spinbutton.flat:focus-within	border-radius	0	0
+spinbutton.flat:disabled	border-radius	0	0
+spinbutton.flat	border-radius	0	0
+entry.flat:focus-within	border-radius	0	0
+entry.flat:disabled	border-radius	0	0
+entry.flat	border-radius	0	0
+spinbutton > progress > trough > progress	border-radius	0	0
+entry > progress > trough > progress	border-radius	0	0
+expander-widget > box > title	border-radius	6px	small
+button.sidebar-button	border-radius	100%	icon-button
+filechooser gridview > child	border-radius	12px	card
+windowcontrols > button > image	border-radius	100%	icon-button
+.accent-color-row color	border-radius	16px	round
+levelbar.horizontal trough > block	border-radius	99px	bar
+levelbar.horizontal trough > block.empty	border-radius	99px	bar
+levelbar.horizontal trough > block.full	border-radius	99px	bar
+levelbar.horizontal.discrete > trough > block	border-radius	0	0
+levelbar.horizontal.discrete > trough > block:first-child	border-radius	99px 0 0 99px	bar
+levelbar.horizontal.discrete > trough > block:last-child	border-radius	0 99px 99px 0	bar
+levelbar.vertical trough > block	border-radius	99px	bar
+levelbar.vertical trough > block.empty	border-radius	99px	bar
+levelbar.vertical trough > block.full	border-radius	99px	bar
+levelbar.vertical.discrete > trough > block	border-radius	0	0
+levelbar.vertical.discrete > trough > block:first-child	border-radius	99px 99px 0 0	bar
+levelbar.vertical.discrete > trough > block:last-child	border-radius	0 0 99px 99px	bar
+.linked:not(.vertical) > button:dir(ltr):not(:first-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > button:dir(rtl):not(:last-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > button:dir(ltr):not(:first-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > button:dir(rtl):not(:last-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > button:dir(ltr):not(:last-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > button:dir(rtl):not(:first-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > button:dir(ltr):not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > button:dir(rtl):not(:first-child)	border-bottom-right-radius	0	0
+.linked.vertical button:not(:first-child)	border-top-left-radius	0	0
+.linked.vertical button:not(:first-child)	border-top-right-radius	0	0
+.linked.vertical button:not(:last-child)	border-bottom-left-radius	0	0
+.linked.vertical button:not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > menubutton:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > menubutton:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > menubutton:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > menubutton:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > menubutton:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > menubutton:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > menubutton:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > menubutton:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked.vertical menubutton:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical menubutton:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical menubutton:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical menubutton:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > dropdown:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > dropdown:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > dropdown:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > dropdown:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > dropdown:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > dropdown:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > dropdown:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > dropdown:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked.vertical dropdown:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical combobox:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical dropdown:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical combobox:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical dropdown:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical combobox:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical dropdown:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked.vertical combobox:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > colorbutton:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked.vertical colorbutton:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical colorbutton:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical colorbutton:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical colorbutton:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > fontbutton:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked.vertical fontbutton:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical fontbutton:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical fontbutton:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical fontbutton:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(ltr):not(:first-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(rtl):not(:last-child) > button	border-top-left-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(ltr):not(:first-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(rtl):not(:last-child) > button	border-bottom-left-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(ltr):not(:last-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(rtl):not(:first-child) > button	border-top-right-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(ltr):not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > tabbutton:dir(rtl):not(:first-child) > button	border-bottom-right-radius	0	0
+.linked.vertical tabbutton:not(:first-child) > button	border-top-left-radius	0	0
+.linked.vertical tabbutton:not(:first-child) > button	border-top-right-radius	0	0
+.linked.vertical tabbutton:not(:last-child) > button	border-bottom-left-radius	0	0
+.linked.vertical tabbutton:not(:last-child) > button	border-bottom-right-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(ltr):not(:first-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(rtl):not(:last-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(ltr):not(:first-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(rtl):not(:last-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(ltr):not(:last-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(rtl):not(:first-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(ltr):not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > spinbutton:dir(rtl):not(:first-child)	border-bottom-right-radius	0	0
+.linked.vertical spinbutton:not(:first-child)	border-top-left-radius	0	0
+.linked.vertical spinbutton:not(:first-child)	border-top-right-radius	0	0
+.linked.vertical spinbutton:not(:last-child)	border-bottom-left-radius	0	0
+.linked.vertical spinbutton:not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > entry:dir(ltr):not(:first-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > entry:dir(rtl):not(:last-child)	border-top-left-radius	0	0
+.linked:not(.vertical) > entry:dir(ltr):not(:first-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > entry:dir(rtl):not(:last-child)	border-bottom-left-radius	0	0
+.linked:not(.vertical) > entry:dir(ltr):not(:last-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > entry:dir(rtl):not(:first-child)	border-top-right-radius	0	0
+.linked:not(.vertical) > entry:dir(ltr):not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > entry:dir(rtl):not(:first-child)	border-bottom-right-radius	0	0
+.linked.vertical entry:not(:first-child)	border-top-left-radius	0	0
+.linked.vertical entry:not(:first-child)	border-top-right-radius	0	0
+.linked.vertical entry:not(:last-child)	border-bottom-left-radius	0	0
+.linked.vertical entry:not(:last-child)	border-bottom-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:first-child) > box > button.combo	border-top-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:last-child) > box > button.combo	border-top-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:first-child) > box > button.combo	border-bottom-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:last-child) > box > button.combo	border-bottom-left-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:last-child) > box > button.combo	border-top-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:first-child) > box > button.combo	border-top-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(ltr):not(:last-child) > box > button.combo	border-bottom-right-radius	0	0
+.linked:not(.vertical) > combobox:dir(rtl):not(:first-child) > box > button.combo	border-bottom-right-radius	0	0
+.linked.vertical combobox:not(:first-child) > box > button.combo	border-top-left-radius	0	0
+.linked.vertical combobox:not(:first-child) > box > button.combo	border-top-right-radius	0	0
+.linked.vertical combobox:not(:last-child) > box > button.combo	border-bottom-left-radius	0	0
+.linked.vertical combobox:not(:last-child) > box > button.combo	border-bottom-right-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(ltr):not(:first-child) > combobox > box > button.combo	border-top-left-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(rtl):not(:last-child) > combobox > box > button.combo	border-top-left-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(ltr):not(:first-child) > combobox > box > button.combo	border-bottom-left-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(rtl):not(:last-child) > combobox > box > button.combo	border-bottom-left-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(ltr):not(:last-child) > combobox > box > button.combo	border-top-right-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(rtl):not(:first-child) > combobox > box > button.combo	border-top-right-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(ltr):not(:last-child) > combobox > box > button.combo	border-bottom-right-radius	0	0
+.linked:not(.vertical) > appchooserbutton:dir(rtl):not(:first-child) > combobox > box > button.combo	border-bottom-right-radius	0	0
+.linked.vertical appchooserbutton:not(:first-child) > combobox > box > button.combo	border-top-left-radius	0	0
+.linked.vertical appchooserbutton:not(:first-child) > combobox > box > button.combo	border-top-right-radius	0	0
+.linked.vertical appchooserbutton:not(:last-child) > combobox > box > button.combo	border-bottom-left-radius	0	0
+.linked.vertical appchooserbutton:not(:last-child) > combobox > box > button.combo	border-bottom-right-radius	0	0
+list.boxed-list > row:first-child	border-top-left-radius	12px	card
+list.content > row:first-child	border-top-left-radius	12px	card
+list.boxed-list > row:first-child.expander row.header	border-top-left-radius	12px	card
+list.content > row:first-child.expander row.header	border-top-left-radius	12px	card
+list.boxed-list > row:first-child	border-top-right-radius	12px	card
+list.content > row:first-child	border-top-right-radius	12px	card
+list.boxed-list > row:first-child.expander row.header	border-top-right-radius	12px	card
+list.content > row:first-child.expander row.header	border-top-right-radius	12px	card
+list.boxed-list > row:last-child	border-bottom-left-radius	12px	card
+list.content > row:last-child	border-bottom-left-radius	12px	card
+list.boxed-list > row:last-child.expander:not(:checked)	border-bottom-left-radius	12px	card
+list.boxed-list > row:last-child.expander:not(:checked) row.header	border-bottom-left-radius	12px	card
+list.content > row:last-child.expander:not(:checked) row.header	border-bottom-left-radius	12px	card
+list.boxed-list > row:last-child.expander:checked list.nested	border-bottom-left-radius	12px	card
+list.content > row:last-child.expander:checked list.nested	border-bottom-left-radius	12px	card
+list.boxed-list > row:last-child.expander:checked list.nested > row:last-child	border-bottom-left-radius	12px	card
+list.content > row:last-child.expander:checked list.nested > row:last-child	border-bottom-left-radius	12px	card
+list.boxed-list > row:last-child	border-bottom-right-radius	12px	card
+list.content > row:last-child	border-bottom-right-radius	12px	card
+list.boxed-list > row:last-child.expander:not(:checked)	border-bottom-right-radius	12px	card
+list.boxed-list > row:last-child.expander:not(:checked) row.header	border-bottom-right-radius	12px	card
+list.content > row:last-child.expander:not(:checked) row.header	border-bottom-right-radius	12px	card
+list.boxed-list > row:last-child.expander:checked list.nested	border-bottom-right-radius	12px	card
+list.content > row:last-child.expander:checked list.nested	border-bottom-right-radius	12px	card
+list.boxed-list > row:last-child.expander:checked list.nested > row:last-child	border-bottom-right-radius	12px	card
+list.content > row:last-child.expander:checked list.nested > row:last-child	border-bottom-right-radius	12px	card
+list.boxed-list-separate > row.expander row.header	border-top-left-radius	12px	card
+list.boxed-list-separate > row.expander row.header	border-top-right-radius	12px	card
+list.boxed-list-separate > row.expander:not(:checked) row.header	border-bottom-left-radius	12px	card
+list.boxed-list-separate > row.expander.expander:checked list.nested	border-bottom-left-radius	12px	card
+list.boxed-list-separate > row.expander.expander:checked list.nested > row:last-child	border-bottom-left-radius	12px	card
+list.boxed-list-separate > row.expander:not(:checked) row.header	border-bottom-right-radius	12px	card
+list.boxed-list-separate > row.expander.expander:checked list.nested	border-bottom-right-radius	12px	card
+list.boxed-list-separate > row.expander.expander:checked list.nested > row:last-child	border-bottom-right-radius	12px	card
+popover.menu modelbutton	border-radius	9px	menu-item
+popover.menu list > row	border-radius	9px	menu-item
+popover.menu listview > row	border-radius	9px	menu-item
+menubar > item	border-radius	9px	menu-item
+menubar > item popover.menu popover.menu > contents	border-radius	15px	popover
+window.dialog.message.csd:not(.solid-csd)	border-radius	18px	dialog
+window.dialog.message.csd .dialog-action-area > button	border-radius	12px	response-button
+dialog-host > dialog.alert sheet	border-radius	18px	dialog
+window.messagedialog.csd:not(.solid-csd)	border-radius	18px	dialog
+window.dialog-window.alert.csd:not(.solid-csd)	border-radius	18px	dialog
+dialog-host > dialog.alert sheet .body-scrolled-window > viewport	border-top-left-radius	18px	dialog
+window.dialog-window.alert .body-scrolled-window > viewport	border-top-left-radius	18px	dialog
+dialog-host > dialog.alert sheet .body-scrolled-window > viewport	border-top-right-radius	18px	dialog
+window.dialog-window.alert .body-scrolled-window > viewport	border-top-right-radius	18px	dialog
+window.messagedialog .response-area > button	border-radius	12px	response-button
+dialog.alert .response-area > button	border-radius	12px	response-button
+frame	border-radius	12px	card
+toast	border-radius	150px	toast
+video image.osd	border-radius	32px	round
+window.about .main-page .app-version	border-radius	999px	pill-button
+dialog.about .main-page .app-version	border-radius	999px	pill-button
+list.boxed-list	border-radius	12px	card
+list.content	border-radius	12px	card
+list.boxed-list-separate > row	border-radius	12px	card
+.card	border-radius	12px	card
+notebook > header > tabs > arrow	border-radius	0	0
+popover > contents	border-radius	15px	popover
+.solid-csd popover > arrow	border-radius	0	0
+.solid-csd popover > contents	border-radius	0	0
+progressbar > trough > progress.left	border-top-left-radius	99px	bar
+progressbar > trough > progress.left	border-bottom-left-radius	99px	bar
+progressbar > trough > progress.right	border-top-right-radius	99px	bar
+progressbar > trough > progress.right	border-bottom-right-radius	99px	bar
+progressbar > trough > progress.top	border-top-right-radius	99px	bar
+progressbar > trough > progress.top	border-top-left-radius	99px	bar
+progressbar > trough > progress.bottom	border-bottom-right-radius	99px	bar
+progressbar > trough > progress.bottom	border-bottom-left-radius	99px	bar
+progressbar.osd > trough	border-radius	0	0
+progressbar.osd > trough > progress	border-radius	0	0
+scale > trough > fill	border-radius	99px	slider
+scale > trough	border-radius	99px	slider
+progressbar > trough	border-radius	99px	bar
+scale > trough > highlight	border-radius	99px	slider
+progressbar > trough > progress	border-radius	99px	bar
+scale > trough > slider	border-radius	100%	round
+scale.horizontal.marks-before > trough > slider	border-top-left-radius	0	0
+scale.horizontal.marks-after > trough > slider	border-bottom-right-radius	0	0
+scale.horizontal.marks-before.marks-after > trough > slider	border-radius	100%	round
+scale.vertical.marks-before > trough > slider	border-bottom-left-radius	0	0
+scale.vertical.marks-after > trough > slider	border-top-right-radius	0	0
+scale.color > trough	border-radius	10px	inset
+scrollbar > range > trough	border-radius	99px	scrollbar
+scrollbar > range > trough > slider	border-radius	99px	scrollbar
+dialog.shortcuts .navigation-box > button	border-radius	99px	pill-button
+shortcut-label	border-radius	6px	small
+shortcut-label .keycap	border-radius	6px	small
+.navigation-sidebar > row	border-radius	9px	row
+.navigation-sidebar > child	border-radius	9px	row
+.navigation-sidebar > flowboxchild	border-radius	9px	row
+view-switcher-sidebar .indicator	border-radius	999px	round
+spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque)	border-radius	0	0
+spinbutton > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque)	border-radius	0	0
+spinbutton:not(.vertical) > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(ltr):last-child	border-radius	0 9px 9px 0	entry
+spinbutton:not(.vertical) > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(ltr):last-child	border-radius	0 9px 9px 0	entry
+spinbutton:not(.vertical) > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(rtl):first-child	border-radius	9px 0 0 9px	entry
+spinbutton:not(.vertical) > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):dir(rtl):first-child	border-radius	9px 0 0 9px	entry
+spinbutton.vertical > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child	border-radius	0 0 9px 9px	entry
+spinbutton.vertical > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child	border-radius	0 0 9px 9px	entry
+spinbutton.vertical > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):first-child	border-radius	9px 9px 0 0	entry
+spinbutton.vertical > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):first-child	border-radius	9px 9px 0 0	entry
+switch	border-radius	14px	switch
+switch > slider	border-radius	50%	switch
+tabbar tabbox > tabboxchild	border-radius	9px	tab
+tabbar tabbox > revealer > indicator	border-radius	2px	small
+tabbar tab	border-radius	9px	tab
+dnd tab	border-radius	9px	tab
+tabbar tab button.image-button	border-radius	99px	icon-button
+dnd tab button.image-button	border-radius	99px	icon-button
+tabbar tab indicator	border-radius	2px	small
+dnd tab indicator	border-radius	2px	small
+tabthumbnail	border-radius	16px	tab-thumbnail
+tabthumbnail .needs-attention > widget	border-radius	8px	round
+tabthumbnail .card picture	border-radius	12px	card
+tabthumbnail button	border-radius	99px	icon-button
+tabthumbnail button > image	border-radius	9999px	icon-button
+cursor-handle > contents	border-radius	50%	round
+cursor-handle.top > contents	border-top-right-radius	0	0
+cursor-handle.bottom > contents	border-top-left-radius	0	0
+cursor-handle.insertion-cursor > contents	border-top-left-radius	0	0
+toggle-group	border-radius	9px	toggle-group
+toggle-group > toggle	border-radius	INVALID:calc(9px - var(---group-padding))	toggle-group
+toggle-group.round	border-radius	17px	pill-button
+toggle-group.round toggle	border-radius	INVALID:calc(17px - var(---group-padding))	pill-button
+.toolbar.osd	border-radius	15px	osd-toolbar
+searchbar > revealer > box .close	border-radius	50%	icon-button
+tooltip	border-radius	9px	app-tooltip
+.view:selected:focus	border-radius	9px	row
+.view:selected	border-radius	9px	row
+window.print:not(.ssd-frame) .dialog-action-box:selected	border-radius	9px	row
+textview > text:selected	border-radius	9px	row
+dialog-host > dialog.view sheet:selected	border-radius	9px	row
+window.print:not(.ssd-frame) dialog-host > dialog.dialog-action-box sheet:selected	border-radius	9px	row
+iconview:selected	border-radius	9px	row
+flowbox > flowboxchild	border-radius	9px	row
+gridview > child	border-radius	9px	row
+indicatorbin > indicator	border-radius	100px	round
+indicatorbin > mask	border-radius	100px	round
+window.csd	border-radius	INVALID:var(--window-radius)	window
+window.csd.ssd-frame	border-bottom-left-radius	0	0
+window.csd.ssd-frame	border-bottom-right-radius	0	0
