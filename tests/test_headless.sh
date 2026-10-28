@@ -9,6 +9,8 @@ check_flush() {
   python3 - "$1/result.json" <<'EOF'
 import json, sys
 results = json.load(open(sys.argv[1]))
+for key in ("workspace", "workspace-disabled"):
+    results.pop(key)  # checked by test_headless_workspace_corners_follow_stylesheet
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 # With dusk disabled, Shell's own 12px gap is back (extension.js disable()).
 assert results.pop("logout-disabled")["spacing"] == 12, "disable() did not restore the gap"
@@ -78,4 +80,25 @@ test_headless_shell_radii_match_stylesheets() {
   mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO"/tests/headless/chunk-*.selectors)
   "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
     || fail "selectors not found on screen"
+}
+
+# The overview's workspace wallpaper is clipped at a radius Shell sets in code
+# (30px); extension.js makes it follow .workspace-background's radius from our
+# stylesheet, and gives Shell's back on disable. Measured on the real clip.
+test_headless_workspace_corners_follow_stylesheet() {
+  local out; out=$(probe_dir dark)
+  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF' || fail "workspace corners don't follow the stylesheet"
+import json, re, sys
+results = json.load(open(sys.argv[1]))
+css = open(sys.argv[2]).read()
+ours = float(re.search(r"\.workspace-background \{[^}]*border-radius: (\d+)px", css).group(1))
+on, off = results["workspace"], results["workspace-disabled"]
+assert on and off, ("no workspace backgrounds measured", on, off)
+for w in on:
+    assert w["state"] > 0.99, ("overview not fully open", w)
+    assert abs(w["css"] - ours) < 0.5, ("stylesheet radius not applied", w, ours)
+    assert abs(w["clip"] - ours) < 0.5, ("wallpaper clip is not ours", w, ours)
+for w in off:
+    assert abs(w["clip"] - 30 * w["state"]) < 0.5, ("Shell's 30px not restored", w)
+EOF
 }

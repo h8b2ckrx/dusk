@@ -11,14 +11,15 @@ assert "session-modes" not in m, "session-modes must not be set"
 EOF
 }
 
-# extension.js holds exactly one approved exception (design §6, Result):
-# dialog button rows honour CSS `spacing`. Nothing else.
+# extension.js holds exactly two approved exceptions (design §2, §4.15–16):
+# dialog button rows honour CSS `spacing`, and the overview's workspace
+# wallpaper honours .workspace-background's CSS radius. Nothing else.
 test_extension_js_patches_only_dialog_spacing() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   assert_contains "$js" "import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
-  assert_eq "$(grep -c 'overrideMethod(' "$js")" 1 "number of overrides"
+  assert_eq "$(grep -c 'overrideMethod(' "$js")" 2 "number of overrides"
   assert_contains "$js" "overrideMethod(proto, '_createDialog'"
   assert_contains "$js" "const proto = Dialog.Dialog?.prototype;"
   assert_contains "$js" "typeof proto?._createDialog !== 'function'"
@@ -28,6 +29,12 @@ test_extension_js_patches_only_dialog_spacing() {
   # and disable() gives every adopted row back its own spacing.
   assert_contains "$js" "this._findRows(global.stage).forEach(row => this._adopt(row));"
   assert_contains "$js" "row.layout_manager.spacing = original;"
+  # The workspace wallpaper: Shell's own method still runs first, and
+  # disable() re-runs it so Shell's radius comes back.
+  assert_contains "$js" "import * as Workspace from 'resource:///org/gnome/shell/ui/workspace.js';"
+  assert_contains "$js" "typeof wsProto?._updateBorderRadius !== 'function'"
+  assert_contains "$js" "overrideMethod(wsProto, '_updateBorderRadius'"
+  assert_contains "$js" "get_border_radius(St.Corner.TOPLEFT)"
 }
 
 # gjs can't resolve Shell's resource:// imports outside Shell, but it parses

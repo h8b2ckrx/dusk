@@ -61,9 +61,11 @@ Success looks like:
 - Ubuntu Dock.
 - High-contrast mode.
 - Qt apps, icons, cursors, fonts, wallpapers.
-- Patching Shell JavaScript or layouts. **One approved exception** (owner,
-  2026-10-28, §6): `extension.js` makes the dialog button row honour the CSS
-  `spacing` property. Nothing else.
+- Patching Shell JavaScript or layouts. **Two approved exceptions** (owner,
+  2026-10-28), both of the form "make Shell honour a CSS value it sets in code
+  instead": (1) §6, the dialog button row follows the CSS `spacing`; (2) the
+  overview's workspace wallpaper follows `.workspace-background`'s CSS
+  `border-radius` (Shell hard-codes 30px in `workspace.js`). Nothing else.
 - Window corners for apps that aren't libadwaita/GTK3 CSD, and the bottom
   corners of GTK3 windows: the owner uses the "Rounded Window Corners Reborn"
   extension, and the README points to it. We don't reimplement it.
@@ -124,6 +126,10 @@ Success looks like:
     list (§2).
 15. Dialog button gap (decided after the Task 3 probe): allow one small JS
     exception in `extension.js` so the dialogs can match 24.04 exactly (§6).
+16. Overview workspace corners (decided in Task 7): allow a second small JS
+    exception so the workspace wallpaper follows `$radius-workspace`. Shell
+    clips it at `BACKGROUND_CORNER_RADIUS_PIXELS = 30` in `workspace.js`; that
+    is the only corner Shell sets in code (all Shell JS searched).
 
 ## 5. Architecture
 

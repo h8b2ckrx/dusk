@@ -10,8 +10,8 @@
 // default button insensitive), then Shell's own Log Out and Power Off dialog,
 // which Shell creates at startup, before any extension is enabled. It records
 // their geometry in result.json and saves a screenshot of each to
-// $DUSK_PROBE_OUT. Finally it disables dusk@local and reopens Log Out, to
-// check Shell's own gap comes back, then writes `done`.
+// $DUSK_PROBE_OUT. Finally it disables dusk@local and reopens Log Out and the
+// overview, to check Shell's own values come back, then writes `done`.
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
@@ -21,6 +21,7 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
 import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Workspace from 'resource:///org/gnome/shell/ui/workspace.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -95,6 +96,25 @@ function findActor(actor, test) {
     return null;
 }
 
+// The overview's workspace backgrounds: the wallpaper's actual clip radius,
+// the radius their stylesheet gives them, and the overview state (0 desktop,
+// 1 window picker) Shell scales the clip by.
+function measureWorkspaces() {
+    const found = [];
+    const walk = actor => {
+        if (actor instanceof Workspace.WorkspaceBackground && actor.mapped) {
+            found.push({
+                clip: actor._bgManager.backgroundActor.content.rounded_clip_radius,
+                css: actor.get_theme_node().get_border_radius(St.Corner.TOPLEFT),
+                state: actor._stateAdjustment.value,
+            });
+        }
+        actor.get_children().forEach(walk);
+    };
+    walk(global.stage);
+    return found;
+}
+
 async function screenshotScreen(name) {
     const stream = Gio.File.new_for_path(`${OUT}/state-${name}.png`)
         .replace(null, false, Gio.FileCreateFlags.NONE, null);
@@ -130,8 +150,15 @@ const SCENARIOS = {
     3: {labels: ['Cancel', 'Restart', 'Power Off']},
 };
 
+// Disabling dusk@local (at the end of the run) makes Shell re-cycle the
+// extensions enabled after it, this one included; run only once per Shell.
+let started = false;
+
 export default class DuskProbe extends Extension {
     enable() {
+        if (started)
+            return;
+        started = true;
         // Give Shell (and dusk@local) time to finish starting up.
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 3000, () => {
             this._run().catch(e => {
@@ -176,6 +203,7 @@ export default class DuskProbe extends Extension {
 
         Main.overview.show();
         await take('overview');
+        this._workspaces = measureWorkspaces();
         Main.overview.hide();
         await sleep(800);
 
@@ -310,6 +338,14 @@ export default class DuskProbe extends Extension {
         await sleep(1000);
         await measure(results, 'logout-disabled', Main.endSessionDialog.dialogLayout);
         Main.endSessionDialog.close();
+
+        // The overview workspace corners, with dusk on and after disabling it.
+        results['workspace'] = this._workspaces;
+        Main.overview.show();
+        await sleep(1500);
+        results['workspace-disabled'] = measureWorkspaces();
+        Main.overview.hide();
+        await sleep(800);
 
         write('result.json', JSON.stringify(results, null, 1));
         write('done', 'ok');
