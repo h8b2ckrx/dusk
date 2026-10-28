@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-# Test stub: logs its arguments; `enable` fails when DUSK_STUB_ENABLE_FAIL=1.
+# Test stub: logs its arguments; `enable` fails when DUSK_STUB_ENABLE_FAIL=1;
+# `info` reports state DUSK_STUB_STATE (default ACTIVE).
 echo "gnome-extensions $*" >> "${DUSK_STUB_LOG:?}"
 if [ "${1:-}" = enable ] && [ "${DUSK_STUB_ENABLE_FAIL:-}" = 1 ]; then
   echo "Extension “$2” doesn't exist" >&2
   exit 1
+fi
+if [ "${1:-}" = info ]; then
+  printf '%s\n  Enabled: Yes\n  State: %s\n' "$2" "${DUSK_STUB_STATE:-ACTIVE}"
 fi

@@ -50,7 +50,8 @@ test_shell_reload_clean() {
   out=$(DUSK_STUB_JOURNAL="" reload_with_stubs) || rc=$?
   assert_eq "$rc" 0 "exit code"
   assert_eq "$out" "clean"
-  assert_eq "$(cat "$DUSK_STUB_LOG" | grep -c gnome-extensions)" 2 "disable + enable calls"
+  assert_contains "$DUSK_STUB_LOG" "gnome-extensions disable dusk@local"
+  assert_contains "$DUSK_STUB_LOG" "gnome-extensions enable dusk@local"
 }
 
 test_shell_reload_reports_stylesheet_errors() {
@@ -59,4 +60,13 @@ test_shell_reload_reports_stylesheet_errors() {
   out=$(DUSK_STUB_JOURNAL="St-WARNING: Error parsing stylesheet dusk@local/stylesheet-dark.css" reload_with_stubs) || rc=$?
   assert_eq "$rc" 1 "exit code"
   [[ "$out" == *"stylesheet-dark.css"* ]] || fail "log line not printed: $out"
+}
+
+# If Shell doesn't end up running dusk, the reload says so instead of "clean".
+test_shell_reload_fails_if_not_active() {
+  local out rc=0
+  export DUSK_STUB_LOG; DUSK_STUB_LOG=$(mktemp)
+  out=$(DUSK_STUB_STATE=INACTIVE reload_with_stubs 2>&1) || rc=$?
+  assert_eq "$rc" 1 "exit code"
+  [[ "$out" == *"not active"* ]] || fail "no 'not active' message: $out"
 }
