@@ -12,7 +12,9 @@ Waiting for the owner's approval. Approve, or edit the **Proposed** column, befo
 - **Proposed:** snap to the nearest scale step (6 / 9 / 12 / 15 / 18). Pills stay pills, round
   things stay round. ⚠ marks a big visible change. "LG" means confirm in Looking Glass while
   writing the rule.
-- **Selectors** are copied exactly from Yaru, so our rules get the same specificity and win.
+- **Selectors** are copied exactly from Yaru. St ranks our stylesheet above Yaru's outright
+  (found live in Task 5), so our rules win anyway. The flip side: a general rule of ours also
+  erases Yaru's more specific special cases, so those get re-asserted. The tests check both.
 
 ## Scale change to decide first
 
@@ -62,7 +64,7 @@ Reused core tokens: `checkbox`, `button`, `entry`, `search-entry`, `switch`, `sl
 | Open submenu header (top corners) | `.popup-menu-item:checked` | 12 12 0 0 | `menu-item` → 9 9 0 0 |
 | Submenu body (bottom corners) | `.popup-sub-menu` | 0 0 13 13 | `menu-item` → 0 0 9 9 |
 | Last item of a submenu (bottom corners) | `.popup-sub-menu .popup-menu-item:last-child`, `.popup-sub-menu .popup-menu-section:last-child .popup-menu-item:last-child` | 0 0 12 12 | `menu-item` → 0 0 9 9 |
-| Quick settings panel | `.quick-settings` | 36 | `quick-settings` → 18 ⚠ |
+| Quick settings panel | `.quick-settings` | 16.8 (its own rule says 36, but the panel is also a `.popup-menu-content` and that later rule wins; found live in Task 5) | `quick-settings` → 18 |
 | Quick toggles | `.quick-toggle` | 16.8 | `quick-toggle` → 15 |
 | Toggle with a menu arrow (outer shape) | `.quick-toggle-has-menu` | pill | `quick-toggle` → 15 ⚠ loses its pill shape |
 | … its two halves (outer corners only) | `.quick-toggle-has-menu .quick-toggle:ltr` / `:rtl` / `:ltr:last-child` / `:rtl:last-child`, `.quick-toggle-has-menu .quick-toggle-menu-button:ltr` / `:rtl` | 16.8 on the outer side | `quick-toggle` → 15 on the same corners |

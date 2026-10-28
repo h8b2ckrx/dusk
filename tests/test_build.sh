@@ -126,3 +126,44 @@ for style, (fg, fg_hex, dim) in expect.items():
 sys.exit(0 if ok else 1)
 PY
 }
+
+# every_selector_has_radius_rule LIST: each selector in LIST (see
+# tests/headless/chunk-*.selectors) has a border-radius rule of its own in
+# the compiled dark and light Shell stylesheets.
+every_selector_has_radius_rule() {
+  build
+  python3 - "$REPO/extension" "$1" <<'PY' || fail "missing rules for $(basename "$1")"
+import sys
+wanted = [l.strip().lstrip("~") for l in open(sys.argv[2]) if l.strip() and not l.startswith("# ")]
+ok = True
+for style in ("dark", "light"):
+    css = open(f"{sys.argv[1]}/stylesheet-{style}.css").read()
+    have = set()
+    for block in css.split("}"):
+        sel, _, body = block.partition("{")
+        if "border-radius" in body or "-radius:" in body:
+            have.update(" ".join(s.split()) for s in sel.split(","))
+    for s in wanted:
+        if s not in have:
+            print(f"{style}: no radius rule for {s}")
+            ok = False
+sys.exit(0 if ok else 1)
+PY
+}
+
+test_shell_chunk_a_rules_present() {
+  every_selector_has_radius_rule "$REPO/tests/headless/chunk-a.selectors"
+}
+
+# Our stylesheet beats Yaru's outright, so for every Yaru radius rule that is a
+# more specific case of one of ours (e.g. square items inside a submenu), we
+# re-assert it. Lock and login screen rules are skipped: dusk is off there.
+test_shell_keeps_yaru_special_cases() {
+  build
+  local yaru; yaru=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$yaru"
+  "$REPO/tests/headless/cascade.py" shadowed "$yaru" "$REPO/extension/stylesheet-dark.css" \
+    'unlock-screen|login-screen|unlock-dialog|login-dialog|screen-shield' \
+    || fail "our rules would erase Yaru special cases"
+}

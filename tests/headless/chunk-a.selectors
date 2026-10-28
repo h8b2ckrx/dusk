@@ -1,0 +1,35 @@
+# Chunk A of docs/inventory-shell.md: top bar, menus, quick settings.
+# One selector per line, exactly as Yaru writes it. A leading "~" marks a
+# selector the probe's UI states don't show (right-to-left, screen recording,
+# …): it must still be in our stylesheet, but isn't required to match live.
+#panel .panel-button
+#panel .panel-button.clock-display
+#panel .panel-button.clock-display .clock
+~#panel .panel-button.screen-recording-indicator
+~#panel .panel-button.screen-sharing-indicator
+#panel:overview .panel-button
+#panel:overview .panel-button.clock-display
+#panel:overview .panel-button.clock-display .clock
+~#panel:overview .panel-button.screen-recording-indicator
+~#panel:overview .panel-button.screen-sharing-indicator
+#panel .panel-button#panelActivities .workspace-dot
+.popup-menu-content
+.popup-menu-item
+.popup-menu-item:checked
+.popup-sub-menu
+.popup-sub-menu .popup-menu-item:last-child
+~.popup-sub-menu .popup-menu-section:last-child .popup-menu-item:last-child
+.quick-settings
+.quick-toggle
+.quick-toggle-has-menu
+.quick-toggle-has-menu .quick-toggle:ltr
+~.quick-toggle-has-menu .quick-toggle:rtl
+~.quick-toggle-has-menu .quick-toggle:ltr:last-child
+~.quick-toggle-has-menu .quick-toggle:rtl:last-child
+.quick-toggle-has-menu .quick-toggle-menu-button:ltr
+~.quick-toggle-has-menu .quick-toggle-menu-button:rtl
+.quick-toggle-menu
+.quick-toggle-menu .header .icon
+.quick-slider .slider-bin
+.icon-button
+~.system-action-icon

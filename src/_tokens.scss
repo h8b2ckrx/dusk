@@ -10,6 +10,7 @@ $r-sm: 9px;
 $r-md: 12px;
 $r-lg: 15px;
 $r-xl: 18px;
+$r-xxl: 24px; // large overview surfaces only (approved with docs/inventory-shell.md)
 $r-pill: 999px;
 $r-circle: 50%;
 
@@ -36,6 +37,12 @@ $radius-quick-settings: $r-xl;
 $radius-quick-toggle: $r-lg;
 $radius-window: $r-lg;
 $radius-dialog: $r-xl;
+
+// ---------------------------------------------------------------------------
+// Shell element radii beyond the core set (docs/inventory-shell.md).
+// ---------------------------------------------------------------------------
+$radius-round: $r-pill;       // round by nature: avatars, round icons, dots, handles
+$radius-icon-button: $r-pill; // round icon-only buttons
 
 // ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag

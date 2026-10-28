@@ -1,8 +1,13 @@
 // GNOME Shell overrides, loaded by the dusk@local extension on top of Yaru.
 // Compiled twice, via shell-dark.scss and shell-light.scss, into the
 // extension's stylesheet-dark.css / stylesheet-light.css.
-// Selectors copy Yaru's exactly: ours load later, so they win only at equal
-// specificity. Verify every selector in Looking Glass before adding it.
+// St ranks an extension stylesheet above the theme outright: our rules beat
+// Yaru's whatever their specificity, even !important ones. So a general rule
+// of ours also erases Yaru's more specific special cases (like square items
+// inside a submenu): those are re-asserted next to the rule that would erase
+// them. Selectors are Yaru's own. Checked against the live Shell by
+// tests/test_headless.sh, and for special cases by
+// test_shell_keeps_yaru_special_cases.
 @import 'tokens';
 @import 'lib';
 
@@ -98,4 +103,121 @@ $mode: dark !default;
   &:first-child:last-child {
     border-radius: 0 0 $radius-dialog-button $radius-dialog-button;
   }
+}
+
+// ===========================================================================
+// Chunk A (docs/inventory-shell.md): top bar, menus, quick settings. Selectors
+// are Yaru's own. Radius only, plus color hooks for quick settings.
+// ===========================================================================
+
+// Top bar items: clock, system menu, indicators, extensions' buttons (also in
+// the overview). Blur my Shell owns the top bar's look; this is radius only.
+#panel .panel-button,
+#panel .panel-button.clock-display,
+#panel .panel-button.clock-display .clock,
+#panel .panel-button.screen-recording-indicator,
+#panel .panel-button.screen-sharing-indicator,
+#panel:overview .panel-button,
+#panel:overview .panel-button.clock-display,
+#panel:overview .panel-button.clock-display .clock,
+#panel:overview .panel-button.screen-recording-indicator,
+#panel:overview .panel-button.screen-sharing-indicator {
+  border-radius: $radius-topbar-item;
+}
+
+// Activities button's workspace dots.
+#panel .panel-button#panelActivities .workspace-dot {
+  border-radius: $radius-round;
+}
+
+// Menus: top bar dropdowns and right-click menus (Ubuntu Dock's too).
+.popup-menu-content {
+  border-radius: $radius-popover;
+}
+
+// Menu items.
+.popup-menu-item {
+  border-radius: $radius-menu-item;
+}
+
+// An open submenu's header item: rounded on top only.
+.popup-menu-item:checked {
+  border-radius: $radius-menu-item $radius-menu-item 0 0;
+}
+
+// Yaru's special case: items inside an open submenu are square (the rule
+// above would round them).
+.popup-sub-menu .popup-menu-item {
+  border-radius: 0;
+}
+
+// An open submenu's body, and its last item: rounded at the bottom only.
+.popup-sub-menu,
+.popup-sub-menu .popup-menu-item:last-child,
+.popup-sub-menu .popup-menu-section:last-child .popup-menu-item:last-child {
+  border-radius: 0 0 $radius-menu-item $radius-menu-item;
+}
+
+// Yaru's special case: the last item of a submenu section turns square when
+// hovered or focused.
+.popup-sub-menu .popup-menu-section .popup-menu-item:last-child:hover,
+.popup-sub-menu .popup-menu-section .popup-menu-item:last-child:focus {
+  border-radius: 0;
+}
+
+// Quick settings panel. It is also a .popup-menu-content, so this rule must
+// stay after the menu rule above to win.
+.quick-settings {
+  border-radius: $radius-quick-settings;
+  background-color: shell-color(quick-settings-bg);
+  color: shell-color(quick-settings-fg);
+}
+
+// Quick toggles, and the outer shape of toggles with a menu arrow.
+.quick-toggle,
+.quick-toggle-has-menu {
+  border-radius: $radius-quick-toggle;
+}
+
+// A toggle with a menu arrow is two buttons, each rounded on its outer side…
+.quick-toggle-has-menu .quick-toggle:ltr,
+.quick-toggle-has-menu .quick-toggle-menu-button:rtl {
+  border-radius: $radius-quick-toggle 0 0 $radius-quick-toggle;
+}
+
+// (the right-hand button)
+.quick-toggle-has-menu .quick-toggle:rtl,
+.quick-toggle-has-menu .quick-toggle-menu-button:ltr {
+  border-radius: 0 $radius-quick-toggle $radius-quick-toggle 0;
+}
+
+// …unless the arrow is hidden: then the toggle is whole.
+.quick-toggle-has-menu .quick-toggle:ltr:last-child,
+.quick-toggle-has-menu .quick-toggle:rtl:last-child {
+  border-radius: $radius-quick-toggle;
+}
+
+// Quick toggle menus, e.g. the Wi-Fi list.
+.quick-toggle-menu {
+  border-radius: $radius-popover;
+}
+
+// The round icon in a quick toggle menu's header.
+.quick-toggle-menu .header .icon {
+  border-radius: $radius-round;
+}
+
+// Volume and brightness rows: the highlight around the slider.
+.quick-slider .slider-bin {
+  border-radius: $radius-slider;
+}
+
+// Round icon buttons (quick settings top row, and elsewhere).
+.icon-button {
+  border-radius: $radius-icon-button;
+}
+
+// Power off menu icons.
+.system-action-icon {
+  border-radius: $radius-round;
 }

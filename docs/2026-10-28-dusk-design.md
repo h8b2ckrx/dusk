@@ -157,10 +157,14 @@ How these layers behave on this system (checked):
   built-in `-st-accent-color` / `-st-accent-fg-color` (which follow the
   picker), color functions (`st-mix`, `st-lighten`, `st-transparentize`), and
   `:first-child` / `:last-child`.
-- Our Shell stylesheet loads after Yaru, so it wins at **equal**
-  specificity. Yaru uses deep selectors and some `!important` (e.g. dialog
-  button focus ring), so our rules must match Yaru's specificity for the
-  property they change.
+- ~~Our Shell stylesheet loads after Yaru, so it wins at equal
+  specificity.~~ **Corrected in Task 5, from live measurements:** St ranks an
+  extension stylesheet above the theme outright. Our rules beat Yaru's
+  whatever their specificity, even `!important` ones. So a general rule of
+  ours also erases Yaru's more specific special cases (e.g. square items
+  inside a submenu); those are re-asserted. `tests/test_headless.sh` checks
+  the live Shell against a model of this cascade, and
+  `test_shell_keeps_yaru_special_cases` checks the special cases statically.
 
 **Light vs dark:** radius and the dialog layout don't depend on the mode. Only
 colors do. So each layer splits into "common rules" (always on) and "color

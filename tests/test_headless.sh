@@ -24,20 +24,50 @@ for n, r in results.items():
 EOF
 }
 
-run_probe() {
-  local out="$1" scheme="$2"
-  "$REPO/tools/headless-probe.sh" "$out" "$scheme" \
-    || fail "headless probe failed ($scheme): $(cat "$out/error.txt" 2> /dev/null)"
+# probe_dir SCHEME: a finished probe run for the current code, reused across
+# tests while src/, extension/ and tests/headless/ are unchanged.
+probe_dir() {
+  local key out
+  key=$(cd "$REPO" && find src extension tests/headless -type f ! -name 'stylesheet-*.css' \
+    -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-16)
+  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1"
+  if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
+    "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
+      || fail "headless probe failed ($1): $(cat "$out/error.txt" 2> /dev/null)"
+  fi
+  echo "$out"
 }
 
 test_headless_dark_dialog_buttons_flush() {
-  local out; out=$(mktemp -d)
-  run_probe "$out" dark
-  check_flush "$out"
+  check_flush "$(probe_dir dark)"
 }
 
 test_headless_light_dialog_buttons_flush() {
-  local out; out=$(mktemp -d)
-  run_probe "$out" light
-  check_flush "$out"
+  check_flush "$(probe_dir light)"
+}
+
+# The stylesheet Shell loads for Yaru (dark), extracted for the cascade check.
+yaru_dark_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$css"
+  echo "$css"
+}
+
+# In every probed UI state, each widget's computed radius is what Yaru plus
+# our stylesheet predict (so our rules take effect where they should), and
+# every chunk selector expected on screen matches a real element.
+test_headless_shell_radii_match_stylesheets() {
+  local out; out=$(probe_dir dark)
+  local yaru; yaru=$(yaru_dark_css)
+  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$yaru" \
+    "$REPO/extension/stylesheet-dark.css" || fail "computed radii differ from the stylesheets"
+  # Our stylesheet beats Yaru's outright, so a general rule of ours must not
+  # erase one of Yaru's more specific special cases: re-assert those instead.
+  "$REPO/tests/headless/cascade.py" clobbered "$out/snapshots.json" "$yaru" \
+    "$REPO/extension/stylesheet-dark.css" || fail "our rules override Yaru special cases"
+  local selectors=()
+  mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO"/tests/headless/chunk-*.selectors)
+  "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
+    || fail "selectors not found on screen"
 }
