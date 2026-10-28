@@ -403,9 +403,9 @@ cursor-handle.top > contents	border-top-right-radius	0	0
 cursor-handle.bottom > contents	border-top-left-radius	0	0
 cursor-handle.insertion-cursor > contents	border-top-left-radius	0	0
 toggle-group	border-radius	9px	toggle-group
-toggle-group > toggle	border-radius	INVALID:calc(9px - var(---group-padding))	toggle-group
+toggle-group > toggle	border-radius	calc(9px - var(---group-padding))	toggle-group
 toggle-group.round	border-radius	17px	pill-button
-toggle-group.round toggle	border-radius	INVALID:calc(17px - var(---group-padding))	pill-button
+toggle-group.round toggle	border-radius	calc(17px - var(---group-padding))	pill-button
 .toolbar.osd	border-radius	15px	osd-toolbar
 searchbar > revealer > box .close	border-radius	50%	icon-button
 tooltip	border-radius	9px	app-tooltip
@@ -420,6 +420,6 @@ flowbox > flowboxchild	border-radius	9px	row
 gridview > child	border-radius	9px	row
 indicatorbin > indicator	border-radius	100px	round
 indicatorbin > mask	border-radius	100px	round
-window.csd	border-radius	INVALID:var(--window-radius)	window
+window.csd	border-radius	var(--window-radius)	window
 window.csd.ssd-frame	border-bottom-left-radius	0	0
 window.csd.ssd-frame	border-bottom-right-radius	0	0

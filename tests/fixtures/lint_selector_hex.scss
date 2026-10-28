@@ -1,0 +1,4 @@
+// A selector with an id made of hex letters, and a token value.
+colorswatch#add-color-button > overlay {
+  border-radius: $radius-swatch;
+}

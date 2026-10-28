@@ -6,6 +6,15 @@
 @import 'tokens';
 @import 'lib';
 
+// Windows: libadwaita reads their corner radius from this variable.
+:root {
+  --window-radius: #{$radius-window};
+}
+
+// Every libadwaita radius rule, mirrored in libadwaita's order with values
+// from tokens (generated: tools/mirror-radius.py docs/inventory-gtk4.tsv).
+@import 'gtk4-radius';
+
 // App colors, dark style: libadwaita color variables (unset tokens emit nothing).
 @media (prefers-color-scheme: dark) {
   :root {

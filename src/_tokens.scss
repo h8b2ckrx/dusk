@@ -65,6 +65,21 @@ $radius-dock: $r-lg;            // Ubuntu Dock background (design decision 17)
 $radius-dock-item: $r-md;       // Ubuntu Dock icon hover highlight, Show Apps button
 
 // ---------------------------------------------------------------------------
+// App element radii beyond the shared ones (GTK4 / libadwaita;
+// docs/inventory-gtk4.md, approved with the no-pills rule).
+// ---------------------------------------------------------------------------
+$radius-row: $r-sm;             // selected rows/items: sidebars, lists, grids, text selection
+$radius-tab: $r-sm;             // tabs
+$radius-tab-thumbnail: $r-lg;   // tab overview thumbnails
+$radius-toggle-group: $r-sm;    // toggle groups (their toggles: this minus the group padding)
+$radius-swatch: $r-sm;          // color swatches in color pickers
+$radius-response-button: $r-md; // alert and message dialog response buttons
+$radius-app-tooltip: $r-sm;     // app tooltips
+$radius-osd-toolbar: $r-lg;     // OSD toolbars, e.g. video player controls
+$radius-bar: $r-sm;             // progress bars and level bars
+$radius-toast: $r-lg;           // toasts
+
+// ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag
 // 24.04.3-0ubuntu1, gnome-shell-sass widgets/_dialogs.scss and
 // _common.scss %bubble_button. Colors are in $shell-colors below.
