@@ -159,8 +159,26 @@ Each gets checked in LG; any that don't use `.panel-button` get a rule with `top
 - **Lock screen and login (design §2):** `#panel.login-screen …`, `#panel.unlock-screen …`
   (10 selectors), `.qr-code` and `.web-login-*` (web login), `.parental-controls-shield …`,
   `.conflicting-session-dialog …`.
-- **Ubuntu Dock's own styling:** `#dashtodockContainer .notification-badge`.
+- ~~Ubuntu Dock's own styling~~: brought in by the owner during Task 8, see "Ubuntu Dock" below.
 - **Done in Task 3:** every `.modal-dialog …` selector.
 - **Decorative animations:** `.ripple-box` / `.ripple-box:rtl` (the hot-corner ripple) and
   `.ripple-pointer-location`.
 - **Not in the source at all:** Looking Glass and high-contrast rules (`@media`).
+
+## Ubuntu Dock (added at the owner's request during Task 8)
+
+The owner's dock: bottom, not extended, "shrink" on. In the Ubuntu session the dock's own
+stylesheet (`ubuntu.css`) is empty and relies on these Yaru rules. dusk mirrors them in Yaru's
+source order, because several share a specificity and the later one wins.
+
+| Element | Selectors | Now | Token → Proposed |
+|---|---|---|---|
+| Dock background | `#dash .dash-background`; `#dashtodockContainer.{bottom,top,left,right} #dash .dash-background` and their `.shrink` variants | 28 / 22 / 15 (shrink) | `dock` → lg (5) |
+| Dock background when extended edge-to-edge, or with straight corners | `#dashtodockContainer.{pos}.extended #dash .dash-background` (+ `.shrink`), `#dashtodockContainer.straight-corner #dash .dash-background` (+ `.shrink`) | 0 | stays square |
+| Icon hover highlight, and the Show Apps button | `#dash .dash-item-container .{overview-tile,grid-search-result,show-apps} .overview-icon`; `#dashtodockContainer.{pos} .dash-item-container .{overview-tile .overview-icon, grid-search-result .overview-icon, show-apps, show-apps .overview-icon, app-well-app}` | 16 / 12 | `dock-item` → md (4) |
+| The tiles under the icons | `#dash .dash-item-container .{overview-tile,grid-search-result,show-apps}`, `#dashtodockContainer.{pos} .dash-item-container .{overview-tile,grid-search-result}` | 0 | stays square |
+| "Metro" style icons | `#dashtodockContainer .metro .overview-icon` | 0 | stays square |
+| App name labels on hover | `.dash-label` | pill | `tooltip` |
+| Notification badges | `#dashtodockContainer .notification-badge` | 1em | `round` |
+
+Exact selectors: `tests/headless/dock.selectors`.

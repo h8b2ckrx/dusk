@@ -8,6 +8,8 @@
 # Usage: tools/headless-probe.sh OUTDIR [dark|light]
 # DUSK_EXTRA_EXTENSIONS="uuid …" also loads those installed extensions (your
 # own copies, read-only), e.g. to see how their top bar items come out.
+# DUSK_GSETTINGS="schema key value;…" sets those in the isolated session only,
+# e.g. to lay out Ubuntu Dock like yours.
 # Writes OUTDIR/snapshots.json, OUTDIR/result.json, OUTDIR/state-*.png,
 # OUTDIR/dialog-*.png and OUTDIR/shell.log.
 # Exits 0 if the probe finished, 1 otherwise (see OUTDIR/error.txt).
@@ -39,6 +41,7 @@ done
 rm -f "$OUT/done" "$OUT/error.txt"
 
 export DUSK_PROBE_OUT="$OUT" DUSK_SCHEME="$SCHEME" DUSK_EXTRA="${extra[*]:-}"
+export DUSK_GSETTINGS="${DUSK_GSETTINGS:-}"
 dbus-run-session -- bash -c '
   list() { printf "\"%s\", " "$@" | sed "s/, $//"; }
   enabled=(dusk@local dusk-probe@local $DUSK_EXTRA)
@@ -56,6 +59,11 @@ dbus-run-session -- bash -c '
   gsettings set org.gnome.desktop.interface accent-color slate
   gsettings set org.gnome.desktop.calendar show-weekdate true
   gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true
+  IFS=";" read -ra extra_settings <<< "$DUSK_GSETTINGS"
+  for setting in "${extra_settings[@]}"; do
+    read -r schema key value <<< "$setting"
+    [ -n "$schema" ] && gsettings set "$schema" "$key" "$value"
+  done
   gnome-shell --headless --virtual-monitor 1280x800 --mode=ubuntu --no-x11 \
     > "$DUSK_PROBE_OUT/shell.log" 2>&1 &
   pid=$!

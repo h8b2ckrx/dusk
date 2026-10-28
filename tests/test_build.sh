@@ -179,3 +179,7 @@ test_shell_chunk_b_rules_present() {
 test_shell_chunk_c_rules_present() {
   every_selector_has_radius_rule "$REPO/tests/headless/chunk-c.selectors"
 }
+
+test_shell_dock_rules_present() {
+  every_selector_has_radius_rule "$REPO/tests/headless/dock.selectors"
+}

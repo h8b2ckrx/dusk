@@ -41,7 +41,8 @@ Success looks like:
   - Elements with radius 0 in stock stay square. Elements that are circles
     in stock stay circles.
   - Excluded, because they're out of scope (§2 non-goals): lock screen, GDM,
-    Ubuntu Dock's own styling, high contrast, Looking Glass.
+    high contrast, Looking Glass. (Ubuntu Dock was excluded too, until the
+    owner brought its corners in, decision 17.)
   - Ubuntu Dock's right-click menus share Shell's menu styling, and St CSS
     can't exclude them, so they follow the menu token. That's accepted.
 - Controls (buttons, switches, checkboxes, radios, sliders, entries): **radius
@@ -58,7 +59,7 @@ Success looks like:
 - Top bar background and colors: never set. Blur my Shell stays fully on and
   owns the top bar's look.
 - Lock screen (unlock dialog) and GDM login screen.
-- Ubuntu Dock.
+- Ubuntu Dock's look other than corners (decision 17).
 - High-contrast mode.
 - Qt apps, icons, cursors, fonts, wallpapers.
 - Patching Shell JavaScript or layouts. **Two approved exceptions** (owner,
@@ -130,6 +131,12 @@ Success looks like:
     exception so the workspace wallpaper follows `$radius-workspace`. Shell
     clips it at `BACKGROUND_CORNER_RADIUS_PIXELS = 30` in `workspace.js`; that
     is the only corner Shell sets in code (all Shell JS searched).
+17. Ubuntu Dock's corners (owner, during Task 8): the dock background and the
+    icon hover highlight follow the theme (`$radius-dock`, `$radius-dock-item`),
+    replacing decision 8 ("Ubuntu Dock: untouched") for corners only. Its
+    other styling stays stock. In the Ubuntu session the dock's own
+    stylesheet is empty and relies on Yaru's dock rules, which dusk mirrors in
+    Yaru's order, with values from tokens.
 
 ## 5. Architecture
 

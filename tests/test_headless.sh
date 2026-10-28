@@ -26,16 +26,26 @@ for n, r in results.items():
 EOF
 }
 
-# probe_dir SCHEME: a finished probe run for the current code, reused across
-# tests while src/, extension/ and tests/headless/ are unchanged.
+# probe_dir SCHEME [dock]: a finished probe run for the current code, reused
+# across tests while src/, extension/ and tests/headless/ are unchanged.
+# "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
+# extended, shrink).
 probe_dir() {
-  local key out
+  local key out variant="${2:-}"
   key=$(cd "$REPO" && find src extension tests/headless -type f ! -name 'stylesheet-*.css' \
     -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-16)
-  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1"
+  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
   if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
-    "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
-      || fail "headless probe failed ($1): $(cat "$out/error.txt" 2> /dev/null)"
+    local extra="" settings=""
+    if [ "$variant" = dock ]; then
+      extra=ubuntu-dock@ubuntu.com
+      settings="org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM"
+      settings+=";org.gnome.shell.extensions.dash-to-dock extend-height false"
+      settings+=";org.gnome.shell.extensions.dash-to-dock custom-theme-shrink true"
+    fi
+    DUSK_EXTRA_EXTENSIONS="$extra" DUSK_GSETTINGS="$settings" \
+      "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
+      || fail "headless probe failed ($1 $variant): $(cat "$out/error.txt" 2> /dev/null)"
   fi
   echo "$out"
 }
@@ -100,5 +110,41 @@ for w in on:
     assert abs(w["clip"] - ours) < 0.5, ("wallpaper clip is not ours", w, ours)
 for w in off:
     assert abs(w["clip"] - 30 * w["state"]) < 0.5, ("Shell's 30px not restored", w)
+EOF
+}
+
+# Ubuntu Dock's corners follow the theme (design decision 17). With the dock
+# laid out like the owner's, Shell's computed radii match Yaru plus our
+# stylesheet (in the Ubuntu session the dock's own stylesheet is empty), the
+# dock selectors expected on screen are there, and the background and the
+# icon highlight carry our dock tokens.
+test_headless_dock_follows_tokens() {
+  local out; out=$(probe_dir dark dock)
+  local yaru; yaru=$(yaru_dark_css)
+  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$yaru" \
+    "$REPO/extension/stylesheet-dark.css" || fail "dock radii differ from the stylesheets"
+  local selectors=()
+  mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO/tests/headless/dock.selectors")
+  "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
+    || fail "dock selectors not found on screen"
+  python3 - "$out/snapshots.json" "$REPO/extension/stylesheet-dark.css" <<'EOF' || fail "dock tokens not applied"
+import json, re, sys
+css = open(sys.argv[2]).read()
+def px(selector):
+    return int(re.search(re.escape(selector) + r"[^{]*\{[^}]*?border-radius: (\d+)px", css).group(1))
+dock = px("#dashtodockContainer.bottom.shrink #dash .dash-background")
+item = px("#dashtodockContainer.bottom .dash-item-container .overview-tile .overview-icon")
+recs = json.load(open(sys.argv[1]))["desktop"]
+def under_dock(i):
+    while i >= 0:
+        if recs[i]["id"] == "dashtodockContainer":
+            return True
+        i = recs[i]["parent"]
+    return False
+bg = [r for i, r in enumerate(recs) if "dash-background" in r["classes"] and under_dock(i)]
+icons = [r for i, r in enumerate(recs) if "overview-icon" in r["classes"] and under_dock(i)]
+assert bg and icons, ("dock not on screen", len(bg), len(icons))
+assert all(r["radii"] == [dock] * 4 for r in bg), ([r["radii"] for r in bg], dock)
+assert all(r["radii"] == [item] * 4 for r in icons), ({tuple(r["radii"]) for r in icons}, item)
 EOF
 }

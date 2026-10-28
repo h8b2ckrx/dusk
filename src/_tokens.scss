@@ -61,10 +61,8 @@ $radius-switcher: $r-xxl;       // Alt+Tab panel
 $radius-workspace: $r-xxl;      // workspace backgrounds in the overview
 $radius-screenshot-panel: $r-xxl; // screenshot toolbar
 $radius-folder-dialog: $r-xxl;  // open app folder popup
-
-// Stock values kept where dusk must not change anything (design §2: Ubuntu
-// Dock stays untouched), re-asserted because our general rules beat Yaru's.
-$radius-dock-badge: 1em;        // Ubuntu Dock's notification badges (Yaru)
+$radius-dock: $r-lg;            // Ubuntu Dock background (design decision 17)
+$radius-dock-item: $r-md;       // Ubuntu Dock icon hover highlight, Show Apps button
 
 // ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag

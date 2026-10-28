@@ -406,29 +406,6 @@ StScrollBar > .hhandle {
   border-radius: $radius-folder-tile;
 }
 
-// Ubuntu Dock stays untouched (design §2), but its icons are .overview-tile /
-// .grid-search-result too, so the two rules above would round its tiles.
-// Re-assert Yaru's dock rules: square tiles (the icon inside keeps Yaru's own
-// rounding). In the Ubuntu session the dock's own stylesheet is empty and
-// relies on these Yaru rules. #dash is Shell's own dock, which it replaces.
-#dash .dash-item-container .overview-tile,
-#dash .dash-item-container .grid-search-result,
-#dashtodockContainer.bottom .dash-item-container .overview-tile,
-#dashtodockContainer.bottom .dash-item-container .grid-search-result,
-#dashtodockContainer.left .dash-item-container .overview-tile,
-#dashtodockContainer.left .dash-item-container .grid-search-result,
-#dashtodockContainer.right .dash-item-container .overview-tile,
-#dashtodockContainer.right .dash-item-container .grid-search-result,
-#dashtodockContainer.top .dash-item-container .overview-tile,
-#dashtodockContainer.top .dash-item-container .grid-search-result {
-  border-radius: 0;
-}
-
-// Ubuntu Dock's notification badges, stock.
-#dashtodockContainer .notification-badge {
-  border-radius: $radius-dock-badge;
-}
-
 // The open app folder popup.
 .app-folder-dialog {
   border-radius: $radius-folder-dialog;
@@ -613,4 +590,127 @@ StScrollBar > .hhandle {
 // (the next-page button)
 .candidate-page-button-next {
   border-radius: 0 $radius-button $radius-button 0;
+}
+
+// ===========================================================================
+// Ubuntu Dock (docs/inventory-shell.md, "Ubuntu Dock"; design decision 17):
+// corners follow the theme. In the Ubuntu session the dock's own stylesheet
+// is empty and relies on Yaru's dock rules, mirrored here in Yaru's source
+// order (several share a specificity, and the later one wins).
+// ===========================================================================
+
+// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+#dashtodockContainer.right .dash-item-container .overview-tile,
+#dashtodockContainer.right .dash-item-container .grid-search-result,
+#dashtodockContainer.left .dash-item-container .overview-tile,
+#dashtodockContainer.left .dash-item-container .grid-search-result,
+#dashtodockContainer.top .dash-item-container .overview-tile,
+#dashtodockContainer.top .dash-item-container .grid-search-result,
+#dashtodockContainer.bottom .dash-item-container .overview-tile,
+#dashtodockContainer.bottom .dash-item-container .grid-search-result,
+#dash .dash-item-container .show-apps,
+#dash .dash-item-container .overview-tile,
+#dash .dash-item-container .grid-search-result {
+  border-radius: 0;
+}
+
+// The icon hover highlight and the Show Apps button.
+#dash .dash-item-container .show-apps .overview-icon,
+#dash .dash-item-container .overview-tile .overview-icon,
+#dash .dash-item-container .grid-search-result .overview-icon {
+  border-radius: $radius-dock-item;
+}
+
+// App name labels shown on hover.
+.dash-label {
+  border-radius: $radius-tooltip;
+}
+
+// The dock background.
+#dash .dash-background {
+  border-radius: $radius-dock;
+}
+
+// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+#dashtodockContainer.bottom.extended #dash .dash-background,
+#dashtodockContainer.bottom.extended.shrink #dash .dash-background,
+#dashtodockContainer.top.extended #dash .dash-background,
+#dashtodockContainer.top.extended.shrink #dash .dash-background,
+#dashtodockContainer.left.extended #dash .dash-background,
+#dashtodockContainer.left.extended.shrink #dash .dash-background,
+#dashtodockContainer.right.extended #dash .dash-background,
+#dashtodockContainer.right.extended.shrink #dash .dash-background,
+#dashtodockContainer.straight-corner #dash .dash-background,
+#dashtodockContainer.shrink.straight-corner #dash .dash-background {
+  border-radius: 0;
+}
+
+// Notification badges on dock icons.
+#dashtodockContainer .notification-badge {
+  border-radius: $radius-round;
+}
+
+// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+#dashtodockContainer .metro .overview-icon {
+  border-radius: 0;
+}
+
+// The dock background.
+#dashtodockContainer.bottom #dash .dash-background,
+#dashtodockContainer.bottom.shrink #dash .dash-background {
+  border-radius: $radius-dock;
+}
+
+// The icon hover highlight and the Show Apps button.
+#dashtodockContainer.bottom .dash-item-container .show-apps,
+#dashtodockContainer.bottom .dash-item-container .app-well-app,
+#dashtodockContainer.bottom .dash-item-container .show-apps .overview-icon,
+#dashtodockContainer.bottom .dash-item-container .overview-tile .overview-icon,
+#dashtodockContainer.bottom .dash-item-container .grid-search-result .overview-icon {
+  border-radius: $radius-dock-item;
+}
+
+// The dock background.
+#dashtodockContainer.top #dash .dash-background,
+#dashtodockContainer.top.shrink #dash .dash-background {
+  border-radius: $radius-dock;
+}
+
+// The icon hover highlight and the Show Apps button.
+#dashtodockContainer.top .dash-item-container .show-apps,
+#dashtodockContainer.top .dash-item-container .app-well-app,
+#dashtodockContainer.top .dash-item-container .show-apps .overview-icon,
+#dashtodockContainer.top .dash-item-container .overview-tile .overview-icon,
+#dashtodockContainer.top .dash-item-container .grid-search-result .overview-icon {
+  border-radius: $radius-dock-item;
+}
+
+// The dock background.
+#dashtodockContainer.left #dash .dash-background,
+#dashtodockContainer.left.shrink #dash .dash-background {
+  border-radius: $radius-dock;
+}
+
+// The icon hover highlight and the Show Apps button.
+#dashtodockContainer.left .dash-item-container .show-apps,
+#dashtodockContainer.left .dash-item-container .app-well-app,
+#dashtodockContainer.left .dash-item-container .show-apps .overview-icon,
+#dashtodockContainer.left .dash-item-container .overview-tile .overview-icon,
+#dashtodockContainer.left .dash-item-container .grid-search-result .overview-icon {
+  border-radius: $radius-dock-item;
+}
+
+// The dock background.
+#dashtodockContainer.right #dash .dash-background,
+#dashtodockContainer.right.shrink #dash .dash-background {
+  border-radius: $radius-dock;
+}
+
+// The icon hover highlight and the Show Apps button.
+#dashtodockContainer.right .dash-item-container .show-apps,
+#dashtodockContainer.right .dash-item-container .app-well-app,
+#dashtodockContainer.right .dash-item-container .show-apps .overview-icon,
+#dashtodockContainer.right .dash-item-container .overview-tile .overview-icon,
+#dashtodockContainer.right .dash-item-container .grid-search-result .overview-icon {
+  border-radius: $radius-dock-item;
 }
