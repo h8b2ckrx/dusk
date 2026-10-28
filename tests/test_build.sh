@@ -87,3 +87,42 @@ for block in css.split("}"):
 sys.exit(1)
 PY
 }
+
+# Ubuntu 24.04 dialog details (design §6; Yaru 24.04.3 %bubble_button and
+# button($style: bubble)), checked on the compiled stylesheets.
+test_dialog_matches_2404() {
+  build
+  python3 - "$REPO/extension" <<'PY' || fail "dialog rules differ from Ubuntu 24.04"
+import re, sys
+B = ".modal-dialog .modal-dialog-button-box .modal-dialog-button"
+# style: (foreground as rgb, as hex, disabled text alpha)
+expect = {
+    "dark": ("247, 247, 247", "#F7F7F7", "0.5"),
+    "light": ("61, 61, 61", "#3D3D3D", "0.4"),
+}
+ok = True
+for style, (fg, fg_hex, dim) in expect.items():
+    css = open(f"{sys.argv[1]}/stylesheet-{style}.css").read()
+    rules = {}
+    for block in css.split("}"):
+        sel, _, body = block.partition("{")
+        for s in sel.split(","):
+            rules.setdefault(" ".join(s.split()), "")
+            rules[" ".join(s.split())] += body
+    def has(selector, decl):
+        global ok
+        body = " " + " ".join(rules.get(selector, "").split())
+        if decl not in body:
+            print(f"{style}: {selector} lacks '{decl}'")
+            ok = False
+    has(".modal-dialog", f"box-shadow: inset 0 0 0 1px rgba({fg}, 0.15)")
+    has(B, "font-weight: normal")
+    has(B, f" color: {fg_hex}")
+    has(B + ":insensitive", f" color: rgba({fg}, {dim})")
+    has(B + ":insensitive", f"background-color: rgba({fg}, 0.17)")
+    has(B + ":active:hover", f"background-color: rgba({fg}, 0.19)")
+    has(B + ":first-child:ltr", "border-radius: 0 0 0 17px")
+    has(B + ":last-child:ltr", "border-radius: 0 0 17px 0")
+sys.exit(0 if ok else 1)
+PY
+}
