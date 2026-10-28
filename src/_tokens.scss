@@ -38,10 +38,23 @@ $radius-window: $r-lg;
 $radius-dialog: $r-xl;
 
 // ---------------------------------------------------------------------------
+// Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag
+// 24.04.3-0ubuntu1, gnome-shell-sass widgets/_dialogs.scss and
+// _common.scss %bubble_button. Colors are in $shell-colors below.
+// ---------------------------------------------------------------------------
+$dialog-content-margin: 32px 40px; // around the title, text and fields
+$dialog-content-spacing: 32px;     // between items in the content area
+$dialog-button-padding: 12px;
+$dialog-divider-width: 1px;        // gap between buttons, reads as a divider
+
+// ---------------------------------------------------------------------------
 // Colors (§7.2). null = leave the stock Yaru color alone (no rule is emitted).
 // Accent and top bar colors deliberately have no tokens.
 // ---------------------------------------------------------------------------
-// Shell surfaces, per mode.
+// Shell surfaces, per mode. The dialog-button-* values are new surfaces (stock
+// 26.04 has no flush buttons), so they start at 24.04's: the foreground color
+// (#F7F7F7 dark, #3D3D3D light) at 10% / 13% / 16%, from _drawing.scss
+// button($style: bubble). The default button's text follows the accent.
 $shell-colors: (
   dark: (
     notification-bg: null,
@@ -52,6 +65,10 @@ $shell-colors: (
     calendar-fg: null,
     dialog-bg: null,
     dialog-fg: null,
+    dialog-button-bg: rgba(#F7F7F7, 0.10),
+    dialog-button-hover-bg: rgba(#F7F7F7, 0.13),
+    dialog-button-active-bg: rgba(#F7F7F7, 0.16),
+    dialog-default-fg: -st-accent-color,
     osd-bg: null,
     osd-fg: null,
   ),
@@ -64,6 +81,10 @@ $shell-colors: (
     calendar-fg: null,
     dialog-bg: null,
     dialog-fg: null,
+    dialog-button-bg: rgba(#3D3D3D, 0.10),
+    dialog-button-hover-bg: rgba(#3D3D3D, 0.13),
+    dialog-button-active-bg: rgba(#3D3D3D, 0.16),
+    dialog-default-fg: -st-accent-color,
     osd-bg: null,
     osd-fg: null,
   ),

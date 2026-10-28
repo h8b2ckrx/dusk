@@ -72,3 +72,18 @@ test_check_gtk_css_rejects_bad_css() {
     assert_eq "$rc" 1 "GTK $v check exit code for invalid CSS"
   done
 }
+
+# The dialog layout applies in light style too, so its button colors must
+# exist there (design §5, plan Task 3).
+test_light_dialog_has_button_colors() {
+  build
+  python3 - "$REPO/extension/stylesheet-light.css" <<'PY' || fail "light stylesheet has no dialog button background"
+import sys
+css = open(sys.argv[1]).read()
+for block in css.split("}"):
+    selector, _, body = block.partition("{")
+    if ".modal-dialog-button" in selector and "background-color" in body:
+        sys.exit(0)
+sys.exit(1)
+PY
+}

@@ -61,7 +61,9 @@ Success looks like:
 - Ubuntu Dock.
 - High-contrast mode.
 - Qt apps, icons, cursors, fonts, wallpapers.
-- Patching Shell JavaScript or layouts.
+- Patching Shell JavaScript or layouts. **One approved exception** (owner,
+  2026-10-28, §6): `extension.js` makes the dialog button row honour the CSS
+  `spacing` property. Nothing else.
 - Window corners for apps that aren't libadwaita/GTK3 CSD, and the bottom
   corners of GTK3 windows: the owner uses the "Rounded Window Corners Reborn"
   extension, and the README points to it. We don't reimplement it.
@@ -120,6 +122,8 @@ Success looks like:
     Reborn, which the owner installs. No bottom-corner CSS from us.
 14. Scope: every rounded element follows the scale in v1, not just the core
     list (§2).
+15. Dialog button gap (decided after the Task 3 probe): allow one small JS
+    exception in `extension.js` so the dialogs can match 24.04 exactly (§6).
 
 ## 5. Architecture
 
@@ -215,6 +219,21 @@ overrides it. If it doesn't, the fallback is a negative horizontal margin on
 the buttons. If neither works, stop and come back to the owner. No JS
 patching without the owner's say-so.
 
+**Result (Task 3, 2026-10-28):** CSS `spacing: 0` has no effect: the owner
+saw the gap remain in a `pkexec` prompt. The fallback is impossible too,
+because Clutter actor margins can't be negative (minimum 0, per the
+Clutter-18 type data). The owner chose a small JS exception over a CSS-only
+approximation. `extension.js` uses Shell's `InjectionManager` to wrap
+`Dialog.prototype._createDialog`. After the original runs, it makes the
+button row's layout honour the stylesheet's `spacing` on
+`.modal-dialog-button-box`, but only when a stylesheet sets one. `disable()`
+restores the original method. The value itself stays a token. If a future
+Shell renames the method, the wrapper is skipped and dialogs stay stock.
+
+**What 24.04 actually does (from the Yaru source):** the dividers are 1px
+gaps between buttons tinted with the foreground color, not drawn lines. With
+the JS exception, the gap is simply `spacing: 1px` on the button row.
+
 ## 7. Tokens (`src/_tokens.scss`)
 
 The single source of truth. Rule files never contain literal radius or color
@@ -299,7 +318,7 @@ padding). Nothing else.
   src/gtk4.scss        # libadwaita overrides
   src/gtk3.scss        # Yaru GTK3 overrides
   src/shell.scss       # Shell overrides incl. modal dialogs
-  extension/           # metadata.json, extension.js (empty enable/disable), compiled stylesheet-dark.css / stylesheet-light.css
+  extension/           # metadata.json, extension.js (one approved exception, §6), compiled stylesheet-dark.css / stylesheet-light.css
   build/               # compiled gtk4.css / gtk3.css (gitignored)
   docs/                # this design doc
   install.sh

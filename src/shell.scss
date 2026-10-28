@@ -12,3 +12,69 @@ $mode: dark !default;
 @function shell-color($key) {
   @return token(map-get($shell-colors, $mode), $key);
 }
+
+// ===========================================================================
+// Modal dialogs (design §6): log out / power off, polkit prompts, extension
+// install, and any other dialog built on dialog.js. Ubuntu 24.04 layout:
+// buttons flush at the bottom, splitting the full width, 1px gaps between
+// them, only the outer bottom corners rounded.
+// ===========================================================================
+
+// Dialog frame (.modal-dialog: content area + button row, stacked). No outer
+// padding, so the button row reaches the edges.
+.modal-dialog {
+  padding: 0;
+  spacing: 0;
+  border-radius: $radius-dialog;
+  background-color: shell-color(dialog-bg);
+  color: shell-color(dialog-fg);
+}
+
+// Dialog content area (.modal-dialog-content-box): title, text, fields.
+.modal-dialog .modal-dialog-content-box {
+  padding: 0;
+  margin: $dialog-content-margin;
+  spacing: $dialog-content-spacing;
+}
+
+// Dialog button row (.modal-dialog-button-box). `spacing` is the gap between
+// buttons; it only takes effect because extension.js makes the row honour it.
+.modal-dialog .modal-dialog-button-box {
+  padding: 0;
+  spacing: $dialog-divider-width;
+}
+
+// Dialog buttons (.modal-dialog-button): square, tinted, flush.
+.modal-dialog .modal-dialog-button-box .modal-dialog-button {
+  border-radius: 0;
+  padding: $dialog-button-padding;
+  background-color: shell-color(dialog-button-bg);
+
+  &:hover {
+    background-color: shell-color(dialog-button-hover-bg);
+  }
+
+  &:active {
+    background-color: shell-color(dialog-button-active-bg);
+  }
+
+  // The default button: accent text, no accent background.
+  &:default {
+    color: shell-color(dialog-default-fg);
+  }
+
+  // Only the dialog's outer bottom corners are rounded.
+  &:first-child:ltr,
+  &:last-child:rtl {
+    border-radius: 0 0 0 $radius-dialog;
+  }
+
+  &:last-child:ltr,
+  &:first-child:rtl {
+    border-radius: 0 0 $radius-dialog 0;
+  }
+
+  &:first-child:last-child {
+    border-radius: 0 0 $radius-dialog $radius-dialog;
+  }
+}
