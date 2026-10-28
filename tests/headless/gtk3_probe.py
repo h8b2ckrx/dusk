@@ -4,7 +4,8 @@
 Builds sample GTK3 widgets (never shown) and reads the corner radius GTK3
 computes for each from its style context, plus a few CSS nodes (switch knob,
 check, trough, window frame) through style paths. GTK3 only reports the
-`border-radius` shorthand, i.e. the top-left corner. Writes OUTDIR/gtk3.json.
+`border-radius` shorthand, i.e. the top-left corner. Also records the title
+bar close button's background (image or tint). Writes OUTDIR/gtk3.json.
 
 Usage: gtk3_probe.py OUTDIR
 """
@@ -100,5 +101,15 @@ samples = {
     "window-frame-maximized": path_ctx(("window", ["background", "csd", "maximized"]), ("decoration", [])),
     "dialog-frame": path_ctx(("messagedialog", ["background", "csd"]), ("decoration", [])),
 }
+result = {name: radius(ctx) for name, ctx in samples.items()}
+
+# Title bar buttons: Yaru draws their circle as a background gradient, not a
+# radius. Record whether there's a background image, and the tint's alpha,
+# in a focused and an unfocused (backdrop) window.
+ctx = close.get_style_context()
+for label, state in (("", Gtk.StateFlags.NORMAL), ("-backdrop", Gtk.StateFlags.BACKDROP)):
+    result[f"titlebutton{label}-image"] = ctx.get_property("background-image", state) is not None
+    result[f"titlebutton{label}-alpha"] = round(ctx.get_property("background-color", state).alpha, 3)
+
 with open(f"{OUT}/gtk3.json", "w") as f:
-    json.dump({name: radius(ctx) for name, ctx in samples.items()}, f, indent=1)
+    json.dump(result, f, indent=1)

@@ -64,3 +64,25 @@ print("\n".join(bad))
 sys.exit(1 if bad else 0)
 PY
 }
+
+# Yaru draws the title bar buttons' circle as a radial gradient, which no
+# radius rule can square. dusk replaces it with a flat tint of the same
+# strength (0.1 when focused, none in unfocused windows, as in Yaru), so the
+# button's own icon-button shape shows.
+test_gtk3_title_buttons_have_no_round_gradient() {
+  local out; out=$(mktemp -d)
+  "$REPO/tools/probe-gtk3.sh" "$out" || fail "GTK3 probe failed: $(tail -3 "$out/probe.log")"
+  python3 - "$out/gtk3.json" <<'PY'
+import json, sys
+got = json.load(open(sys.argv[1]))
+bad = []
+if got["titlebutton-image"]:
+    bad.append("focused close button still has a background image (the round gradient)")
+if abs(got["titlebutton-alpha"] - 0.1) > 0.01:
+    bad.append(f"focused close button tint alpha {got['titlebutton-alpha']}, want 0.1")
+if got["titlebutton-backdrop-image"] or got["titlebutton-backdrop-alpha"] > 0.01:
+    bad.append(f"unfocused close button has a background: {got['titlebutton-backdrop-image']}, {got['titlebutton-backdrop-alpha']}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
+}
