@@ -67,8 +67,9 @@ def main():
     if len(sys.argv) != 2:
         print(__doc__.strip(), file=sys.stderr)
         return 2
+    # Comments start with "# "; a selector may itself start with "#" (an id).
     rows = [line.rstrip("\n").split("\t") for line in open(sys.argv[1])
-            if line.strip() and not line.startswith("#")]
+            if line.strip() and not line.startswith("# ")]
 
     blocks = []  # [token, property, value, [selectors]]
     for selector, prop, stock, token in rows:

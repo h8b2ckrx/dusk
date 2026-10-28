@@ -9,7 +9,7 @@ test_gtk4_mirrors_inventory() {
 import re, subprocess, sys
 repo, sassc = sys.argv[1], sys.argv[2]
 rows = [l.rstrip("\n").split("\t") for l in open(f"{repo}/docs/inventory-gtk4.tsv")
-        if l.strip() and not l.startswith("#")]
+        if l.strip() and not l.startswith("# ")]
 
 # Token values, from the tokens file itself.
 sys.path.insert(0, f"{repo}/tests/headless")
@@ -131,4 +131,12 @@ EOF
 test_gtk4_generated_rules_up_to_date() {
   diff <("$REPO/tools/mirror-radius.py" "$REPO/docs/inventory-gtk4.tsv") "$REPO/src/_gtk4-radius.scss" > /dev/null \
     || fail "src/_gtk4-radius.scss is stale: run tools/mirror-radius.py docs/inventory-gtk4.tsv > src/_gtk4-radius.scss"
+}
+
+# Inventory comments start with "# "; a selector can start with "#" (an id).
+test_mirror_keeps_id_selectors() {
+  local out; out=$(mktemp)
+  "$REPO/tools/mirror-radius.py" "$REPO/tests/fixtures/mirror_ids.tsv" > "$out"
+  assert_contains "$out" "#an-id .thing {"
+  assert_not_contains "$out" "a comment line"
 }
