@@ -64,10 +64,14 @@ StScrollBar StBin#trough {
   border-radius: 0;
 }
 
-// Switches and their knob.
-.toggle-switch,
-.toggle-switch .handle {
+// Switches (the track).
+.toggle-switch {
   border-radius: $radius-switch;
+}
+
+// A switch's knob stays round.
+.toggle-switch .handle {
+  border-radius: $radius-round;
 }
 
 // Scrollbar handles.

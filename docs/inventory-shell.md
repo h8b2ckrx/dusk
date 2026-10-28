@@ -20,6 +20,12 @@ Waiting for the owner's approval. Approve, or edit the **Proposed** column, befo
 > md 4, lg 5, xl 6, xxl 8. The tokens in the tables are unchanged; read their px values with
 > the new scale (e.g. `popover` → lg → 5).
 
+> **No pills (owner, Task 8):** everything that was a pill now uses a scale step: top bar
+> items, pill buttons, round icon buttons, switch tracks, sliders, OSD popups, the search entry,
+> tooltips and labels, calendar days. Only truly round things stay round (`round`): avatars,
+> dots and indicator bars, badges, round icon backgrounds, switch and slider knobs, handles.
+> Rows below that still say "pill" read with this rule.
+
 ## Scale change to decide first
 
 Yaru uses big radii (22–64px) on large overview surfaces: app tiles, the Alt+Tab panel, the

@@ -1,7 +1,9 @@
 # GTK4 / libadwaita radius inventory
 
-Waiting for the owner's approval. Approve, or edit the **Proposed** column, before any GTK4
-rules (Task 9) get written.
+**Approved by the owner (Task 8),** with one rule added during review: **no pills.**
+Everything that was a pill becomes a scale step. Only truly round things stay round: avatars,
+dots, badges, round icons, and switch and slider knobs. Radio buttons stay round too, so they
+don't look like check boxes.
 
 - **Source:** libadwaita 1.9.1's Yaru stylesheet for your accent, found with `gresource list`:
   `/org/gnome/Adwaita/styles/default-dark-yaru-sage.css` inside
@@ -37,20 +39,20 @@ the numbers change.
 | `entry` | sm 3 | 9 | entries, spin buttons (and their end buttons' outer corners) |
 | `checkbox` | xs 2 | 6 | check boxes |
 | `radio` | circle | circle | radio buttons, grouped check buttons |
-| `switch` | pill | pill | switches and their knob |
-| `slider` | pill | pill | slider troughs, fill, highlight |
+| `switch` | sm 3 | pill | switch tracks (the knob is `round`) |
+| `slider` | sm 3 | pill | slider troughs, fill, highlight (knobs are `round`) |
 | `menu-item` | sm 3 | 9 | menu items, menu bar items, emoji picker items |
 | `popover` | lg 5 | 15 | popovers, menus |
 | `card` | md 4 | 12 | cards, frames, boxed lists (and their first/last rows' corners), file chooser grid items |
 | `window` | lg 5 | 15 | windows (through `--window-radius`), floating and bottom sheets |
 | `dialog` | xl 6 | 18 | alert dialogs, GTK message dialogs (same as Shell dialogs) |
 | `notification` | lg 5 | 15 | in-app notification bars (bottom corners) |
-| `icon-button` | pill | pill/circle | circular buttons, tab close buttons, window control icons, round spin buttons |
-| `pill-button` | pill | pill | pill buttons, round toggle groups, the About dialog's version label |
-| `round` | pill | circle | avatars, indicator dots, slider knobs, accent color circles, the video play button |
+| `icon-button` | sm 3 | pill/circle | circular buttons, tab close buttons, window control icons, round spin buttons |
+| `pill-button` | sm 3 | pill | pill buttons, round toggle groups, the About dialog's version label |
+| `round` | circle | circle | truly round, kept round: avatars, indicator dots, slider and switch knobs, accent color circles, the video play button |
 | `small` | xs 2 | 2–6 | tab underline indicators, keyboard shortcut keycaps, expander titles, color button swatches |
 | `inset` | sm 3 | 10 | color picker sliders |
-| `scrollbar` | sm 3 ⚠ | pill | scrollbar troughs and sliders |
+| `scrollbar` | sm 3 | pill | scrollbar troughs and sliders (same as Shell) |
 
 ### New for apps
 
@@ -64,21 +66,19 @@ the numbers change.
 | `$radius-response-button` | md 4 | 12 | alert dialog and message dialog response buttons |
 | `$radius-app-tooltip` | sm 3 | 9 | app tooltips (Shell's `tooltip` token is for pill labels) |
 | `$radius-osd-toolbar` | lg 5 | 15 | OSD toolbars, e.g. video player controls |
-| `$radius-bar` | pill | pill | progress bars and level bars |
-| `$radius-toast` | pill | pill | toasts |
+| `$radius-bar` | sm 3 | pill | progress bars and level bars |
+| `$radius-toast` | lg 5 | pill | toasts |
 
-## Decide while reading
+## Decided while reviewing
 
-- ⚠ **Scrollbars:** libadwaita's are pills. Proposed: use the same `scrollbar` token as
-  Shell (3) so they match, which squares them. The alternative is a separate app token that stays
-  a pill.
+- **No pills** (owner): scrollbars, switches, sliders, progress bars, toasts, and circular
+  and pill buttons all become scale steps (see the tables). Knobs, avatars, dots, badges and
+  radio buttons stay round.
 - **Big but consistent changes:** at your scale, buttons and entries go 9 → 3, cards 12 → 4,
   windows and popovers 15 → 5, alert dialogs 18 → 6. Apps end up as square as the Shell.
 - **Toggle groups** (e.g. Files' grid/list switch): libadwaita computes the inner toggles'
   radius as the group's radius minus its padding. At 3px that comes out at about 0, so the inner
   toggles turn square inside a slightly rounded group. That's expected; Task 9 checks it.
-- **Pills and circles** stay as they are: switches, sliders, progress bars, toasts, circular and
-  pill buttons, avatars.
 
 ## Notes
 

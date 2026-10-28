@@ -24,16 +24,16 @@ $radius-checkbox: $r-xs;
 $radius-radio: $r-circle;
 $radius-button: $r-sm;
 $radius-entry: $r-sm;
-$radius-search-entry: $r-pill;
-$radius-switch: $r-pill;
-$radius-slider: $r-pill;
+$radius-search-entry: $r-sm; // owner: no pills (Task 8)
+$radius-switch: $r-sm; // the track; its knob uses $radius-round. owner: no pills (Task 8)
+$radius-slider: $r-sm; // tracks; knobs use $radius-round. owner: no pills (Task 8)
 // Menus and surfaces
 $radius-menu-item: $r-sm;
 $radius-topbar-item: $r-sm; // owner: square them too (was pill; Task 8)
 $radius-card: $r-md;
 $radius-popover: $r-lg;
 $radius-notification: $r-lg;
-$radius-osd: $r-pill;
+$radius-osd: $r-lg; // owner: no pills (Task 8)
 $radius-quick-settings: $r-xl;
 $radius-quick-toggle: $r-lg;
 $radius-window: $r-lg;
@@ -42,11 +42,11 @@ $radius-dialog: $r-xl;
 // ---------------------------------------------------------------------------
 // Shell element radii beyond the core set (docs/inventory-shell.md).
 // ---------------------------------------------------------------------------
-$radius-round: $r-pill;       // round by nature: avatars, round icons, dots, handles
-$radius-icon-button: $r-pill; // round icon-only buttons
+$radius-round: $r-pill;       // truly round, kept round: avatars, round icons, dots, badges, knobs, handles
+$radius-icon-button: $r-sm; // icon-only buttons (were round); owner: no pills (Task 8)
 $radius-pill-button: $r-sm;     // text buttons that were pills ("Clear", calendar month); owner: square them (Task 8)
-$radius-tooltip: $r-pill;       // pill labels: overview window titles, screenshot tooltips
-$radius-calendar-day: $r-pill;  // calendar day cells
+$radius-tooltip: $r-sm;         // labels: overview window titles, screenshot tooltips, dock app names; owner: no pills (Task 8)
+$radius-calendar-day: $r-sm;    // calendar day cells (today's highlight); owner: no pills (Task 8)
 $radius-small: $r-xs;           // tiny boxes: week numbers, keyboard suggestions, workspace thumbnails
 $radius-inset: $r-sm;           // small boxes inside other surfaces: weekday headings, event rows, labels, album art
 $radius-scrollbar: $r-sm;       // scrollbar handles

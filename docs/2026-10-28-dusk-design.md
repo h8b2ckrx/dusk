@@ -137,6 +137,10 @@ Success looks like:
     other styling stays stock. In the Ubuntu session the dock's own
     stylesheet is empty and relies on Yaru's dock rules, which dusk mirrors in
     Yaru's order, with values from tokens.
+18. No pills (owner, during Task 8): every element that was a pill uses a
+    scale step instead, in Shell and apps. Only truly round things stay round:
+    avatars, dots, badges, round icon backgrounds, switch and slider knobs,
+    handles, radio buttons.
 
 ## 5. Architecture
 

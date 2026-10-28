@@ -384,7 +384,7 @@ spinbutton.vertical > button.image-button.down:not(.flat):not(.raised):not(.sugg
 spinbutton.vertical > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):first-child	border-radius	9px 9px 0 0	entry
 spinbutton.vertical > button.image-button.down:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):first-child	border-radius	9px 9px 0 0	entry
 switch	border-radius	14px	switch
-switch > slider	border-radius	50%	switch
+switch > slider	border-radius	50%	round
 tabbar tabbox > tabboxchild	border-radius	9px	tab
 tabbar tabbox > revealer > indicator	border-radius	2px	small
 tabbar tab	border-radius	9px	tab
