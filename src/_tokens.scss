@@ -29,7 +29,7 @@ $radius-switch: $r-pill;
 $radius-slider: $r-pill;
 // Menus and surfaces
 $radius-menu-item: $r-sm;
-$radius-topbar-item: $r-pill;
+$radius-topbar-item: $r-sm; // owner: square them too (was pill; Task 8)
 $radius-card: $r-md;
 $radius-popover: $r-lg;
 $radius-notification: $r-lg;
