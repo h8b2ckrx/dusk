@@ -44,7 +44,7 @@ $radius-dialog: $r-xl;
 // ---------------------------------------------------------------------------
 $radius-round: $r-pill;       // round by nature: avatars, round icons, dots, handles
 $radius-icon-button: $r-pill; // round icon-only buttons
-$radius-pill-button: $r-pill;   // text buttons that are pills ("Clear", calendar month)
+$radius-pill-button: $r-sm;     // text buttons that were pills ("Clear", calendar month); owner: square them (Task 8)
 $radius-tooltip: $r-pill;       // pill labels: overview window titles, screenshot tooltips
 $radius-calendar-day: $r-pill;  // calendar day cells
 $radius-small: $r-xs;           // tiny boxes: week numbers, keyboard suggestions, workspace thumbnails
