@@ -1,6 +1,12 @@
 // GTK3 overrides, installed as ~/.config/gtk-3.0/gtk.css on top of the active
 // Yaru GTK3 variant. Radius only: GTK3 CSS can't tell light from dark, so
-// color overrides are deferred (design §5). Same user-priority caveat as
-// gtk4.scss: re-assert Yaru's square corners after any rounded rule.
+// color overrides are deferred (design §5). It loads at user priority and
+// beats Yaru outright, which is why the partial below mirrors every Yaru
+// radius rule, square ones included.
 @import 'tokens';
 @import 'lib';
+
+// Every Yaru GTK3 radius rule, mirrored in Yaru's order with values from
+// tokens (generated: tools/mirror-radius.py docs/inventory-gtk3.tsv). Window
+// frames keep Yaru's top-only rounding (decision 13).
+@import 'gtk3-radius';

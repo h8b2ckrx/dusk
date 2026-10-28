@@ -1,54 +1,18 @@
 # build/gtk4.css against docs/inventory-gtk4.tsv (design decision: mirror
 # every libadwaita radius rule, in libadwaita's order, values from tokens).
 
-# check_mirror: every inventory row is in build/gtk4.css with its token's
-# value, and the rows keep libadwaita's order.
+# Every inventory row is in build/gtk4.css with its token's value, and the
+# rows keep libadwaita's order (tests/headless/mirror_check.py).
 test_gtk4_mirrors_inventory() {
   (cd "$REPO" && ./build.sh > /dev/null)
   python3 - "$REPO" "${SASSC:-sassc}" <<'EOF'
-import re, subprocess, sys
+import sys
 repo, sassc = sys.argv[1], sys.argv[2]
-rows = [l.rstrip("\n").split("\t") for l in open(f"{repo}/docs/inventory-gtk4.tsv")
-        if l.strip() and not l.startswith("# ")]
-
-# Token values, from the tokens file itself.
 sys.path.insert(0, f"{repo}/tests/headless")
-from tokens import token_values
-value = token_values(repo, sassc, sorted({r[3] for r in rows if r[3] != "0"} | {"window"}))
-
-LENGTH = re.compile(r"(?<![\w.-])(\d*\.?\d+)(px|%|em)?(?![\w.-])")
-def expected(libadwaita, token):
-    return LENGTH.sub(lambda m: "0" if float(m.group(1)) == 0 else value[token], libadwaita)
-
-css = open(f"{repo}/build/gtk4.css").read()
-position = {}
-for k, block in enumerate(css.split("}")):
-    sel, _, body = block.rpartition("{")
-    for decl in body.split(";"):
-        prop, _, val = decl.partition(":")
-        for s in sel.split(","):
-            position[(" ".join(s.split()), prop.strip())] = (k, " ".join(val.split()))
-
-problems, last = [], -1
-for sel, prop, libadwaita, token in rows:
-    got = position.get((sel, prop))
-    want = expected(libadwaita, token)
-    if got is None:
-        problems.append(f"missing: {sel} {{ {prop} }}")
-        continue
-    k, val = got
-    if val != want:
-        problems.append(f"{sel} {{ {prop}: {val} }}, want {want}")
-    if k < last:
-        problems.append(f"out of libadwaita's order: {sel} {{ {prop} }}")
-    last = max(last, k)
-
-root = re.search(r":root\s*\{[^}]*--window-radius:\s*([^;]+);", css)
-if not root or root.group(1).strip() != value["window"]:
-    problems.append(f"--window-radius is not the window token ({value['window']})")
-
-print("\n".join(problems[:20]) + (f"\n… {len(problems)} problems" if len(problems) > 20 else ""))
-sys.exit(1 if problems else 0)
+from mirror_check import problems
+found = problems(repo, sassc, f"{repo}/docs/inventory-gtk4.tsv", f"{repo}/build/gtk4.css", window_var=True)
+print("\n".join(found[:20]) + (f"\n… {len(found)} problems" if len(found) > 20 else ""))
+sys.exit(1 if found else 0)
 EOF
 }
 
