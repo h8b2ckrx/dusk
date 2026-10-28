@@ -1,0 +1,13 @@
+/* A comment with { braces } and border-radius: 77px; inside. */
+@define-color some_color #123456;
+.a { border-radius: 8px; }
+.b, .c { border-radius: 0; }
+.q, .r { border-radius: 999px; }
+.a { border-radius: 12px; }
+.q { border-radius: 16.8px; }
+.d { border-top-left-radius: 4px; }
+.e { border-radius: $yaru_popup_radius; }
+.f:not(.x, .y) { border-radius: 0 0 6px 6px; color: red; }
+@media (prefers-contrast: more) {
+  .hc { border-radius: 3px; }
+}
