@@ -121,8 +121,11 @@ for style, (fg, fg_hex, dim) in expect.items():
     has(B + ":insensitive", f" color: rgba({fg}, {dim})")
     has(B + ":insensitive", f"background-color: rgba({fg}, 0.17)")
     has(B + ":active:hover", f"background-color: rgba({fg}, 0.19)")
-    has(B + ":first-child:ltr", "border-radius: 0 0 0 17px")
-    has(B + ":last-child:ltr", "border-radius: 0 0 17px 0")
+    # Button corners sit 1px inside the dialog's outline: dialog radius - 1.
+    dialog = re.search(r"(\d+)px", rules.get(".modal-dialog", "").split("border-radius:")[1]).group(1)
+    corner = f"{int(dialog) - 1}px"
+    has(B + ":first-child:ltr", f"border-radius: 0 0 0 {corner}")
+    has(B + ":last-child:ltr", f"border-radius: 0 0 {corner} 0")
 sys.exit(0 if ok else 1)
 PY
 }

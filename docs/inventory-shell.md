@@ -16,6 +16,10 @@ Waiting for the owner's approval. Approve, or edit the **Proposed** column, befo
   (found live in Task 5), so our rules win anyway. The flip side: a general rule of ours also
   erases Yaru's more specific special cases, so those get re-asserted. The tests check both.
 
+> **Scale changed by the owner after chunk A (2026-10-28):** steps are now xs 4, sm 6, md 8,
+> lg 10, xl 12, xxl 16. The tokens in the tables are unchanged; read their px values with the
+> new scale (e.g. `popover` → lg → 10).
+
 ## Scale change to decide first
 
 Yaru uses big radii (22–64px) on large overview surfaces: app tiles, the Alt+Tab panel, the

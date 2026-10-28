@@ -57,7 +57,8 @@ dbus-run-session -- bash -c '
   gnome-shell --headless --virtual-monitor 1280x800 --mode=ubuntu --no-x11 \
     > "$DUSK_PROBE_OUT/shell.log" 2>&1 &
   pid=$!
-  for _ in $(seq 1 60); do
+  # Up to 90s: Shell start-up plus about 25s of probing.
+  for _ in $(seq 1 180); do
     [ -f "$DUSK_PROBE_OUT/done" ] && break
     sleep 0.5
   done

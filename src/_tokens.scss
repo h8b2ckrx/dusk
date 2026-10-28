@@ -3,14 +3,15 @@
 // Design: docs/2026-10-28-dusk-design.md §7.
 
 // ---------------------------------------------------------------------------
-// Radius scale (§7.1). 3px steps, following libadwaita's own rhythm.
+// Radius scale (§7.1). Owner asked for squarer corners (2026-10-28): about
+// two thirds of the first proposal (6/9/12/15/18/24).
 // ---------------------------------------------------------------------------
-$r-xs: 6px;
-$r-sm: 9px;
-$r-md: 12px;
-$r-lg: 15px;
-$r-xl: 18px;
-$r-xxl: 24px; // large overview surfaces only (approved with docs/inventory-shell.md)
+$r-xs: 4px;
+$r-sm: 6px;
+$r-md: 8px;
+$r-lg: 10px;
+$r-xl: 12px;
+$r-xxl: 16px; // large overview surfaces only (approved with docs/inventory-shell.md)
 $r-pill: 999px;
 $r-circle: 50%;
 
