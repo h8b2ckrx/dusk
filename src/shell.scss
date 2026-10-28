@@ -1,0 +1,14 @@
+// GNOME Shell overrides, loaded by the dusk@local extension on top of Yaru.
+// Compiled twice, via shell-dark.scss and shell-light.scss, into the
+// extension's stylesheet-dark.css / stylesheet-light.css.
+// Selectors copy Yaru's exactly: ours load later, so they win only at equal
+// specificity. Verify every selector in Looking Glass before adding it.
+@import 'tokens';
+@import 'lib';
+
+$mode: dark !default;
+
+// shell-color($key): this mode's value from $shell-colors (null = stock).
+@function shell-color($key) {
+  @return token(map-get($shell-colors, $mode), $key);
+}

@@ -1,0 +1,106 @@
+// dusk tokens: the single source of truth for every value the layer files use.
+// Rule files (shell.scss, gtk4.scss, gtk3.scss) never contain literal values.
+// Design: docs/2026-10-28-dusk-design.md §7.
+
+// ---------------------------------------------------------------------------
+// Radius scale (§7.1). 3px steps, following libadwaita's own rhythm.
+// ---------------------------------------------------------------------------
+$r-xs: 6px;
+$r-sm: 9px;
+$r-md: 12px;
+$r-lg: 15px;
+$r-xl: 18px;
+$r-pill: 999px;
+$r-circle: 50%;
+
+// ---------------------------------------------------------------------------
+// Element radii (§7.1 core set). Each points at a scale step; change one
+// element here without touching the scale. Layer inventories add more.
+// ---------------------------------------------------------------------------
+// Controls
+$radius-checkbox: $r-xs;
+$radius-radio: $r-circle;
+$radius-button: $r-sm;
+$radius-entry: $r-sm;
+$radius-search-entry: $r-pill;
+$radius-switch: $r-pill;
+$radius-slider: $r-pill;
+// Menus and surfaces
+$radius-menu-item: $r-sm;
+$radius-topbar-item: $r-pill;
+$radius-card: $r-md;
+$radius-popover: $r-lg;
+$radius-notification: $r-lg;
+$radius-osd: $r-pill;
+$radius-quick-settings: $r-xl;
+$radius-quick-toggle: $r-lg;
+$radius-window: $r-lg;
+$radius-dialog: $r-xl;
+
+// ---------------------------------------------------------------------------
+// Colors (§7.2). null = leave the stock Yaru color alone (no rule is emitted).
+// Accent and top bar colors deliberately have no tokens.
+// ---------------------------------------------------------------------------
+// Shell surfaces, per mode.
+$shell-colors: (
+  dark: (
+    notification-bg: null,
+    notification-fg: null,
+    quick-settings-bg: null,
+    quick-settings-fg: null,
+    calendar-bg: null,
+    calendar-fg: null,
+    dialog-bg: null,
+    dialog-fg: null,
+    osd-bg: null,
+    osd-fg: null,
+  ),
+  light: (
+    notification-bg: null,
+    notification-fg: null,
+    quick-settings-bg: null,
+    quick-settings-fg: null,
+    calendar-bg: null,
+    calendar-fg: null,
+    dialog-bg: null,
+    dialog-fg: null,
+    osd-bg: null,
+    osd-fg: null,
+  ),
+);
+
+// App colors, per mode. Keys are libadwaita color variable names without `--`.
+$app-colors: (
+  dark: (
+    window-bg-color: null,
+    window-fg-color: null,
+    view-bg-color: null,
+    view-fg-color: null,
+    headerbar-bg-color: null,
+    headerbar-fg-color: null,
+    sidebar-bg-color: null,
+    sidebar-fg-color: null,
+    popover-bg-color: null,
+    popover-fg-color: null,
+    card-bg-color: null,
+    card-fg-color: null,
+    dialog-bg-color: null,
+    dialog-fg-color: null,
+  ),
+  light: (
+    window-bg-color: null,
+    window-fg-color: null,
+    view-bg-color: null,
+    view-fg-color: null,
+    headerbar-bg-color: null,
+    headerbar-fg-color: null,
+    sidebar-bg-color: null,
+    sidebar-fg-color: null,
+    popover-bg-color: null,
+    popover-fg-color: null,
+    card-bg-color: null,
+    card-fg-color: null,
+    dialog-bg-color: null,
+    dialog-fg-color: null,
+  ),
+);

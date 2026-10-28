@@ -1,0 +1,4 @@
+@import 'shell';
+$shell-colors: (dark: (k: #111111), light: (k: #222222));
+$mode: light;
+.x { color: shell-color(k); }

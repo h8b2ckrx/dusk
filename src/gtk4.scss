@@ -1,0 +1,21 @@
+// GTK4 / libadwaita overrides, installed as ~/.config/gtk-4.0/gtk.css.
+// It loads at user priority, above libadwaita's built-in Yaru styles, so a
+// rule here beats theirs whatever the specificity. That also overrides
+// their deliberate square corners (e.g. inside linked groups), so those must
+// be re-asserted after any rounded rule. Verify selectors in GTK Inspector.
+@import 'tokens';
+@import 'lib';
+
+// App colors, dark style: libadwaita color variables (unset tokens emit nothing).
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include color-vars(map-get($app-colors, dark));
+  }
+}
+
+// App colors, light style.
+@media (prefers-color-scheme: light) {
+  :root {
+    @include color-vars(map-get($app-colors, light));
+  }
+}

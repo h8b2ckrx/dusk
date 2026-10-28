@@ -1,0 +1,6 @@
+// Two widgets sharing one radius.
+.a,
+.b {
+  border-radius: $r-sm;
+  margin: 0;
+}

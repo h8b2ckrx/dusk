@@ -1,0 +1,6 @@
+// GTK3 overrides, installed as ~/.config/gtk-3.0/gtk.css on top of the active
+// Yaru GTK3 variant. Radius only: GTK3 CSS can't tell light from dark, so
+// color overrides are deferred (design §5). Same user-priority caveat as
+// gtk4.scss: re-assert Yaru's square corners after any rounded rule.
+@import 'tokens';
+@import 'lib';

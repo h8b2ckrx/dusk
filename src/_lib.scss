@@ -1,0 +1,21 @@
+// Helpers shared by the layer files. No values live here.
+
+// token($map, $key): the value for $key in $map. It may be null, meaning
+// "leave stock"; Sass drops declarations whose value is null. A key that
+// doesn't exist is a typo, so it stops the build.
+@function token($map, $key) {
+  @if not map-has-key($map, $key) {
+    @error "dusk: unknown token '#{$key}'";
+  }
+  @return map-get($map, $key);
+}
+
+// color-vars($map): one CSS custom property per non-null entry, e.g.
+// (window-bg-color: #101010) → --window-bg-color: #101010;
+@mixin color-vars($map) {
+  @each $name, $value in $map {
+    @if $value != null {
+      --#{$name}: #{$value};
+    }
+  }
+}

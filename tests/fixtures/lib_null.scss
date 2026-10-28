@@ -1,0 +1,3 @@
+@import 'lib';
+$m: (a: null, b: #123456);
+.x { color: token($m, a); background-color: token($m, b); }
