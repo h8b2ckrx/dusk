@@ -2,7 +2,8 @@
 // In an isolated headless Shell it first puts the Shell into a few UI states
 // (desktop, overview, quick settings open, a quick-toggle menu open, a top bar
 // menu with an open submenu and a switch, a notification banner, the date menu
-// with calendar and message list, the volume popup) and records every visible actor with the corner
+// with calendar and message list, the volume popup, the app grid, an app
+// folder, search results, the screenshot UI, the on-screen keyboard) and records every visible actor with the corner
 // radii Shell computed for it, in snapshots.json, with a screenshot of each
 // state. Then it opens modal dialogs with 1, 2 and 3
 // buttons (the 2-button one mimics a polkit prompt: password entry focused,
@@ -17,6 +18,7 @@ import Gio from 'gi://Gio';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
 import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
@@ -79,6 +81,18 @@ function snapshotStage() {
     };
     walk(global.stage, -1);
     return records;
+}
+
+// The first actor under `actor` for which `test` is true, or null.
+function findActor(actor, test) {
+    if (test(actor))
+        return actor;
+    for (const child of actor.get_children()) {
+        const found = findActor(child, test);
+        if (found)
+            return found;
+    }
+    return null;
 }
 
 async function screenshotScreen(name) {
@@ -202,6 +216,39 @@ export default class DuskProbe extends Extension {
         Main.osdWindowManager.showAll(new Gio.ThemedIcon({name: 'audio-volume-high-symbolic'}), null, 0.5, 1);
         await take('osd');
         await sleep(2000);
+
+        // The app grid, then an app folder opened from it.
+        Main.overview.showApps();
+        await take('app-grid');
+        const folder = findActor(global.stage, a => a instanceof AppDisplay.FolderIcon);
+        if (folder) {
+            folder.open();
+            await take('app-folder');
+        }
+        Main.overview.hide();
+        await sleep(1000);
+
+        // Search results.
+        Main.overview.show();
+        await sleep(800);
+        Main.overview.searchEntry.set_text('set');
+        await sleep(1500);
+        await take('search');
+        Main.overview.searchEntry.set_text('');
+        Main.overview.hide();
+        await sleep(1000);
+
+        // The screenshot UI.
+        await Main.screenshotUI.open();
+        await take('screenshot-ui');
+        Main.screenshotUI.close(true);
+        await sleep(800);
+
+        // The on-screen keyboard.
+        Main.keyboard.open(Main.layoutManager.primaryIndex);
+        await take('keyboard');
+        Main.keyboard.close();
+        await sleep(800);
 
         write('snapshots.json', JSON.stringify(snapshots));
     }

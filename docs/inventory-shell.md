@@ -49,7 +49,7 @@ Reused core tokens: `checkbox`, `button`, `entry`, `search-entry`, `switch`, `sl
 | `$radius-osd-label` | lg (15) | display-number labels, break countdown |
 | `$radius-switcher-item` | lg (15) | Alt+Tab items |
 | `$radius-screenshot-button` | lg (15) | screenshot Area / Screen / Window buttons |
-| `$radius-folder-tile` | lg (15) | app folder icons, tiles inside a folder |
+| `$radius-folder-tile` | lg (15) | tiles inside an open folder |
 | `$radius-dialog-tile` | lg (15) | device tiles in the audio device dialog |
 | `$radius-tile` | xxl (24) | app grid and search tiles, search sections, page hints |
 | `$radius-switcher` | xxl (24) | Alt+Tab panel |
@@ -121,7 +121,7 @@ Each gets checked in LG; any that don't use `.panel-button` get a rule with `top
 |---|---|---|---|
 | App grid and search tiles | `.overview-tile`, `.grid-search-result` | 24 | `tile` → xxl (24) |
 | Tiles inside an open folder | `.app-folder-dialog .overview-tile`, `.app-folder-dialog .grid-search-result` | 16 | `folder-tile` → 15 |
-| Folder icons in the grid | `.app-folder` | 16 | `folder-tile` → 15 |
+| Folder icons in the grid | `.app-folder` | 24 (its own rule says 16, but folder icons are also `.overview-tile` and that later rule wins; found live in Task 7) | `tile` (same as app icons) |
 | Open folder popup | `.app-folder-dialog` | 64 | `folder-dialog` → xxl (24) ⚠ much squarer |
 | Search result sections | `.search-section-content` | 24 | `tile` → xxl (24) |
 | Search result rows / provider icons | `.list-search-result`, `.search-provider-icon` | 13.2 | `card` → 12 |

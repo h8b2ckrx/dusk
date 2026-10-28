@@ -55,6 +55,7 @@ dbus-run-session -- bash -c '
   gsettings set org.gnome.desktop.interface color-scheme "prefer-$DUSK_SCHEME"
   gsettings set org.gnome.desktop.interface accent-color slate
   gsettings set org.gnome.desktop.calendar show-weekdate true
+  gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true
   gnome-shell --headless --virtual-monitor 1280x800 --mode=ubuntu --no-x11 \
     > "$DUSK_PROBE_OUT/shell.log" 2>&1 &
   pid=$!

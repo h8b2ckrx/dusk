@@ -51,6 +51,20 @@ $radius-small: $r-xs;           // tiny boxes: week numbers, keyboard suggestion
 $radius-inset: $r-sm;           // small boxes inside other surfaces: weekday headings, event rows, labels, album art
 $radius-scrollbar: $r-sm;       // scrollbar handles
 $radius-osd-label: $r-lg;       // display-number labels, break countdown
+$radius-key: $r-sm;             // on-screen keyboard keys
+$radius-switcher-item: $r-lg;   // Alt+Tab items
+$radius-screenshot-button: $r-lg; // screenshot Area / Screen / Window buttons
+$radius-folder-tile: $r-lg;     // tiles inside an open app folder
+$radius-dialog-tile: $r-lg;     // device tiles in the audio device dialog
+$radius-tile: $r-xxl;           // app grid and search tiles, search sections, page hints
+$radius-switcher: $r-xxl;       // Alt+Tab panel
+$radius-workspace: $r-xxl;      // workspace backgrounds in the overview
+$radius-screenshot-panel: $r-xxl; // screenshot toolbar
+$radius-folder-dialog: $r-xxl;  // open app folder popup
+
+// Stock values kept where dusk must not change anything (design §2: Ubuntu
+// Dock stays untouched), re-asserted because our general rules beat Yaru's.
+$radius-dock-badge: 1em;        // Ubuntu Dock's notification badges (Yaru)
 
 // ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag

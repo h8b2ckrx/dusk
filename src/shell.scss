@@ -386,3 +386,231 @@ StScrollBar > .hhandle {
 .osd-break-countdown-label {
   border-radius: $radius-osd-label;
 }
+
+// ===========================================================================
+// Chunk C (docs/inventory-shell.md): overview, app grid, search, switchers,
+// screenshot UI, on-screen keyboard, input methods, dialog content.
+// ===========================================================================
+
+// App grid and search tiles (app icons), and folder icons in the grid (also
+// .overview-tile; in stock the tile rule wins, so they match app icons).
+.overview-tile,
+.grid-search-result,
+.app-folder {
+  border-radius: $radius-tile;
+}
+
+// Tiles inside an open app folder.
+.app-folder-dialog .overview-tile,
+.app-folder-dialog .grid-search-result {
+  border-radius: $radius-folder-tile;
+}
+
+// Ubuntu Dock stays untouched (design §2), but its icons are .overview-tile /
+// .grid-search-result too, so the two rules above would round its tiles.
+// Re-assert Yaru's dock rules: square tiles (the icon inside keeps Yaru's own
+// rounding). In the Ubuntu session the dock's own stylesheet is empty and
+// relies on these Yaru rules. #dash is Shell's own dock, which it replaces.
+#dash .dash-item-container .overview-tile,
+#dash .dash-item-container .grid-search-result,
+#dashtodockContainer.bottom .dash-item-container .overview-tile,
+#dashtodockContainer.bottom .dash-item-container .grid-search-result,
+#dashtodockContainer.left .dash-item-container .overview-tile,
+#dashtodockContainer.left .dash-item-container .grid-search-result,
+#dashtodockContainer.right .dash-item-container .overview-tile,
+#dashtodockContainer.right .dash-item-container .grid-search-result,
+#dashtodockContainer.top .dash-item-container .overview-tile,
+#dashtodockContainer.top .dash-item-container .grid-search-result {
+  border-radius: 0;
+}
+
+// Ubuntu Dock's notification badges, stock.
+#dashtodockContainer .notification-badge {
+  border-radius: $radius-dock-badge;
+}
+
+// The open app folder popup.
+.app-folder-dialog {
+  border-radius: $radius-folder-dialog;
+}
+
+// Search result sections.
+.search-section-content {
+  border-radius: $radius-tile;
+}
+
+// Search result rows and the provider icons beside them.
+.list-search-result,
+.search-provider-icon {
+  border-radius: $radius-card;
+}
+
+// App grid page hints at the screen edge: rounded on their inner side.
+.page-navigation-hint.next:ltr,
+.page-navigation-hint.previous:rtl {
+  border-radius: $radius-tile 0 0 $radius-tile;
+}
+
+// (the other edge)
+.page-navigation-hint.next:rtl,
+.page-navigation-hint.previous:ltr {
+  border-radius: 0 $radius-tile $radius-tile 0;
+}
+
+// App grid page arrows.
+.page-navigation-arrow {
+  border-radius: $radius-icon-button;
+}
+
+// App grid page dots, the running-app dot, notification count badges.
+.page-indicator .page-indicator-icon,
+.app-grid-running-dot,
+.icon-grid .notification-badge,
+.grid-search-result .notification-badge,
+.overview-tile .notification-badge {
+  border-radius: $radius-round;
+}
+
+// Workspace backgrounds in the overview.
+.workspace-background {
+  border-radius: $radius-workspace;
+}
+
+// Workspace thumbnails.
+.workspace-thumbnails .workspace-thumbnail {
+  border-radius: $radius-small;
+}
+
+// The current-workspace outline on the thumbnails.
+.workspace-thumbnail-indicator {
+  border-radius: $radius-inset;
+}
+
+// Overview window titles.
+.window-caption {
+  border-radius: $radius-tooltip;
+}
+
+// Overview window close buttons.
+.window-close {
+  border-radius: $radius-icon-button;
+}
+
+// The workspace switch popup.
+.workspace-switcher {
+  border-radius: $radius-osd;
+}
+
+// Its bar per workspace.
+.ws-switcher-indicator {
+  border-radius: $radius-round;
+}
+
+// The Alt+Tab panel.
+.switcher-list {
+  border-radius: $radius-switcher;
+}
+
+// Alt+Tab items.
+.switcher-list .item-box {
+  border-radius: $radius-switcher-item;
+}
+
+// Alt+Tab window thumbnails.
+.switcher-list .thumbnail {
+  border-radius: $radius-inset;
+}
+
+// The screenshot toolbar.
+.screenshot-ui-panel {
+  border-radius: $radius-screenshot-panel;
+}
+
+// Screenshot Area / Screen / Window buttons.
+.screenshot-ui-type-button {
+  border-radius: $radius-screenshot-button;
+}
+
+// The screenshot Shot / Cast switch.
+.screenshot-ui-shot-cast-container,
+.screenshot-ui-shot-cast-button {
+  border-radius: $radius-pill-button;
+}
+
+// The shutter, close and show-pointer buttons.
+.screenshot-ui-capture-button,
+.screenshot-ui-capture-button .screenshot-ui-capture-button-circle,
+.screenshot-ui-close-button,
+.screenshot-ui-show-pointer-button {
+  border-radius: $radius-icon-button;
+}
+
+// Area selection handles and the window checkmark.
+.screenshot-ui-area-selector-handle,
+.screenshot-ui-window-selector-check {
+  border-radius: $radius-round;
+}
+
+// The outline around a window picked for a screenshot.
+.screenshot-ui-window-selector-window-border {
+  border-radius: $radius-window;
+}
+
+// Screenshot tooltips.
+.screenshot-ui-tooltip {
+  border-radius: $radius-tooltip;
+}
+
+// Info and warning labels inside dialogs (polkit prompts, Log Out).
+.prompt-dialog .prompt-dialog-error-label,
+.prompt-dialog .prompt-dialog-info-label,
+.prompt-dialog .prompt-dialog-null-label,
+.end-session-dialog .dialog-list-title,
+.end-session-dialog .end-session-dialog-battery-warning {
+  border-radius: $radius-inset;
+}
+
+// Device tiles in the audio device dialog.
+.audio-device-selection-dialog .audio-selection-box .audio-selection-device {
+  border-radius: $radius-dialog-tile;
+}
+
+// User avatars.
+.user-icon {
+  border-radius: $radius-round;
+}
+
+// On-screen keyboard keys.
+.keyboard-key {
+  border-radius: $radius-key;
+}
+
+// The on-screen keyboard's accent popup.
+.keyboard-subkeys-boxpointer {
+  border-radius: $radius-popover;
+}
+
+// On-screen keyboard word suggestions.
+.word-suggestions StButton {
+  border-radius: $radius-small;
+}
+
+// The input-method candidate popup.
+.candidate-popup-content {
+  border-radius: $radius-popover;
+}
+
+// Input-method candidates.
+.candidate-box {
+  border-radius: $radius-menu-item;
+}
+
+// Input-method page buttons: rounded on their outer side.
+.candidate-page-button-previous {
+  border-radius: $radius-button 0 0 $radius-button;
+}
+
+// (the next-page button)
+.candidate-page-button-next {
+  border-radius: 0 $radius-button $radius-button 0;
+}

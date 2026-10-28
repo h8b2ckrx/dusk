@@ -175,3 +175,7 @@ test_shell_keeps_yaru_special_cases() {
 test_shell_chunk_b_rules_present() {
   every_selector_has_radius_rule "$REPO/tests/headless/chunk-b.selectors"
 }
+
+test_shell_chunk_c_rules_present() {
+  every_selector_has_radius_rule "$REPO/tests/headless/chunk-c.selectors"
+}
