@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Test stub: logs its arguments; `override --user` writes the global overrides
+# file the way flatpak does.
+echo "flatpak $*" >> "${DUSK_STUB_LOG:?}"
+if [ "${1:-}" = override ]; then
+  mkdir -p "$HOME/.local/share/flatpak/overrides"
+  printf '[Context]\nfilesystems=%s\n' "$*" > "$HOME/.local/share/flatpak/overrides/global"
+fi

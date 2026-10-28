@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Test stub: prints DUSK_STUB_JOURNAL as if it were Shell's log.
+echo "journalctl $*" >> "${DUSK_STUB_LOG:?}"
+[ -n "${DUSK_STUB_JOURNAL:-}" ] && echo "$DUSK_STUB_JOURNAL"
+exit 0
