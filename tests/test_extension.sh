@@ -24,6 +24,10 @@ test_extension_js_patches_only_dialog_spacing() {
   assert_contains "$js" "typeof proto?._createDialog !== 'function'"
   assert_contains "$js" "lookup_length('spacing', false)"
   assert_contains "$js" "this._injections.clear();"
+  # Dialogs Shell built before enable() (Log Out / Power Off) are adopted too,
+  # and disable() gives every adopted row back its own spacing.
+  assert_contains "$js" "this._findRows(global.stage).forEach(row => this._adopt(row));"
+  assert_contains "$js" "row.layout_manager.spacing = original;"
 }
 
 # gjs can't resolve Shell's resource:// imports outside Shell, but it parses
