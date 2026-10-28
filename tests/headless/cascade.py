@@ -29,6 +29,12 @@ Usage:
       rules targets, is more specific, and isn't re-asserted in ours; exit 1
       if any. EXCLUDE_REGEX skips Yaru selectors (e.g. the lock screen, where
       dusk is off).
+  cascade.py drift SNAPSHOTS.json YARU.css DUSK.css [STOCK=>OURS ...]
+      Print every element whose winning rule changed meaning: in stock Yaru
+      rule STOCK decided its radius, ours has a rule for STOCK too, but a
+      different rule of ours wins and gives a different value (e.g. an element
+      with two classes). STOCK=>OURS pairs are reviewed, intended drifts.
+      Exit 1 if any other.
   cascade.py unmatched SNAPSHOTS.json SELECTOR...
       Print the selectors that match no element in any snapshot; exit 1 if any.
 """
@@ -235,6 +241,27 @@ def shadowed(yaru, dusk, exclude=None):
     return sorted(pairs)
 
 
+def drifts(records, yaru, dusk):
+    """(index, stock selector, our winning selector) where ours has a rule for
+    the stock winner's selector but another of our rules wins with a different
+    value."""
+    by_selector = {}
+    for d in dusk:
+        by_selector.setdefault(d.selector, []).append(d)
+    found = []
+    stock = winners(records, yaru)
+    now = winners(records, yaru + dusk)
+    for i, (before, after) in enumerate(zip(stock, now)):
+        for corner, (b, a) in enumerate(zip(before, after)):
+            if not (b and a and a in dusk) or b.selector == a.selector:
+                continue
+            mirror = [d for d in by_selector.get(b.selector, []) if corner in d.corners]
+            if mirror and mirror[-1].corners[corner] != a.corners[corner]:
+                found.append((i, b.selector, a.selector))
+                break
+    return found
+
+
 def px(value):
     """Pixels for '12px' / '0', None for em, % or anything else."""
     if value is None:
@@ -274,7 +301,7 @@ def check(snapshots, rules):
 
 
 def main():
-    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "clobbered", "shadowed", "unmatched"):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "clobbered", "drift", "shadowed", "unmatched"):
         print(__doc__.strip(), file=sys.stderr)
         return 2
     if sys.argv[1] == "shadowed":
@@ -290,6 +317,17 @@ def main():
         problems = check(snapshots, rules)
         print("\n".join(problems))
         return 1 if problems else 0
+    if sys.argv[1] == "drift":
+        yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
+        dusk = parse_rules(open(sys.argv[4]).read(), origin=1)
+        allowed = {tuple(a.split("=>")) for a in sys.argv[5:]}
+        lines = set()
+        for records in snapshots.values():
+            for i, stock_sel, our_sel in drifts(records, yaru, dusk):
+                if (stock_sel, our_sel) not in allowed:
+                    lines.add(f"{describe(records, i)}: stock '{stock_sel}', ours '{our_sel}'")
+        print("\n".join(sorted(lines)))
+        return 1 if lines else 0
     if sys.argv[1] == "clobbered":
         yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
         dusk = parse_rules(open(sys.argv[4]).read(), origin=1)

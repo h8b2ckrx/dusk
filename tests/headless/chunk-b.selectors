@@ -1,0 +1,40 @@
+# Chunk B of docs/inventory-shell.md: notifications, message list, calendar,
+# OSDs, Shell controls. Same format as chunk-a.selectors ("~" = not shown by
+# the probe's UI states, but must still be in our stylesheet).
+.notification-banner
+.message
+.message-view .message
+~.notification-button
+~.message-media-control
+~.media-message .message-icon
+~.message .message-box .message-icon.message-themed-icon
+.message .message-header .message-close-button
+.message .message-header .message-expand-button
+~.message-notification-group .message-collapse-button
+.message-list-controls .message-list-clear-button
+.calendar
+.datemenu-popover
+.datemenu-today-button
+.events-button
+~.world-clocks-button
+~.weather-button
+~.events-button .events-box .events-list .event-box
+.calendar .calendar-day
+.calendar .calendar-day-heading
+.calendar .calendar-week-number
+.calendar .calendar-month-header .calendar-month-label
+.calendar .calendar-month-header .pager-button
+.osd-window
+~.osd-monitor-label
+~.osd-break-countdown-label
+~.resize-popup
+.button
+StEntry
+.search-entry
+~.app-folder-dialog .folder-name-container .folder-name-entry
+~.check-box StBin
+~.check-box StIcon
+.toggle-switch
+.toggle-switch .handle
+StScrollBar > .vhandle
+StScrollBar > .hhandle

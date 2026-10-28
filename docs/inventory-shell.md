@@ -95,7 +95,7 @@ Each gets checked in LG; any that don't use `.panel-button` get a rule with `top
 | Message close / expand / collapse | `.message .message-header .message-close-button`, `.message .message-header .message-expand-button`, `.message-notification-group .message-collapse-button` | pill | `icon-button` → pill |
 | "Clear" button | `.message-list-controls .message-list-clear-button` | pill | `pill-button` → pill |
 | Calendar | `.calendar` | 12 | `card` → 12 |
-| Calendar dropdown's inner box | `.datemenu-popover` | 8 | `inset` → 9 |
+| Calendar dropdown's box | `.datemenu-popover` | 16.8 (its own rule says 8, but the box is also a `.popup-menu-content` and that later rule wins; found live in Task 6) | `popover` (same as other menus) |
 | Today button (date header) | `.datemenu-today-button` | 12 | `card` → 12 |
 | Events, world clocks, weather boxes | `.events-button`, `.world-clocks-button`, `.weather-button` | 12 | `card` → 12 |
 | Event rows | `.events-button .events-box .events-list .event-box` | 8 | `inset` → 9 |

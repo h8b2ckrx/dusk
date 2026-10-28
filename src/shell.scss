@@ -19,6 +19,64 @@ $mode: dark !default;
 }
 
 // ===========================================================================
+// Generic controls (chunk B of docs/inventory-shell.md). They come first:
+// every rule below is about something more specific, and among our own rules
+// a tie in specificity goes to the later one (e.g. quick toggles also carry
+// the .button class).
+// ===========================================================================
+
+// Shell buttons with the generic .button class (notification actions etc.).
+.button {
+  border-radius: $radius-button;
+}
+
+// Drawing-tablet OSD buttons (a more specific Yaru rule the one above would
+// erase; chunk C).
+.pad-osd-window .button {
+  border-radius: $radius-button;
+}
+
+// Text entries.
+StEntry {
+  border-radius: $radius-entry;
+}
+
+// The overview search entry.
+.search-entry {
+  border-radius: $radius-search-entry;
+}
+
+// The entry for renaming an app folder.
+.app-folder-dialog .folder-name-container .folder-name-entry {
+  border-radius: $radius-entry;
+}
+
+// Check boxes (the box and its tick).
+.check-box StBin,
+.check-box StIcon {
+  border-radius: $radius-checkbox;
+}
+
+// Yaru's special case: a scrollbar's trough is square. (The check box rule
+// above can't actually reach it; re-asserted so the special-case test stays
+// simple.)
+StScrollBar StBin#trough {
+  border-radius: 0;
+}
+
+// Switches and their knob.
+.toggle-switch,
+.toggle-switch .handle {
+  border-radius: $radius-switch;
+}
+
+// Scrollbar handles.
+StScrollBar > .vhandle,
+StScrollBar > .hhandle {
+  border-radius: $radius-scrollbar;
+}
+
+// ===========================================================================
 // Modal dialogs (design §6): log out / power off, polkit prompts, extension
 // install, and any other dialog built on dialog.js. Ubuntu 24.04 layout:
 // buttons flush at the bottom, splitting the full width, 1px gaps between
@@ -220,4 +278,111 @@ $mode: dark !default;
 // Power off menu icons.
 .system-action-icon {
   border-radius: $radius-round;
+}
+
+// ===========================================================================
+// Chunk B (docs/inventory-shell.md): notifications, message list, calendar,
+// OSDs. Generic controls are at the top of the file.
+// ===========================================================================
+
+// Notification banners and messages, in banners and in the message list.
+.notification-banner,
+.message,
+.message-view .message {
+  border-radius: $radius-notification;
+  background-color: shell-color(notification-bg);
+  color: shell-color(notification-fg);
+}
+
+// Notification action buttons and media player buttons.
+.notification-button,
+.message-media-control {
+  border-radius: $radius-button;
+}
+
+// Album art in the media player message.
+.media-message .message-icon {
+  border-radius: $radius-inset;
+}
+
+// Round message icons.
+.message .message-box .message-icon.message-themed-icon {
+  border-radius: $radius-round;
+}
+
+// Message close / expand / collapse buttons.
+.message .message-header .message-close-button,
+.message .message-header .message-expand-button,
+.message-notification-group .message-collapse-button {
+  border-radius: $radius-icon-button;
+}
+
+// The message list's "Clear" button.
+.message-list-controls .message-list-clear-button {
+  border-radius: $radius-pill-button;
+}
+
+// The calendar.
+.calendar {
+  border-radius: $radius-card;
+  background-color: shell-color(calendar-bg);
+  color: shell-color(calendar-fg);
+}
+
+// The date header (today button) and the events, world clocks and weather boxes.
+.datemenu-today-button,
+.events-button,
+.world-clocks-button,
+.weather-button {
+  border-radius: $radius-card;
+}
+
+// The calendar dropdown's box. It is also a .popup-menu-content, and in stock
+// the menu rule wins, so it looks like every other menu.
+.datemenu-popover {
+  border-radius: $radius-popover;
+}
+
+// Event rows and weekday headings.
+.events-button .events-box .events-list .event-box,
+.calendar .calendar-day-heading {
+  border-radius: $radius-inset;
+}
+
+// Calendar days (today's highlight).
+.calendar .calendar-day {
+  border-radius: $radius-calendar-day;
+}
+
+// Week numbers.
+.calendar .calendar-week-number {
+  border-radius: $radius-small;
+}
+
+// The month label.
+.calendar .calendar-month-header .calendar-month-label {
+  border-radius: $radius-pill-button;
+}
+
+// Previous / next month arrows.
+.calendar .calendar-month-header .pager-button {
+  border-radius: $radius-icon-button;
+}
+
+// Volume, brightness and keyboard-layout popups.
+.osd-window {
+  border-radius: $radius-osd;
+  background-color: shell-color(osd-bg);
+  color: shell-color(osd-fg);
+}
+
+// The window size popup shown while resizing.
+.resize-popup {
+  border-radius: $radius-osd;
+}
+
+// Display-number labels and the break countdown.
+.osd-monitor-label,
+.osd-break-countdown-label {
+  border-radius: $radius-osd-label;
 }

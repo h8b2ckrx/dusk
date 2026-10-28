@@ -122,3 +122,29 @@ test_cascade_skips_non_st_ancestors() {
   out=$(predict '.a .d { border-radius: 2px; }' '')
   assert_eq "$(line_for under "$out")" "under: 2px 2px 2px 2px"
 }
+
+# drifted YARU DUSK: ids of records whose radius now comes from a different
+# rule of ours than the one mirroring stock's winner, with a different value.
+drifted() {
+  python3 - "$REPO/tests/headless" "$1" "$2" <<'PY'
+import sys
+sys.path.insert(0, sys.argv[1])
+import cascade
+records = [
+    {"parent": -1, "id": "both", "classes": ["menu", "date"], "pseudo": [], "types": ["StWidget"]},
+    {"parent": -1, "id": "menu", "classes": ["menu"], "pseudo": [], "types": ["StWidget"]},
+]
+yaru = cascade.parse_rules(sys.argv[2], origin=0)
+dusk = cascade.parse_rules(sys.argv[3], origin=1)
+print(" ".join(records[i]["id"] for i, _, _ in cascade.drifts(records, yaru, dusk)))
+PY
+}
+
+# In stock the later .menu rule wins on the two-class element; if ours lets
+# .date win with another value, that's drift. Same value, or matching order: none.
+test_cascade_detects_drift() {
+  local yaru='.date { border-radius: 8px; } .menu { border-radius: 16px; }'
+  assert_eq "$(drifted "$yaru" '.menu { border-radius: 5px; } .date { border-radius: 3px; }')" "both"
+  assert_eq "$(drifted "$yaru" '.menu { border-radius: 5px; } .date { border-radius: 5px; }')" ""
+  assert_eq "$(drifted "$yaru" '.date { border-radius: 3px; } .menu { border-radius: 5px; }')" ""
+}

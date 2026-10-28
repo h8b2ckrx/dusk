@@ -66,6 +66,14 @@ test_headless_shell_radii_match_stylesheets() {
   # erase one of Yaru's more specific special cases: re-assert those instead.
   "$REPO/tests/headless/cascade.py" clobbered "$out/snapshots.json" "$yaru" \
     "$REPO/extension/stylesheet-dark.css" || fail "our rules override Yaru special cases"
+  # An element with several classes keeps the meaning stock gave it, unless
+  # the drift was reviewed (listed here with the reason).
+  "$REPO/tests/headless/cascade.py" drift "$out/snapshots.json" "$yaru" \
+    "$REPO/extension/stylesheet-dark.css" \
+    '.popup-menu-content=>.quick-settings' \
+    || fail "elements changed which rule decides their radius"
+  # Allowed above: the quick settings panel is also a menu; it has its own
+  # approved token (docs/inventory-shell.md, chunk A).
   local selectors=()
   mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO"/tests/headless/chunk-*.selectors)
   "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \

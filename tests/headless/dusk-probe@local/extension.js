@@ -1,7 +1,8 @@
 // Test-only extension for tools/headless-probe.sh; never installed for real.
 // In an isolated headless Shell it first puts the Shell into a few UI states
 // (desktop, overview, quick settings open, a quick-toggle menu open, a top bar
-// menu with an open submenu) and records every visible actor with the corner
+// menu with an open submenu and a switch, a notification banner, the date menu
+// with calendar and message list, the volume popup) and records every visible actor with the corner
 // radii Shell computed for it, in snapshots.json, with a screenshot of each
 // state. Then it opens modal dialogs with 1, 2 and 3
 // buttons (the 2-button one mimics a polkit prompt: password entry focused,
@@ -18,6 +19,7 @@ import St from 'gi://St';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
@@ -145,6 +147,7 @@ export default class DuskProbe extends Extension {
         sub.menu.addMenuItem(new PopupMenu.PopupMenuItem('Sub item 1'));
         sub.menu.addMenuItem(new PopupMenu.PopupMenuItem('Sub item 2'));
         button.menu.addMenuItem(sub);
+        button.menu.addMenuItem(new PopupMenu.PopupSwitchMenuItem('Switch', true));
         Main.panel.addToStatusArea('dusk-probe', button);
 
         // A quick toggle with a menu, like Wi-Fi or Bluetooth.
@@ -176,6 +179,29 @@ export default class DuskProbe extends Extension {
         await take('panel-menu');
         button.menu.close();
         await sleep(500);
+
+        // A notification with an action button, shown as a banner.
+        const source = MessageTray.getSystemSource();
+        const notification = new MessageTray.Notification({
+            source,
+            title: 'Probe notification',
+            body: 'A notification with an action button',
+        });
+        notification.addAction('Action', () => {});
+        source.addNotification(notification);
+        await take('notification');
+
+        // The date menu: calendar, today button, message list with that notification.
+        const dateMenu = Main.panel.statusArea.dateMenu.menu;
+        dateMenu.open();
+        await take('date-menu');
+        dateMenu.close();
+        await sleep(500);
+
+        // The volume popup.
+        Main.osdWindowManager.showAll(new Gio.ThemedIcon({name: 'audio-volume-high-symbolic'}), null, 0.5, 1);
+        await take('osd');
+        await sleep(2000);
 
         write('snapshots.json', JSON.stringify(snapshots));
     }

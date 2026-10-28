@@ -160,13 +160,18 @@ test_shell_chunk_a_rules_present() {
 
 # Our stylesheet beats Yaru's outright, so for every Yaru radius rule that is a
 # more specific case of one of ours (e.g. square items inside a submenu), we
-# re-assert it. Lock and login screen rules are skipped: dusk is off there.
+# re-assert it. Lock and login screen rules are skipped (dusk is off there), and
+# so is Looking Glass (out of scope).
 test_shell_keeps_yaru_special_cases() {
   build
   local yaru; yaru=$(mktemp --suffix=.css)
   gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
     /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$yaru"
   "$REPO/tests/headless/cascade.py" shadowed "$yaru" "$REPO/extension/stylesheet-dark.css" \
-    'unlock-screen|login-screen|unlock-dialog|login-dialog|screen-shield' \
+    'unlock-screen|login-screen|unlock-dialog|login-dialog|screen-shield|lg-dialog|LookingGlass' \
     || fail "our rules would erase Yaru special cases"
+}
+
+test_shell_chunk_b_rules_present() {
+  every_selector_has_radius_rule "$REPO/tests/headless/chunk-b.selectors"
 }

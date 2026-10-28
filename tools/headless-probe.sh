@@ -54,6 +54,7 @@ dbus-run-session -- bash -c '
   gsettings set org.gnome.shell disabled-extensions "[$(list "${disabled[@]}")]"
   gsettings set org.gnome.desktop.interface color-scheme "prefer-$DUSK_SCHEME"
   gsettings set org.gnome.desktop.interface accent-color slate
+  gsettings set org.gnome.desktop.calendar show-weekdate true
   gnome-shell --headless --virtual-monitor 1280x800 --mode=ubuntu --no-x11 \
     > "$DUSK_PROBE_OUT/shell.log" 2>&1 &
   pid=$!

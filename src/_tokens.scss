@@ -44,6 +44,13 @@ $radius-dialog: $r-xl;
 // ---------------------------------------------------------------------------
 $radius-round: $r-pill;       // round by nature: avatars, round icons, dots, handles
 $radius-icon-button: $r-pill; // round icon-only buttons
+$radius-pill-button: $r-pill;   // text buttons that are pills ("Clear", calendar month)
+$radius-tooltip: $r-pill;       // pill labels: overview window titles, screenshot tooltips
+$radius-calendar-day: $r-pill;  // calendar day cells
+$radius-small: $r-xs;           // tiny boxes: week numbers, keyboard suggestions, workspace thumbnails
+$radius-inset: $r-sm;           // small boxes inside other surfaces: weekday headings, event rows, labels, album art
+$radius-scrollbar: $r-sm;       // scrollbar handles
+$radius-osd-label: $r-lg;       // display-number labels, break countdown
 
 // ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag
