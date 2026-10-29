@@ -2,6 +2,12 @@
 # text and dark tints: 24.04's text color #3D3D3D
 #222222	#3D3D3D
 rgba(34, 34, 34,	rgba(61, 61, 61,
+# inside 26.04's accent mixes (a focused widget is its own color with 5% accent): the same widget's
+# 24.04 color. Text entries
+#e5e5e5	#e3e3e3
+# a pressed menu item, and one in a submenu
+st-darken(#f2f2f2, 9%)	#d1d1d1
+st-darken(#d4d4d4, 9%)	#d1d1d1
 # pop-up surface: 26.04 white, 24.04 #FAFAFA ($bg_color); 24.04's cards are white too
 white	#FAFAFA
 # light greys: white darkened 5%, 7% and 10% in 26.04; #FAFAFA darkened the same in 24.04

@@ -222,3 +222,161 @@ test_color_inventory_important_wins() {
   assert_eq "$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.m' | grep -P '\tbackground-color\t' | cut -f3-5)" \
     $'transparent !important\ttransparent !important\tsame'
 }
+
+# --add REGEX: older rules the stock file dropped, for elements it still has
+# (24.04's notification banners), are listed after the stock rules with their
+# older value (added); the 26.04 value is "-".
+test_color_inventory_adds_old_rules() {
+  local dir; dir=$(mktemp -d)
+  printf '.m { background-color: #36363a; }\n.m.banner { min-height: 64px; }\n' > "$dir/new.css"
+  printf '.m { background-color: #2f2f2f; }\n.m.banner { background-color: #1d1d1d; }\n.m.banner:hover { background-color: #222222; }\n.gone { color: red; }\n' > "$dir/old.css"
+  local out; out=$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.m' --add '^\.m\.banner')
+  assert_eq "$out" $'.m\tbackground-color\t#36363a\t#2f2f2f\tsame\n.m.banner\tbackground-color\t-\t#1d1d1d\tadded\n.m.banner:hover\tbackground-color\t-\t#222222\tadded'
+}
+
+# --images FILE: where the older theme drew a color in a picture (24.04's
+# SVG switches), the stock rule takes the color from the table (image).
+test_color_inventory_images() {
+  local dir; dir=$(mktemp -d)
+  printf '.sw { background: rgba(255, 255, 255, 0.15); }\n.sw .knob { background: #d7d7d8; }\n' > "$dir/new.css"
+  printf '.sw { background-image: url("off.svg"); }\n' > "$dir/old.css"
+  printf '.sw\tbackground\t#575757\n.sw .knob\tbackground\t#f8f7f7\n' > "$dir/images.tsv"
+  local out; out=$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.sw' --images "$dir/images.tsv")
+  assert_eq "$out" $'.sw\tbackground\trgba(255, 255, 255, 0.15)\t#575757\timage\n.sw .knob\tbackground\t#d7d7d8\t#f8f7f7\timage'
+}
+
+# The 24.04 column carries the !important the mirror emits: 24.04's own where
+# the value is 24.04's (same), 26.04's where it isn't (unset, image).
+test_color_inventory_importance_follows_value() {
+  local dir; dir=$(mktemp -d)
+  printf '.m:hover { background-color: #424247 !important; }\n.m:insensitive { background-color: #2a2a2a !important; }\n.sw { background: #555555 !important; }\n' > "$dir/new.css"
+  printf '.m:hover { background-color: #464646; }\n.m:insensitive { color: red; }\n.sw { background-image: url("x.svg"); }\n' > "$dir/old.css"
+  printf '.sw\tbackground\t#575757\n' > "$dir/images.tsv"
+  local out; out=$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.(m|sw)' --images "$dir/images.tsv" | cut -f1,4,5)
+  assert_eq "$out" $'.m:hover\t#464646\tsame\n.m:insensitive\ttransparent !important\tunset\n.sw\t#575757 !important\timage'
+}
+
+# The installed Yaru 26.04 Shell stylesheet for MODE, extracted to a file.
+stock_shell_css() {
+  local css; css=$(mktemp --suffix=.css)
+  local name=gnome-shell.css
+  [ "$1" = dark ] && name=gnome-shell-dark.css
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    "/org/gnome/shell/theme/Yaru/$name" > "$css"
+  echo "$css"
+}
+
+# Every row with a 24.04 value of its own (same, unset, added), on the element
+# its selector names, and menu items also as Shell shows them under the
+# pointer and pressed (also selected and focused): Yaru 26.04 plus dusk give
+# it the background and border Yaru 24.04's own cascade gives it (final
+# review: 26.04's !important menu hover made 24.04's pressed colors dead).
+test_color_inventory_rows_follow_2404_cascade() {
+  local mode out
+  for mode in dark light; do
+    out=$("$REPO/tests/headless/colors.py" follows-rows "$(stock_shell_css "$mode")" \
+      "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" "$REPO/docs/inventory-shell-colors.tsv" "$mode") \
+      || fail "$mode: colors that aren't 24.04's:
+$(head -12 <<< "$out")"
+  done
+}
+
+# "unset" (24.04 drew nothing) only where 24.04 drew no picture either: its
+# switches and check boxes were SVG pictures, so a track that's transparent
+# for lack of a color rule is wrong (final review: off switches lost their
+# track).
+test_color_inventory_unset_only_where_2404_drew_nothing() {
+  local mode out
+  for mode in dark light; do
+    out=$(python3 - "$REPO/docs/inventory-shell-colors.tsv" "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" "$mode" <<'EOF'
+import re, sys
+tsv, ref, mode = sys.argv[1:]
+css = re.sub(r"/\*.*?\*/", "", open(ref).read(), flags=re.S)
+pictures = {" ".join(sel.split()) for m in re.finditer(r"([^{}]+)\{([^{}]*)\}", css)
+            if re.search(r"background-image:\s*url", m.group(2)) for sel in m.group(1).split(",")}
+for line in open(tsv):
+    if line.strip() and not line.startswith("# "):
+        m, sel, prop, _, _, source, _, _ = line.rstrip("\n").split("\t")
+        if m in ("both", mode) and source == "unset" and prop.startswith("background") and sel in pictures:
+            print(f"{sel} {prop}")
+EOF
+)
+    [ -z "$out" ] || fail "$mode: unset where 24.04 drew a picture: $out"
+  done
+}
+
+# Rows new in 26.04 (derived) and accent rows hold no 26.04-only color: each
+# color in their 24.04 value is one Yaru 24.04 uses (at any alpha), or one the
+# palettes give (final review: focused entries flashed 26.04's lighter grey).
+test_color_inventory_no_2604_colors_left() {
+  local mode out
+  for mode in dark light; do
+    out=$(python3 - "$REPO/docs/inventory-shell-colors.tsv" "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" \
+      "$REPO/docs/inventory-shell-colors-palette-$mode.tsv" "$mode" <<'EOF'
+import re, sys
+sys.path.insert(0, sys.argv[0].rsplit("/", 1)[0] if "/" in sys.argv[0] else ".")
+tsv, ref, palette, mode = sys.argv[1:]
+COLOR = re.compile(r"#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)")
+def rgb(c):
+    c = c.lower().replace(" ", "")
+    if c.startswith("#"):
+        h = c[1:] if len(c) > 4 else "".join(ch * 2 for ch in c[1:])
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return tuple(int(float(x)) for x in c[c.index("(") + 1:-1].split(",")[:3])
+allowed = {rgb(c) for c in COLOR.findall(open(ref).read())}
+for line in open(palette):
+    if line.strip() and not line.startswith("# "):
+        allowed |= {rgb(c) for c in COLOR.findall(line.rstrip("\n").split("\t")[1] + ")")}
+left = set()
+for line in open(tsv):
+    if line.strip() and not line.startswith("# "):
+        m, sel, prop, _, old, source, _, _ = line.rstrip("\n").split("\t")
+        if m in ("both", mode) and source in ("derived", "accent"):
+            left |= {f"{c} ({sel} {prop})" for c in COLOR.findall(old) if rgb(c) not in allowed}
+print("\n".join(sorted(left)))
+EOF
+)
+    [ -z "$out" ] || fail "$mode: 26.04 colors left:
+$(head -12 <<< "$out")"
+  done
+}
+
+# The lock screen keeps its own look (decision 21): dusk changes no color of
+# its notifications, also where a class rule of ours meets the lock screen's
+# type rules (final review: the media player's buttons turned dark in light
+# mode). Its notification widgets, as Shell 50 builds them, in their states.
+test_color_inventory_lock_screen_notifications_stay_stock() {
+  local mode out
+  for mode in dark light; do
+    out=$(python3 - "$REPO/tests/headless" "$(stock_shell_css "$mode")" "$REPO/docs/inventory-shell-colors.tsv" "$mode" <<'EOF'
+import sys
+sys.path.insert(0, sys.argv[1])
+import colors
+yaru = colors.parse_color_rules(open(sys.argv[2]).read(), origin=0)
+ours, _ = colors.tsv_rules(sys.argv[3], sys.argv[4], [1, 2, 3])
+lock = ".unlock-dialog #unlockDialogNotifications .unlock-dialog-notifications-container"
+message = "StButton.message.media-message"
+widgets = [
+    f"{lock} {message}",
+    f"{lock} StButton.message.message-notification-group",
+    f"{lock} {message} StBoxLayout.message-header StButton.message-expand-button",
+    f"{lock} {message} StBoxLayout.message-header StButton.message-close-button",
+    f"{lock} {message} StBoxLayout.message-box StBoxLayout StButton.message-media-control",
+    f"{lock} StBoxLayout.unlock-dialog-notification-source StButton",
+]
+names = ["background", "text", "border", "shadow"]
+for widget in widgets:
+    for state in ((), ("hover",), ("hover", "active"), ("focus",), ("insensitive",)):
+        records = colors.element(widget, state)
+        stock, with_ours = colors.predict(records, yaru)[-1], colors.predict(records, yaru + ours)[-1]
+        # Background and text: the lock screen's messages draw no border
+        # (border: none), whose color the model can't tell from a drawn one.
+        for slot in (0, 1):
+            if stock[slot] != with_ours[slot]:
+                print(f"{widget.split()[-1]}{''.join(':' + p for p in state)} {names[slot]}: stock {stock[slot]}, with dusk {with_ours[slot]}")
+EOF
+)
+    [ -z "$out" ] || fail "$mode: lock screen colors changed:
+$(head -12 <<< "$out")"
+  done
+}

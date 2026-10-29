@@ -1,6 +1,7 @@
 # Shell pop-up colors (design decision 22), made with tools/shell-color-inventory.sh: don't edit by hand.
 # 26.04: the installed Yaru Shell stylesheets. 24.04: docs/reference/. Scope, exclusions: the script.
 # Palettes: docs/inventory-shell-colors-palette-{dark,light}.tsv. Renames: docs/inventory-shell-colors-renames.tsv.
+# Colors 24.04 drew in pictures: docs/inventory-shell-colors-images-{dark,light}.tsv.
 # mode	selector	property	26.04 value	24.04 value	source	token	chunk
 dark	.pad-osd-window .button	color	white	#F7F7F7	same	pad-osd-window-button-color	3
 light	.pad-osd-window .button	color	#222222	#3D3D3D	same	pad-osd-window-button-color	3
@@ -232,25 +233,25 @@ dark	.calendar .calendar-month-header .pager-button:focus	box-shadow	inset 0 0 0
 light	.calendar .calendar-month-header .pager-button:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	accent	calendar-calendar-month-header-pager-button-focus-box-shadow	2
 dark	.button.flat:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	accent	button-flat-focus-box-shadow	1
 light	.button.flat:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	accent	button-flat-focus-box-shadow	1
-dark	.calendar .calendar-day-heading:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	calendar-calendar-day-heading-focus-background-color	2
+dark	.calendar .calendar-day-heading:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	calendar-calendar-day-heading-focus-background-color	2
 light	.calendar .calendar-day-heading:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	calendar-calendar-day-heading-focus-background-color	2
-dark	.calendar .calendar-day:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	calendar-calendar-day-focus-background-color	2
+dark	.calendar .calendar-day:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	calendar-calendar-day-focus-background-color	2
 light	.calendar .calendar-day:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	calendar-calendar-day-focus-background-color	2
-dark	.calendar .calendar-month-header .calendar-month-label:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	calendar-calendar-month-header-calendar-month-label-focus-background-color	2
+dark	.calendar .calendar-month-header .calendar-month-label:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	calendar-calendar-month-header-calendar-month-label-focus-background-color	2
 light	.calendar .calendar-month-header .calendar-month-label:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	calendar-calendar-month-header-calendar-month-label-focus-background-color	2
-dark	.icon-button.flat:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	icon-button-flat-focus-background-color	1
+dark	.icon-button.flat:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	icon-button-flat-focus-background-color	1
 light	.icon-button.flat:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	icon-button-flat-focus-background-color	1
-dark	.flat.screenshot-ui-show-pointer-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	flat-screenshot-ui-show-pointer-button-focus-background-color	1
+dark	.flat.screenshot-ui-show-pointer-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	flat-screenshot-ui-show-pointer-button-focus-background-color	1
 light	.flat.screenshot-ui-show-pointer-button:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	flat-screenshot-ui-show-pointer-button-focus-background-color	1
-dark	.message .message-header .flat.message-expand-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	message-message-header-flat-message-expand-button-focus-background-color	2
+dark	.message .message-header .flat.message-expand-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	message-message-header-flat-message-expand-button-focus-background-color	2
 light	.message .message-header .flat.message-expand-button:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	message-message-header-flat-message-expand-button-focus-background-color	2
-dark	.message .message-header .flat.message-close-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	message-message-header-flat-message-close-button-focus-background-color	2
+dark	.message .message-header .flat.message-close-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	message-message-header-flat-message-close-button-focus-background-color	2
 light	.message .message-header .flat.message-close-button:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	message-message-header-flat-message-close-button-focus-background-color	2
-dark	.message-notification-group .flat.message-collapse-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	message-notification-group-flat-message-collapse-button-focus-background-color	2
+dark	.message-notification-group .flat.message-collapse-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	message-notification-group-flat-message-collapse-button-focus-background-color	2
 light	.message-notification-group .flat.message-collapse-button:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	message-notification-group-flat-message-collapse-button-focus-background-color	2
-dark	.calendar .calendar-month-header .pager-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	calendar-calendar-month-header-pager-button-focus-background-color	2
+dark	.calendar .calendar-month-header .pager-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	calendar-calendar-month-header-pager-button-focus-background-color	2
 light	.calendar .calendar-month-header .pager-button:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	calendar-calendar-month-header-pager-button-focus-background-color	2
-dark	.button.flat:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	button-flat-focus-background-color	1
+dark	.button.flat:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	button-flat-focus-background-color	1
 light	.button.flat:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	button-flat-focus-background-color	1
 dark	.calendar .calendar-day-heading:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#36363a, 7%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#1d1d1d, 7%), 5%)	accent	calendar-calendar-day-heading-focus-hover-background-color	2
 light	.calendar .calendar-day-heading:focus:hover	background-color	st-mix(-st-accent-color, st-darken(white, 7%), 5%)	st-mix(-st-accent-color, st-darken(#FAFAFA, 7%), 5%)	accent	calendar-calendar-day-heading-focus-hover-background-color	2
@@ -1037,8 +1038,8 @@ dark	StEntry:hover	color	white	#F7F7F7	same	stentry-hover-color	1
 light	StEntry:hover	color	#222222	#3D3D3D	same	stentry-hover-color	1
 dark	StEntry:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	accent	stentry-focus-box-shadow	1
 light	StEntry:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	accent	stentry-focus-box-shadow	1
-dark	StEntry:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #48484c, 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #48484c, 5%)	accent	stentry-focus-background-color	1
-light	StEntry:focus	background-color	st-mix(-st-accent-color, #e5e5e5, 5%)	st-mix(-st-accent-color, #e5e5e5, 5%)	accent	stentry-focus-background-color	1
+dark	StEntry:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #48484c, 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #313131, 5%)	accent	stentry-focus-background-color	1
+light	StEntry:focus	background-color	st-mix(-st-accent-color, #e5e5e5, 5%)	st-mix(-st-accent-color, #e3e3e3, 5%)	accent	stentry-focus-background-color	1
 dark	StEntry:focus	color	white	#F7F7F7	same	stentry-focus-color	1
 light	StEntry:focus	color	#222222	#3D3D3D	same	stentry-focus-color	1
 dark	StEntry:insensitive	background-color	#414144	#292929	same	stentry-insensitive-background-color	1
@@ -1302,6 +1303,8 @@ both	.app-folder-dialog .folder-name-container .folder-name-entry:insensitive	co
 both	.search-entry:insensitive	color	rgba(242, 242, 242, 0.5)	rgba(242, 242, 242, 0.5)	keep	search-entry-insensitive-color	0
 both	.app-folder-dialog .folder-name-container .folder-name-entry StLabel.hint-text	color	rgba(242, 242, 242, 0.7)	rgba(242, 242, 242, 0.7)	keep	app-folder-dialog-folder-name-container-folder-name-entry-stlabel-hint-text-color	0
 both	.search-entry StLabel.hint-text	color	rgba(242, 242, 242, 0.7)	rgba(242, 242, 242, 0.7)	keep	search-entry-stlabel-hint-text-color	0
+both	.unlock-dialog-notifications-container .message StButton	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-stbutton-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-color	0
 both	.unlock-dialog .button	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-button-color	0
 both	.unlock-dialog .icon-button	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-icon-button-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-calendar-calendar-month-header-pager-button-color	0
@@ -1324,6 +1327,8 @@ both	.message .message-header .unlock-dialog .message-expand-button	background-c
 both	.unlock-dialog .message .message-header .message-close-button	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-message-message-header-message-close-button-background-color	0
 both	.message .message-header .unlock-dialog .message-close-button	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	message-message-header-unlock-dialog-message-close-button-background-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-screenshot-ui-show-pointer-button-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-stbutton-focus-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-color	0
 both	.unlock-dialog .button:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-button-focus-color	0
 both	.unlock-dialog .icon-button:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-icon-button-focus-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-calendar-calendar-month-header-pager-button-focus-color	0
@@ -1335,6 +1340,10 @@ both	.message .message-header .unlock-dialog .message-expand-button:focus	color	
 both	.unlock-dialog .message .message-header .message-close-button:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-message-message-header-message-close-button-focus-color	0
 both	.message .message-header .unlock-dialog .message-close-button:focus	color	#f2f2f2	#f2f2f2	keep	message-message-header-unlock-dialog-message-close-button-focus-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:focus	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-color	0
+dark	.unlock-dialog-notifications-container .message StButton:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	keep	unlock-dialog-notifications-container-message-stbutton-focus-box-shadow	0
+light	.unlock-dialog-notifications-container .message StButton:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	keep	unlock-dialog-notifications-container-message-stbutton-focus-box-shadow	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-box-shadow	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-box-shadow	0
 dark	.unlock-dialog .button:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	keep	unlock-dialog-button-focus-box-shadow	0
 light	.unlock-dialog .button:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	keep	unlock-dialog-button-focus-box-shadow	0
 dark	.unlock-dialog .icon-button:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	keep	unlock-dialog-icon-button-focus-box-shadow	0
@@ -1357,6 +1366,10 @@ dark	.message .message-header .unlock-dialog .message-close-button:focus	box-sha
 light	.message .message-header .unlock-dialog .message-close-button:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	keep	message-message-header-unlock-dialog-message-close-button-focus-box-shadow	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-box-shadow	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-box-shadow	0
+dark	.unlock-dialog-notifications-container .message StButton:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-focus-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-focus-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-background-color	0
 dark	.unlock-dialog .button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-button-focus-background-color	0
 light	.unlock-dialog .button:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-button-focus-background-color	0
 dark	.unlock-dialog .icon-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-icon-button-focus-background-color	0
@@ -1379,6 +1392,10 @@ dark	.message .message-header .unlock-dialog .message-close-button:focus	backgro
 light	.message .message-header .unlock-dialog .message-close-button:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	keep	message-message-header-unlock-dialog-message-close-button-focus-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.1), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-background-color	0
+dark	.unlock-dialog-notifications-container .message StButton:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-focus-hover-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:focus:hover	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-focus-hover-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-hover-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus:hover	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-hover-background-color	0
 dark	.unlock-dialog .button:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-button-focus-hover-background-color	0
 light	.unlock-dialog .button:focus:hover	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-button-focus-hover-background-color	0
 dark	.unlock-dialog .icon-button:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-icon-button-focus-hover-background-color	0
@@ -1401,6 +1418,8 @@ dark	.message .message-header .unlock-dialog .message-close-button:focus:hover	b
 light	.message .message-header .unlock-dialog .message-close-button:focus:hover	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	keep	message-message-header-unlock-dialog-message-close-button-focus-hover-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-hover-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:focus:hover	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.13), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-focus-hover-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-stbutton-hover-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-hover-color	0
 both	.unlock-dialog .button:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-button-hover-color	0
 both	.unlock-dialog .icon-button:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-icon-button-hover-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-calendar-calendar-month-header-pager-button-hover-color	0
@@ -1412,6 +1431,8 @@ both	.message .message-header .unlock-dialog .message-expand-button:hover	color	
 both	.unlock-dialog .message .message-header .message-close-button:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-message-message-header-message-close-button-hover-color	0
 both	.message .message-header .unlock-dialog .message-close-button:hover	color	#f2f2f2	#f2f2f2	keep	message-message-header-unlock-dialog-message-close-button-hover-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:hover	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-screenshot-ui-show-pointer-button-hover-color	0
+both	.unlock-dialog-notifications-container .message StButton:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-notifications-container-message-stbutton-hover-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-hover-background-color	0
 both	.unlock-dialog .button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-button-hover-background-color	0
 both	.unlock-dialog .icon-button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-icon-button-hover-background-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-calendar-calendar-month-header-pager-button-hover-background-color	0
@@ -1423,6 +1444,8 @@ both	.message .message-header .unlock-dialog .message-expand-button:hover	backgr
 both	.unlock-dialog .message .message-header .message-close-button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-message-message-header-message-close-button-hover-background-color	0
 both	.message .message-header .unlock-dialog .message-close-button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	message-message-header-unlock-dialog-message-close-button-hover-background-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:hover	background-color	rgba(242, 242, 242, 0.13)	rgba(242, 242, 242, 0.13)	keep	unlock-dialog-screenshot-ui-show-pointer-button-hover-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-stbutton-active-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-color	0
 both	.unlock-dialog .button:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-button-active-color	0
 both	.unlock-dialog .icon-button:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-icon-button-active-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-calendar-calendar-month-header-pager-button-active-color	0
@@ -1434,6 +1457,8 @@ both	.message .message-header .unlock-dialog .message-expand-button:active	color
 both	.unlock-dialog .message .message-header .message-close-button:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-message-message-header-message-close-button-active-color	0
 both	.message .message-header .unlock-dialog .message-close-button:active	color	#f2f2f2	#f2f2f2	keep	message-message-header-unlock-dialog-message-close-button-active-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:active	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-screenshot-ui-show-pointer-button-active-color	0
+both	.unlock-dialog-notifications-container .message StButton:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-notifications-container-message-stbutton-active-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-background-color	0
 both	.unlock-dialog .button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-button-active-background-color	0
 both	.unlock-dialog .icon-button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-icon-button-active-background-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-calendar-calendar-month-header-pager-button-active-background-color	0
@@ -1445,6 +1470,8 @@ both	.message .message-header .unlock-dialog .message-expand-button:active	backg
 both	.unlock-dialog .message .message-header .message-close-button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-message-message-header-message-close-button-active-background-color	0
 both	.message .message-header .unlock-dialog .message-close-button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	message-message-header-unlock-dialog-message-close-button-active-background-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:active	background-color	rgba(242, 242, 242, 0.16)	rgba(242, 242, 242, 0.16)	keep	unlock-dialog-screenshot-ui-show-pointer-button-active-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-notifications-container-message-stbutton-active-hover-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-hover-background-color	0
 both	.unlock-dialog .button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-button-active-hover-background-color	0
 both	.unlock-dialog .icon-button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-icon-button-active-hover-background-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-calendar-calendar-month-header-pager-button-active-hover-background-color	0
@@ -1456,6 +1483,10 @@ both	.message .message-header .unlock-dialog .message-expand-button:active:hover
 both	.unlock-dialog .message .message-header .message-close-button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-message-message-header-message-close-button-active-hover-background-color	0
 both	.message .message-header .unlock-dialog .message-close-button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	message-message-header-unlock-dialog-message-close-button-active-hover-background-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:active:hover	background-color	rgba(242, 242, 242, 0.19)	rgba(242, 242, 242, 0.19)	keep	unlock-dialog-screenshot-ui-show-pointer-button-active-hover-background-color	0
+dark	.unlock-dialog-notifications-container .message StButton:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-active-focus-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:active:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-notifications-container-message-stbutton-active-focus-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-focus-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-focus-background-color	0
 dark	.unlock-dialog .button:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-button-active-focus-background-color	0
 light	.unlock-dialog .button:active:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-button-active-focus-background-color	0
 dark	.unlock-dialog .icon-button:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-icon-button-active-focus-background-color	0
@@ -1478,6 +1509,8 @@ dark	.message .message-header .unlock-dialog .message-close-button:active:focus	
 light	.message .message-header .unlock-dialog .message-close-button:active:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	keep	message-message-header-unlock-dialog-message-close-button-active-focus-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-active-focus-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:active:focus	background-color	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	st-mix(-st-accent-color, rgba(242, 242, 242, 0.16), 5%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-active-focus-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-stbutton-checked-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-color	0
 both	.unlock-dialog .button:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-button-checked-color	0
 both	.unlock-dialog .icon-button:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-icon-button-checked-color	0
 both	.unlock-dialog .calendar .calendar-month-header .pager-button:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-calendar-calendar-month-header-pager-button-checked-color	0
@@ -1489,6 +1522,10 @@ both	.message .message-header .unlock-dialog .message-expand-button:checked	colo
 both	.unlock-dialog .message .message-header .message-close-button:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-message-message-header-message-close-button-checked-color	0
 both	.message .message-header .unlock-dialog .message-close-button:checked	color	#f2f2f2	#f2f2f2	keep	message-message-header-unlock-dialog-message-close-button-checked-color	0
 both	.unlock-dialog .screenshot-ui-show-pointer-button:checked	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-color	0
+dark	.unlock-dialog-notifications-container .message StButton:checked	background-color	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:checked	background-color	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked	background-color	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked	background-color	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-background-color	0
 dark	.unlock-dialog .button:checked	background-color	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	keep	unlock-dialog-button-checked-background-color	0
 light	.unlock-dialog .button:checked	background-color	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	keep	unlock-dialog-button-checked-background-color	0
 dark	.unlock-dialog .icon-button:checked	background-color	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	keep	unlock-dialog-icon-button-checked-background-color	0
@@ -1511,6 +1548,10 @@ dark	.message .message-header .unlock-dialog .message-close-button:checked	backg
 light	.message .message-header .unlock-dialog .message-close-button:checked	background-color	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	keep	message-message-header-unlock-dialog-message-close-button-checked-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:checked	background-color	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:checked	background-color	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	st-darken(st-mix(#f2f2f2, white, 12%), 8%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-background-color	0
+dark	.unlock-dialog-notifications-container .message StButton:checked:hover	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-hover-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:checked:hover	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-hover-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:hover	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-hover-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:hover	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-hover-background-color	0
 dark	.unlock-dialog .button:checked:hover	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	keep	unlock-dialog-button-checked-hover-background-color	0
 light	.unlock-dialog .button:checked:hover	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	keep	unlock-dialog-button-checked-hover-background-color	0
 dark	.unlock-dialog .icon-button:checked:hover	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	keep	unlock-dialog-icon-button-checked-hover-background-color	0
@@ -1533,6 +1574,10 @@ dark	.message .message-header .unlock-dialog .message-close-button:checked:hover
 light	.message .message-header .unlock-dialog .message-close-button:checked:hover	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	keep	message-message-header-unlock-dialog-message-close-button-checked-hover-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:checked:hover	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 4%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-hover-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:checked:hover	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 4%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-hover-background-color	0
+dark	.unlock-dialog-notifications-container .message StButton:checked:active	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-active-background-color	0
+light	.unlock-dialog-notifications-container .message StButton:checked:active	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	keep	unlock-dialog-notifications-container-message-stbutton-checked-active-background-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:active	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-active-background-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:active	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-active-background-color	0
 dark	.unlock-dialog .button:checked:active	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	keep	unlock-dialog-button-checked-active-background-color	0
 light	.unlock-dialog .button:checked:active	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	keep	unlock-dialog-button-checked-active-background-color	0
 dark	.unlock-dialog .icon-button:checked:active	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	keep	unlock-dialog-icon-button-checked-active-background-color	0
@@ -1555,6 +1600,10 @@ dark	.message .message-header .unlock-dialog .message-close-button:checked:activ
 light	.message .message-header .unlock-dialog .message-close-button:checked:active	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	keep	message-message-header-unlock-dialog-message-close-button-checked-active-background-color	0
 dark	.unlock-dialog .screenshot-ui-show-pointer-button:checked:active	background-color	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(#f2f2f2, #36363a, 9%), 8%), 9%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-active-background-color	0
 light	.unlock-dialog .screenshot-ui-show-pointer-button:checked:active	background-color	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	st-darken(st-darken(st-mix(#f2f2f2, white, 12%), 8%), 9%)	keep	unlock-dialog-screenshot-ui-show-pointer-button-checked-active-background-color	0
+dark	.unlock-dialog-notifications-container .message StButton:insensitive	color	st-transparentize(#f2f2f2, 0.5)	st-transparentize(#f2f2f2, 0.5)	keep	unlock-dialog-notifications-container-message-stbutton-insensitive-color	0
+light	.unlock-dialog-notifications-container .message StButton:insensitive	color	st-transparentize(#f2f2f2, 0.6)	st-transparentize(#f2f2f2, 0.6)	keep	unlock-dialog-notifications-container-message-stbutton-insensitive-color	0
+dark	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:insensitive	color	st-transparentize(#f2f2f2, 0.5)	st-transparentize(#f2f2f2, 0.5)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-color	0
+light	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:insensitive	color	st-transparentize(#f2f2f2, 0.6)	st-transparentize(#f2f2f2, 0.6)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-color	0
 dark	.unlock-dialog .button:insensitive	color	st-transparentize(#f2f2f2, 0.5)	st-transparentize(#f2f2f2, 0.5)	keep	unlock-dialog-button-insensitive-color	0
 light	.unlock-dialog .button:insensitive	color	st-transparentize(#f2f2f2, 0.6)	st-transparentize(#f2f2f2, 0.6)	keep	unlock-dialog-button-insensitive-color	0
 dark	.unlock-dialog .icon-button:insensitive	color	st-transparentize(#f2f2f2, 0.5)	st-transparentize(#f2f2f2, 0.5)	keep	unlock-dialog-icon-button-insensitive-color	0
@@ -1612,7 +1661,7 @@ dark	.shell-link	color	st-lighten(-st-accent-color, 20%)	st-lighten(-st-accent-c
 light	.shell-link	color	st-darken(-st-accent-color, 10%)	st-darken(-st-accent-color, 10%)	accent	shell-link-color	2
 dark	.shell-link:hover	color	st-lighten(st-lighten(-st-accent-color, 20%), 10%)	st-lighten(st-lighten(-st-accent-color, 20%), 10%)	accent	shell-link-hover-color	2
 light	.shell-link:hover	color	st-lighten(st-darken(-st-accent-color, 10%), 10%)	st-lighten(st-darken(-st-accent-color, 10%), 10%)	accent	shell-link-hover-color	2
-both	.check-box:focus StBin	background-color	rgba(0, 0, 0, 0.01)	transparent	unset	check-box-focus-stbin-background-color	1
+both	.check-box:focus StBin	background-color	rgba(0, 0, 0, 0.01)	transparent	image	check-box-focus-stbin-background-color	1
 both	.check-box:focus StBin	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.65)	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.65)	accent	check-box-focus-stbin-box-shadow	1
 both	.check-box StIcon	color	transparent	transparent	derived	check-box-sticon-color	1
 dark	.check-box StIcon	border	2px solid rgba(255, 255, 255, 0.15)	2px solid rgba(247, 247, 247, 0.15)	derived	check-box-sticon-border	1
@@ -1630,19 +1679,18 @@ both	.check-box:checked:active StIcon	background-color	st-darken(-st-accent-colo
 both	.check-box:checked:active StIcon	color	st-darken(-st-accent-fg-color, 7%)	st-darken(-st-accent-fg-color, 7%)	accent	check-box-checked-active-sticon-color	1
 dark	.toggle-switch	color	white	#F7F7F7	same	toggle-switch-color	1
 light	.toggle-switch	color	#222222	#3D3D3D	same	toggle-switch-color	1
-dark	.toggle-switch	background	rgba(255, 255, 255, 0.15)	transparent	unset	toggle-switch-background	1
-light	.toggle-switch	background	rgba(0, 0, 0, 0.15)	transparent	unset	toggle-switch-background	1
-dark	.toggle-switch:hover	background	rgba(255, 255, 255, 0.2)	rgba(247, 247, 247, 0.2)	derived	toggle-switch-hover-background	1
-light	.toggle-switch:hover	background	rgba(0, 0, 0, 0.2)	rgba(0, 0, 0, 0.2)	derived	toggle-switch-hover-background	1
-dark	.toggle-switch .handle	background	#d7d7d8	#d7d7d8	derived	toggle-switch-handle-background	1
-light	.toggle-switch .handle	background	white	#FAFAFA	derived	toggle-switch-handle-background	1
+dark	.toggle-switch	background	rgba(255, 255, 255, 0.15)	#575757	image	toggle-switch-background	1
+light	.toggle-switch	background	rgba(0, 0, 0, 0.15)	#bababa	image	toggle-switch-background	1
+dark	.toggle-switch:hover	background	rgba(255, 255, 255, 0.2)	#575757	image	toggle-switch-hover-background	1
+light	.toggle-switch:hover	background	rgba(0, 0, 0, 0.2)	#bababa	image	toggle-switch-hover-background	1
+dark	.toggle-switch .handle	background	#d7d7d8	#f8f7f7	image	toggle-switch-handle-background	1
+light	.toggle-switch .handle	background	white	#f8f7f7	image	toggle-switch-handle-background	1
 both	.toggle-switch .handle	box-shadow	0 2px 4px rgba(0, 0, 0, 0.2)	0 2px 4px rgba(0, 0, 0, 0.2)	derived	toggle-switch-handle-box-shadow	1
 both	.toggle-switch:checked	background	-st-accent-color	-st-accent-color	accent	toggle-switch-checked-background	1
 both	.toggle-switch:checked	color	-st-accent-fg-color	-st-accent-fg-color	accent	toggle-switch-checked-color	1
 both	.toggle-switch:checked:hover	background-color	st-lighten(-st-accent-color, 5%)	st-lighten(-st-accent-color, 5%)	accent	toggle-switch-checked-hover-background-color	1
 both	.toggle-switch:checked:hover	color	st-lighten(-st-accent-fg-color, 5%)	st-lighten(-st-accent-fg-color, 5%)	accent	toggle-switch-checked-hover-color	1
-dark	.toggle-switch:checked .handle	background	white	#F7F7F7	derived	toggle-switch-checked-handle-background	1
-light	.toggle-switch:checked .handle	background	white	#FAFAFA	derived	toggle-switch-checked-handle-background	1
+both	.toggle-switch:checked .handle	background	white	#ffffff	image	toggle-switch-checked-handle-background	1
 dark	.slider	color	#e8e8e8	#fcfcfc	same	slider-color	1
 light	.slider	color	#222222	#fcfcfc	same	slider-color	1
 dark	.slider:hover	color	white	#F7F7F7	same	slider-hover-color	1
@@ -1686,8 +1734,8 @@ dark	.popup-menu-item:active	background-color	st-lighten(#424247, 9%)	#535353	sa
 light	.popup-menu-item:active	background-color	st-darken(#f2f2f2, 9%)	#d1d1d1	same	popup-menu-item-active-background-color	1
 dark	.popup-menu-item:active:hover	background-color	st-lighten(st-lighten(#424247, 9%), 7%)	#5d5d5d	same	popup-menu-item-active-hover-background-color	1
 light	.popup-menu-item:active:hover	background-color	st-darken(st-darken(#f2f2f2, 9%), 7%)	#c7c7c7	same	popup-menu-item-active-hover-background-color	1
-dark	.popup-menu-item:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#424247, 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#424247, 9%), 5%)	accent	popup-menu-item-active-focus-background-color	1
-light	.popup-menu-item:active:focus	background-color	st-mix(-st-accent-color, st-darken(#f2f2f2, 9%), 5%)	st-mix(-st-accent-color, st-darken(#ededed, 9%), 5%)	accent	popup-menu-item-active-focus-background-color	1
+dark	.popup-menu-item:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#424247, 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #535353, 5%)	accent	popup-menu-item-active-focus-background-color	1
+light	.popup-menu-item:active:focus	background-color	st-mix(-st-accent-color, st-darken(#f2f2f2, 9%), 5%)	st-mix(-st-accent-color, #d1d1d1, 5%)	accent	popup-menu-item-active-focus-background-color	1
 dark	.popup-menu-item:hover	color	white	#F7F7F7	same	popup-menu-item-hover-color	1
 light	.popup-menu-item:hover	color	#222222	#3D3D3D	same	popup-menu-item-hover-color	1
 dark	.popup-menu-item:selected	color	white	#F7F7F7	same	popup-menu-item-selected-color	1
@@ -1715,8 +1763,8 @@ dark	.popup-sub-menu .popup-menu-item:active	background-color	st-lighten(#56565c
 light	.popup-sub-menu .popup-menu-item:active	background-color	st-darken(#d4d4d4, 9%)	#d1d1d1	same	popup-sub-menu-popup-menu-item-active-background-color	1
 dark	.popup-sub-menu .popup-menu-item:active:hover	background-color	st-lighten(st-lighten(#56565c, 9%), 7%)	#6e6e6e	same	popup-sub-menu-popup-menu-item-active-hover-background-color	1
 light	.popup-sub-menu .popup-menu-item:active:hover	background-color	st-darken(st-darken(#d4d4d4, 9%), 7%)	#c7c7c7	same	popup-sub-menu-popup-menu-item-active-hover-background-color	1
-dark	.popup-sub-menu .popup-menu-item:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#56565c, 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#56565c, 9%), 5%)	accent	popup-sub-menu-popup-menu-item-active-focus-background-color	1
-light	.popup-sub-menu .popup-menu-item:active:focus	background-color	st-mix(-st-accent-color, st-darken(#d4d4d4, 9%), 5%)	st-mix(-st-accent-color, st-darken(#d4d4d4, 9%), 5%)	accent	popup-sub-menu-popup-menu-item-active-focus-background-color	1
+dark	.popup-sub-menu .popup-menu-item:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#56565c, 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), #646464, 5%)	accent	popup-sub-menu-popup-menu-item-active-focus-background-color	1
+light	.popup-sub-menu .popup-menu-item:active:focus	background-color	st-mix(-st-accent-color, st-darken(#d4d4d4, 9%), 5%)	st-mix(-st-accent-color, #d1d1d1, 5%)	accent	popup-sub-menu-popup-menu-item-active-focus-background-color	1
 dark	.popup-sub-menu .popup-menu-item:hover	color	white	#F7F7F7	same	popup-sub-menu-popup-menu-item-hover-color	1
 light	.popup-sub-menu .popup-menu-item:hover	color	#222222	#3D3D3D	same	popup-sub-menu-popup-menu-item-hover-color	1
 dark	.popup-sub-menu .popup-menu-item:selected	color	white	#F7F7F7	same	popup-sub-menu-popup-menu-item-selected-color	1
@@ -1846,7 +1894,7 @@ dark	.audio-device-selection-dialog .audio-selection-box .audio-selection-device
 light	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	color	#222222	#3D3D3D	derived	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-color	3
 dark	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	box-shadow	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	inset 0 0 0 2px st-transparentize(st-mix(-st-accent-color, #ffffff, 60%), 0.2) !important	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-box-shadow	3
 light	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	box-shadow	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	inset 0 0 0 2px st-transparentize(-st-accent-color, 0.2) !important	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-box-shadow	3
-dark	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-background-color	3
+dark	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(54, 54, 58, 0.25), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), rgba(29, 29, 29, 0.25), 5%)	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-background-color	3
 light	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus	background-color	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	st-mix(-st-accent-color, rgba(255, 255, 255, 0.25), 5%)	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-background-color	3
 dark	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#36363a, 7%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(#1d1d1d, 7%), 5%)	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-hover-background-color	3
 light	.audio-device-selection-dialog .audio-selection-box .audio-selection-device:focus:hover	background-color	st-mix(-st-accent-color, st-darken(white, 7%), 5%)	st-mix(-st-accent-color, st-darken(#FAFAFA, 7%), 5%)	accent	audio-device-selection-dialog-audio-selection-box-audio-selection-device-focus-hover-background-color	3
@@ -2231,6 +2279,16 @@ dark	.message .message-header .app-folder-dialog .message-close-button:active:fo
 light	.message .message-header .app-folder-dialog .message-close-button:active:focus	background-color	st-mix(-st-accent-color, st-lighten(st-mix(#f2f2f2, #373737, 12%), 9%), 5%)	st-mix(-st-accent-color, st-lighten(st-mix(#f2f2f2, #373737, 12%), 9%), 5%)	keep	message-message-header-app-folder-dialog-message-close-button-active-focus-background-color	0
 dark	.app-folder-dialog .screenshot-ui-show-pointer-button:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(#f2f2f2, #373737, 9%), 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(#f2f2f2, #373737, 9%), 9%), 5%)	keep	app-folder-dialog-screenshot-ui-show-pointer-button-active-focus-background-color	0
 light	.app-folder-dialog .screenshot-ui-show-pointer-button:active:focus	background-color	st-mix(-st-accent-color, st-lighten(st-mix(#f2f2f2, #373737, 12%), 9%), 5%)	st-mix(-st-accent-color, st-lighten(st-mix(#f2f2f2, #373737, 12%), 9%), 5%)	keep	app-folder-dialog-screenshot-ui-show-pointer-button-active-focus-background-color	0
+dark	.word-suggestions StButton:focus:hover	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(white, #36363a, 9%), 4%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(white, #36363a, 9%), 4%), 5%)	keep	word-suggestions-stbutton-focus-hover-background-color	0
+light	.word-suggestions StButton:focus:hover	background-color	st-mix(-st-accent-color, st-darken(st-mix(#222222, white, 12%), 4%), 5%)	st-mix(-st-accent-color, st-darken(st-mix(#222222, white, 12%), 4%), 5%)	keep	word-suggestions-stbutton-focus-hover-background-color	0
+dark	.word-suggestions StButton:active:hover	background-color	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 9%), 4%)	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 9%), 4%)	keep	word-suggestions-stbutton-active-hover-background-color	0
+light	.word-suggestions StButton:active:hover	background-color	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 9%), 4%)	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 9%), 4%)	keep	word-suggestions-stbutton-active-hover-background-color	0
+dark	.word-suggestions StButton:active:focus	background-color	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(white, #4d4d4d, 9%), 9%), 5%)	st-mix(st-mix(-st-accent-color, #ffffff, 60%), st-lighten(st-mix(white, #4d4d4d, 9%), 9%), 5%)	keep	word-suggestions-stbutton-active-focus-background-color	0
+light	.word-suggestions StButton:active:focus	background-color	st-mix(-st-accent-color, st-darken(st-mix(white, #4d4d4d, 12%), 9%), 5%)	st-mix(-st-accent-color, st-darken(st-mix(white, #4d4d4d, 12%), 9%), 5%)	keep	word-suggestions-stbutton-active-focus-background-color	0
+dark	.word-suggestions StButton:checked:hover	background-color	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 8%), 4%)	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 8%), 4%)	keep	word-suggestions-stbutton-checked-hover-background-color	0
+light	.word-suggestions StButton:checked:hover	background-color	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 8%), 4%)	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 8%), 4%)	keep	word-suggestions-stbutton-checked-hover-background-color	0
+dark	.word-suggestions StButton:checked:active	background-color	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 8%), 9%)	st-lighten(st-lighten(st-mix(white, #4d4d4d, 9%), 8%), 9%)	keep	word-suggestions-stbutton-checked-active-background-color	0
+light	.word-suggestions StButton:checked:active	background-color	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 8%), 9%)	st-darken(st-darken(st-mix(white, #4d4d4d, 12%), 8%), 9%)	keep	word-suggestions-stbutton-checked-active-background-color	0
 both	.lg-dialog .shell-link	color	st-lighten(-st-accent-color, 20%)	st-lighten(-st-accent-color, 20%)	keep	lg-dialog-shell-link-color	0
 both	.lg-dialog .shell-link:hover	color	st-lighten(st-lighten(-st-accent-color, 20%), 10%)	st-lighten(st-lighten(-st-accent-color, 20%), 10%)	keep	lg-dialog-shell-link-hover-color	0
 both	.lg-dialog .shell-link:active	color	st-darken(st-lighten(-st-accent-color, 20%), 10%)	st-darken(st-lighten(-st-accent-color, 20%), 10%)	keep	lg-dialog-shell-link-active-color	0
@@ -2254,11 +2312,21 @@ dark	#unlockDialogNotifications > .hhandle:focus	background-color	rgba(54, 54, 5
 light	#unlockDialogNotifications > .hhandle:focus	background-color	rgba(255, 255, 255, 0.5)	rgba(255, 255, 255, 0.5)	keep	unlockdialognotifications-hhandle-focus-background-color	0
 both	#unlockDialogNotifications > .vhandle:active	background-color	st-transparentize(-st-accent-color, 0.5)	st-transparentize(-st-accent-color, 0.5)	keep	unlockdialognotifications-vhandle-active-background-color	0
 both	#unlockDialogNotifications > .hhandle:active	background-color	st-transparentize(-st-accent-color, 0.5)	st-transparentize(-st-accent-color, 0.5)	keep	unlockdialognotifications-hhandle-active-background-color	0
+both	.unlock-dialog-notifications-container	background-color	transparent	transparent	keep	unlock-dialog-notifications-container-background-color	0
 both	.unlock-dialog-notifications-container .message	border	none	none	keep	unlock-dialog-notifications-container-message-border	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source	border	none	none	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-border	0
 both	.unlock-dialog-notifications-container .message	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-notifications-container-message-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-background-color	0
 both	.unlock-dialog-notifications-container .message	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-color	0
 both	.unlock-dialog-notifications-container .message.critical	background-color	rgba(242, 242, 242, 0.2)	rgba(242, 242, 242, 0.2)	keep	unlock-dialog-notifications-container-message-critical-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source.critical	background-color	rgba(242, 242, 242, 0.2)	rgba(242, 242, 242, 0.2)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-critical-background-color	0
 both	.unlock-dialog-notifications-container .message:active	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-notifications-container-message-active-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source:active	background-color	rgba(242, 242, 242, 0.1)	rgba(242, 242, 242, 0.1)	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-active-background-color	0
+both	.unlock-dialog-notifications-container .message StButton	background-color	transparent	transparent	keep	unlock-dialog-notifications-container-message-stbutton-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton	background-color	transparent	transparent	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-background-color	0
+both	.unlock-dialog-notifications-container .message StButton:insensitive	background-color	transparent	transparent	keep	unlock-dialog-notifications-container-message-stbutton-insensitive-background-color	0
+both	.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:insensitive	background-color	transparent	transparent	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-background-color	0
 both	.unlock-dialog-notifications-container .message .message-header	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-message-message-header-color	0
 both	.unlock-dialog-notifications-container .unlock-dialog-notification-source .message-header	color	#f2f2f2	#f2f2f2	keep	unlock-dialog-notifications-container-unlock-dialog-notification-source-message-header-color	0
 both	#LookingGlassDialog StEntry	color	white !important	white !important	keep	lookingglassdialog-stentry-color	0
@@ -2300,3 +2368,36 @@ both	.pad-osd-window	background-color	#2f2f2f	rgba(29, 29, 29, 0.975)	same	pad-o
 both	.pad-osd-window	color	white	#eeeeec	same	pad-osd-window-color	3
 dark	.pad-osd-window .button:insensitive	color	white	#F7F7F7	same	pad-osd-window-button-insensitive-color	3
 light	.pad-osd-window .button:insensitive	color	#222222	#3D3D3D	same	pad-osd-window-button-insensitive-color	3
+dark	.popup-menu-item:selected:hover	background-color	-	#5b5b5b	added	popup-menu-item-selected-hover-background-color	1
+light	.popup-menu-item:selected:hover	background-color	-	#c9c9c9	added	popup-menu-item-selected-hover-background-color	1
+dark	.popup-menu-item:checked:hover	background-color	-	#5b5b5b	added	popup-menu-item-checked-hover-background-color	1
+light	.popup-menu-item:checked:hover	background-color	-	#c9c9c9	added	popup-menu-item-checked-hover-background-color	1
+dark	.popup-menu-item:selected:active	background-color	-	#676767	added	popup-menu-item-selected-active-background-color	1
+light	.popup-menu-item:selected:active	background-color	-	#bdbdbd	added	popup-menu-item-selected-active-background-color	1
+dark	.popup-menu-item:checked:active	background-color	-	#676767	added	popup-menu-item-checked-active-background-color	1
+light	.popup-menu-item:checked:active	background-color	-	#bdbdbd	added	popup-menu-item-checked-active-background-color	1
+dark	.popup-sub-menu .popup-menu-item:selected:hover	background-color	-	#6c6c6c	added	popup-sub-menu-popup-menu-item-selected-hover-background-color	1
+light	.popup-sub-menu .popup-menu-item:selected:hover	background-color	-	#c9c9c9	added	popup-sub-menu-popup-menu-item-selected-hover-background-color	1
+dark	.popup-sub-menu .popup-menu-item:checked:hover	background-color	-	#6c6c6c	added	popup-sub-menu-popup-menu-item-checked-hover-background-color	1
+light	.popup-sub-menu .popup-menu-item:checked:hover	background-color	-	#c9c9c9	added	popup-sub-menu-popup-menu-item-checked-hover-background-color	1
+dark	.popup-sub-menu .popup-menu-item:selected:active	background-color	-	#787878	added	popup-sub-menu-popup-menu-item-selected-active-background-color	1
+light	.popup-sub-menu .popup-menu-item:selected:active	background-color	-	#bdbdbd	added	popup-sub-menu-popup-menu-item-selected-active-background-color	1
+dark	.popup-sub-menu .popup-menu-item:checked:active	background-color	-	#787878	added	popup-sub-menu-popup-menu-item-checked-active-background-color	1
+light	.popup-sub-menu .popup-menu-item:checked:active	background-color	-	#bdbdbd	added	popup-sub-menu-popup-menu-item-checked-active-background-color	1
+dark	.notification-banner	background-color	-	#1d1d1d	added	notification-banner-background-color	2
+light	.notification-banner	background-color	-	#FAFAFA	added	notification-banner-background-color	2
+dark	.notification-banner:hover	background-color	-	#222222	added	notification-banner-hover-background-color	2
+light	.notification-banner:hover	background-color	-	whitesmoke	added	notification-banner-hover-background-color	2
+dark	.notification-banner:active	background-color	-	#272727	added	notification-banner-active-background-color	2
+light	.notification-banner:active	background-color	-	#f0f0f0	added	notification-banner-active-background-color	2
+both	.notification-banner:hover	box-shadow	-	0 0 4px 2px rgba(0, 0, 0, 0.1)	added	notification-banner-hover-box-shadow	2
+both	.notification-banner:focus	box-shadow	-	0 0 4px 2px rgba(0, 0, 0, 0.1)	added	notification-banner-focus-box-shadow	2
+both	.notification-banner:active	box-shadow	-	0 0 4px 2px rgba(0, 0, 0, 0.1)	added	notification-banner-active-box-shadow	2
+dark	.notification-banner	border	-	1px solid #464646	added	notification-banner-border	2
+light	.notification-banner	border	-	1px solid #c7c7c7	added	notification-banner-border	2
+dark	.notification-banner:hover	border	-	1px solid #464646	added	notification-banner-hover-border	2
+light	.notification-banner:hover	border	-	1px solid #c7c7c7	added	notification-banner-hover-border	2
+dark	.notification-banner:focus	border	-	1px solid #464646	added	notification-banner-focus-border	2
+light	.notification-banner:focus	border	-	1px solid #c7c7c7	added	notification-banner-focus-border	2
+dark	.notification-banner:active	border	-	1px solid #464646	added	notification-banner-active-border	2
+light	.notification-banner:active	border	-	1px solid #c7c7c7	added	notification-banner-active-border	2

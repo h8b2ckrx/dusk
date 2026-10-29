@@ -12,6 +12,14 @@
 # warning: 24.04's warning text, and no warning background
 #ffbd45	#f99b11
 #4a4137	transparent
+# inside 26.04's accent mixes (a focused widget is its own color with 5% accent): the same widget's
+# 24.04 color. Text entries
+#48484c	#313131
+# a pressed menu item, and one in a submenu
+st-lighten(#424247, 9%)	#535353
+st-lighten(#56565c, 9%)	#646464
+# the pop-up surface, see-through (flat buttons, calendar days)
+rgba(54, 54, 58,	rgba(29, 29, 29,
 # text and white tints: 24.04's text color #F7F7F7
 white	#F7F7F7
 rgba(255, 255, 255,	rgba(247, 247, 247,

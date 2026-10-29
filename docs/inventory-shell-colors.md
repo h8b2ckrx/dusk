@@ -8,19 +8,24 @@ buttons rejoined it when the dialogs went back to 26.04's layout (decision 23). 
 - **What:** every color rule Yaru 26.04 has for the Shell's floating surfaces, in dark and light,
   next to Yaru 24.04's value for the same thing. Built by `tools/shell-color-inventory.sh` into
   [inventory-shell-colors.tsv](inventory-shell-colors.tsv), which has every row.
-- **Rows:** 2298 (401 the same in both modes). Where the 24.04 value comes from:
+- **Rows:** 2398 (431 the same in both modes). Where the 24.04 value comes from:
   - **989 same:** 24.04 has the same rule; its exact value.
   - **16 renamed:** 24.04 has the element under another selector (scroll bar handles, the
     password dialog's labels); its exact value. [The renames](inventory-shell-colors-renames.tsv).
-  - **13 unset:** 24.04 has the element but drew no background, border or shadow there: none.
-  - **196 derived:** new in 26.04 (notification groups and stacks, CSS-drawn switches and
+  - **10 unset:** 24.04 has the element but drew no background, border or shadow there: none.
+  - **33 added:** 24.04 rules 26.04 dropped (the notification banner's colors, menu items
+    selected or checked while hovered or pressed): their exact 24.04 value, after 26.04's rules.
+  - **8 image:** 24.04 drew it in a picture (its switches): the picture's color.
+    [Dark](inventory-shell-colors-images-dark.tsv), [light](inventory-shell-colors-images-light.tsv).
+  - **190 derived:** new in 26.04 (notification groups and stacks, CSS-drawn switches and
     check boxes, the quick-toggle arrow button…): 26.04's own formula with 24.04's colors swapped in.
     [Dark palette](inventory-shell-colors-palette-dark.tsv), [light palette](inventory-shell-colors-palette-light.tsv).
   - **556 accent:** uses your accent color (focus rings, checked toggles, the selected day…):
     26.04's formula stays, so it follows the Settings picker; only a surface color inside it becomes
     24.04's.
-  - **528 keep:** an out-of-scope rule (lock screen, Blur my Shell's surfaces, the overview's
-    search entry…) that one of these would otherwise override. It keeps today's value: no visible change.
+  - **596 keep:** an out-of-scope rule (lock screen and its notifications, Blur my Shell's
+    surfaces, the overview's search entry…) that one of these would otherwise override. It keeps today's
+    value: no visible change.
 - **Chunks:** 1 menus and quick settings, with the buttons, switches, entries, check boxes and scroll
   bars drawn on them (so those change everywhere they appear); 2 notifications and the date menu; 3
   dialogs (in 26.04's own layout), OSDs, Alt+Tab, tooltips and the screenshot panel.
@@ -39,9 +44,11 @@ buttons rejoined it when the dialogs went back to 26.04's layout (decision 23). 
 | Quick settings | `.quick-toggle-menu` background | `#47474c` → `#2f2f2f` | `white` → `white` |
 | Quick settings | `.button` background | `st-mix(white, #36363a, 9%)` → `#313131` | `st-mix(#222222, white, 12%)` → `#e3e3e3` |
 | Quick settings | `.button:hover` background | `st-lighten(st-mix(white, #36363a, 9%), 4%)` → `#3b3b3b` | `st-darken(st-mix(#222222, white, 12%), 4%)` → `#d9d9d9` |
+| Switches | `.toggle-switch` background | `rgba(255, 255, 255, 0.15)` → `#575757` | `rgba(0, 0, 0, 0.15)` → `#bababa` |
 | Notifications | `.message` background | `#54545a` → `#2f2f2f` | `white` → `white` |
 | Notifications | `.message:hover` background | `st-lighten(#47474c, 4%)` → `#393939` | `st-darken(white, 4%)` → `whitesmoke` |
 | Notifications | `.message:second-in-stack` background | `#45454a` → `#262626` | `whitesmoke` → `whitesmoke` |
+| Notifications | `.notification-banner` background | `-` → `#1d1d1d` | `-` → `#FAFAFA` |
 | Date menu | `.events-button` background | `#47474c` → `#2f2f2f` | `white` → `white` |
 | Date menu | `.world-clocks-button` background | `#47474c` → `#2f2f2f` | `white` → `white` |
 | Dialogs | `.modal-dialog` background | `#36363a` → `#1d1d1d` | `white` → `#FAFAFA` |
@@ -154,13 +161,7 @@ New in 26.04, so 24.04 has no value of its own: 26.04's formula with 24.04's col
 | dark | `.check-box:active StIcon` | border-color | `rgba(255, 255, 255, 0.3)` | `rgba(247, 247, 247, 0.3)` |
 | light | `.check-box:active StIcon` | border-color | `rgba(0, 0, 0, 0.3)` | `rgba(0, 0, 0, 0.3)` |
 | both | `.check-box:checked StIcon` | border-color | `transparent` | `transparent` |
-| dark | `.toggle-switch:hover` | background | `rgba(255, 255, 255, 0.2)` | `rgba(247, 247, 247, 0.2)` |
-| light | `.toggle-switch:hover` | background | `rgba(0, 0, 0, 0.2)` | `rgba(0, 0, 0, 0.2)` |
-| dark | `.toggle-switch .handle` | background | `#d7d7d8` | `#d7d7d8` |
-| light | `.toggle-switch .handle` | background | `white` | `#FAFAFA` |
 | both | `.toggle-switch .handle` | box-shadow | `0 2px 4px rgba(0, 0, 0, 0.2)` | `0 2px 4px rgba(0, 0, 0, 0.2)` |
-| dark | `.toggle-switch:checked .handle` | background | `white` | `#F7F7F7` |
-| light | `.toggle-switch:checked .handle` | background | `white` | `#FAFAFA` |
 | dark | `.message-notification-group .message-collapse-button` | color | `white` | `#F7F7F7` |
 | light | `.message-notification-group .message-collapse-button` | color | `#222222` | `#3D3D3D` |
 | dark | `.message-notification-group .message-collapse-button` | background-color | `rgba(255, 255, 255, 0.2)` | `rgba(247, 247, 247, 0.2)` |
@@ -284,9 +285,6 @@ Same element, different selector in 24.04: its exact 24.04 value.
 
 | Mode | Selector | Property | 26.04 | 24.04 |
 |---|---|---|---|---|
-| both | `.check-box:focus StBin` | background-color | `rgba(0, 0, 0, 0.01)` | `transparent` |
-| dark | `.toggle-switch` | background | `rgba(255, 255, 255, 0.15)` | `transparent` |
-| light | `.toggle-switch` | background | `rgba(0, 0, 0, 0.15)` | `transparent` |
 | dark | `.popup-sub-menu` | background-color | `#56565c` | `transparent` |
 | light | `.popup-sub-menu` | background-color | `#d4d4d4` | `transparent` |
 | dark | `.prompt-dialog .prompt-dialog-info-label` | background-color | `rgba(255, 255, 255, 0.1)` | `transparent` |
@@ -297,3 +295,58 @@ Same element, different selector in 24.04: its exact 24.04 value.
 | light | `.end-session-dialog .dialog-list-title` | background-color | `#f6ede7` | `transparent` |
 | dark | `.prompt-dialog .prompt-dialog-error-label` | background-color | `#4a4137` | `transparent` |
 | light | `.prompt-dialog .prompt-dialog-error-label` | background-color | `#f6ede7` | `transparent` |
+
+## Added rows
+
+24.04 rules 26.04 dropped, for elements 26.04 still draws: their exact 24.04 value.
+
+| Mode | Selector | Property | 26.04 | 24.04 |
+|---|---|---|---|---|
+| dark | `.popup-menu-item:selected:hover` | background-color | `-` | `#5b5b5b` |
+| light | `.popup-menu-item:selected:hover` | background-color | `-` | `#c9c9c9` |
+| dark | `.popup-menu-item:checked:hover` | background-color | `-` | `#5b5b5b` |
+| light | `.popup-menu-item:checked:hover` | background-color | `-` | `#c9c9c9` |
+| dark | `.popup-menu-item:selected:active` | background-color | `-` | `#676767` |
+| light | `.popup-menu-item:selected:active` | background-color | `-` | `#bdbdbd` |
+| dark | `.popup-menu-item:checked:active` | background-color | `-` | `#676767` |
+| light | `.popup-menu-item:checked:active` | background-color | `-` | `#bdbdbd` |
+| dark | `.popup-sub-menu .popup-menu-item:selected:hover` | background-color | `-` | `#6c6c6c` |
+| light | `.popup-sub-menu .popup-menu-item:selected:hover` | background-color | `-` | `#c9c9c9` |
+| dark | `.popup-sub-menu .popup-menu-item:checked:hover` | background-color | `-` | `#6c6c6c` |
+| light | `.popup-sub-menu .popup-menu-item:checked:hover` | background-color | `-` | `#c9c9c9` |
+| dark | `.popup-sub-menu .popup-menu-item:selected:active` | background-color | `-` | `#787878` |
+| light | `.popup-sub-menu .popup-menu-item:selected:active` | background-color | `-` | `#bdbdbd` |
+| dark | `.popup-sub-menu .popup-menu-item:checked:active` | background-color | `-` | `#787878` |
+| light | `.popup-sub-menu .popup-menu-item:checked:active` | background-color | `-` | `#bdbdbd` |
+| dark | `.notification-banner` | background-color | `-` | `#1d1d1d` |
+| light | `.notification-banner` | background-color | `-` | `#FAFAFA` |
+| dark | `.notification-banner:hover` | background-color | `-` | `#222222` |
+| light | `.notification-banner:hover` | background-color | `-` | `whitesmoke` |
+| dark | `.notification-banner:active` | background-color | `-` | `#272727` |
+| light | `.notification-banner:active` | background-color | `-` | `#f0f0f0` |
+| both | `.notification-banner:hover` | box-shadow | `-` | `0 0 4px 2px rgba(0, 0, 0, 0.1)` |
+| both | `.notification-banner:focus` | box-shadow | `-` | `0 0 4px 2px rgba(0, 0, 0, 0.1)` |
+| both | `.notification-banner:active` | box-shadow | `-` | `0 0 4px 2px rgba(0, 0, 0, 0.1)` |
+| dark | `.notification-banner` | border | `-` | `1px solid #464646` |
+| light | `.notification-banner` | border | `-` | `1px solid #c7c7c7` |
+| dark | `.notification-banner:hover` | border | `-` | `1px solid #464646` |
+| light | `.notification-banner:hover` | border | `-` | `1px solid #c7c7c7` |
+| dark | `.notification-banner:focus` | border | `-` | `1px solid #464646` |
+| light | `.notification-banner:focus` | border | `-` | `1px solid #c7c7c7` |
+| dark | `.notification-banner:active` | border | `-` | `1px solid #464646` |
+| light | `.notification-banner:active` | border | `-` | `1px solid #c7c7c7` |
+
+## Image rows
+
+24.04 drew these in a picture (its switches): the picture's color.
+
+| Mode | Selector | Property | 26.04 | 24.04 |
+|---|---|---|---|---|
+| both | `.check-box:focus StBin` | background-color | `rgba(0, 0, 0, 0.01)` | `transparent` |
+| dark | `.toggle-switch` | background | `rgba(255, 255, 255, 0.15)` | `#575757` |
+| light | `.toggle-switch` | background | `rgba(0, 0, 0, 0.15)` | `#bababa` |
+| dark | `.toggle-switch:hover` | background | `rgba(255, 255, 255, 0.2)` | `#575757` |
+| light | `.toggle-switch:hover` | background | `rgba(0, 0, 0, 0.2)` | `#bababa` |
+| dark | `.toggle-switch .handle` | background | `#d7d7d8` | `#f8f7f7` |
+| light | `.toggle-switch .handle` | background | `white` | `#f8f7f7` |
+| both | `.toggle-switch:checked .handle` | background | `white` | `#ffffff` |

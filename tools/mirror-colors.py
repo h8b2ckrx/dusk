@@ -5,8 +5,9 @@
 Usage: mirror-colors.py TSV rules   > src/_shell-colors.scss
        mirror-colors.py TSV values  > src/_shell-color-values.scss
 
-rules: every row as a rule with Yaru 26.04's selector, in the inventory's
-order, its value `shell-color-value("<token>")` (26.04's !important kept).
+rules: every row as a rule with its selector (Yaru 26.04's, or 24.04's for
+an added row), in the inventory's order, its value
+`shell-color-value("<token>")` with the !important its 24.04 value carries.
 Consecutive rows of one chunk share an `@if shell-colors-on(N)` block, so a
 chunk that's switched off emits nothing; a row for one mode only has its own
 `@if $mode == …`.
@@ -54,8 +55,8 @@ def rules(table, tsv):
         out += ["", f"// {CHUNK_NAMES[chunk]}.", f"@if shell-colors-on({chunk}) {{"]
         for sel, decls in groups(block, lambda r: r[1]):
             out.append(f"  {sel} {{")
-            for mode, _, prop, new, _, _, token, _ in decls:
-                important = " !important" if "!important" in new else ""
+            for mode, _, prop, _, old, _, token, _ in decls:
+                important = " !important" if "!important" in old else ""
                 decl = f'{prop}: shell-color-value("{token}"){important};'
                 out.append(f"    {decl}" if mode == "both" else f"    @if $mode == {mode} {{ {decl} }}")
             out.append("  }")

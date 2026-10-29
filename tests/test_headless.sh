@@ -305,6 +305,41 @@ sys.exit(1 if bad else 0)
 EOF
 }
 
+# On every probed widget whose background or border one of the inventory's
+# rows with a 24.04 value of its own decides (same, unset, added), in dark
+# and light, Yaru 24.04's own cascade gives that widget the same color
+# (final review: notification banners kept the message list's color, and a
+# menu item under the pointer or pressed didn't get 24.04's).
+test_headless_colors_follow_2404_cascade() {
+  local mode out lines
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    lines=$("$REPO/tests/headless/colors.py" follows "$out/snapshots.json" "$("yaru_${mode}_css")" \
+      "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" "$REPO/docs/inventory-shell-colors.tsv" "$mode") \
+      || fail "$mode: colors that aren't 24.04's:
+$(sed -E 's/^([^:]*): .* (background|border): /\1: \2: /' <<< "$lines" | sort -u | head -12)"
+  done
+}
+
+# Switches show a track, on and off (final review: an off switch showed only
+# its knob).
+test_headless_switches_show_their_track() {
+  local mode out
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    python3 - "$out/snapshots.json" <<'EOF' || fail "$mode: switch tracks"
+import json, sys
+found = [(state, r["pseudo"], r["colors"][0]) for state, records in json.load(open(sys.argv[1])).items()
+         for r in records if "toggle-switch" in r["classes"] and r.get("colors")]
+bad = [f for f in found if f[2] is None or f[2][3] == 0]
+if not any("checked" in p for _, p, _ in found) or not any("checked" not in p for _, p, _ in found):
+    sys.exit(f"want an on and an off switch on screen, found {found}")
+if bad:
+    sys.exit(f"no track: {bad}")
+EOF
+  done
+}
+
 # In every probed UI state, in dark and light, each widget's computed colors
 # (background, text, border, shadow) are what Yaru plus our stylesheet
 # predict, and no general color rule of ours erases a more specific Yaru one

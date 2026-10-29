@@ -176,7 +176,9 @@ shell_colors_on() {
 }
 
 # With every chunk on, each inventory row is in its mode's stylesheet with
-# its 24.04 value (and 26.04's !important), in the inventory's order.
+# its 24.04 value and that value's !important (24.04's own where the value is
+# 24.04's, so a 26.04 !important can't make 24.04's state rules dead; 26.04's
+# for derived, accent, unset and kept rows), in the inventory's order.
 test_shell_colors_mirror_inventory() {
   local tmp; tmp=$(mktemp -d)
   shell_colors_on "$tmp"
@@ -196,7 +198,7 @@ for mode in ("dark", "light"):
         if m not in ("both", mode):
             continue
         want = " ".join(old.replace("!important", "").split())
-        if "!important" in new:
+        if "!important" in old:
             want += " !important"
         i = where.get((sel, prop))
         if i is None:

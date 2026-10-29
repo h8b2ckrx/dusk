@@ -4,11 +4,14 @@ an older stylesheet gives the same rule (design decision 22).
 
 Usage: color-inventory.py STOCK.css OLD.css --scope REGEX [--exclude REGEX]
                           [--palette PALETTE.tsv] [--renames RENAMES.tsv]
-                          [--keep REGEX] [--no-keep REGEX] [--include-media]
+                          [--keep REGEX] [--no-keep REGEX] [--add REGEX]
+                          [--images IMAGES.tsv] [--include-media]
 
 Prints one tab-separated line per selector and color property, in STOCK's
 order (each selector's last declaration counts, as in the cascade):
     selector<TAB>property<TAB>stock value<TAB>old value<TAB>source
+The old value carries the !important a mirror emits: OLD's own where the
+value is OLD's (same, renamed, added), STOCK's where it isn't.
 Color properties: background-color, background, color, border-color, border,
 border-top, box-shadow. Selector lists are split.
 
@@ -28,6 +31,10 @@ source:
   keep     An out-of-scope stock rule that one of the in-scope rules would
            erase (more specific, same color slot): its stock value, so a
            mirror can re-assert it.
+  image    OLD drew this color in a picture (IMAGES): the color from there.
+  added    An OLD rule matching --add that STOCK dropped (its elements are
+           still there): OLD's value, listed after STOCK's rules; the stock
+           value is "-".
 
 --scope REGEX    keep selectors matching REGEX
 --exclude REGEX  drop selectors matching REGEX
@@ -41,6 +48,9 @@ source:
                  element that an in-scope type rule styles)
 --no-keep REGEX  never keep stock rules matching REGEX (selectors dusk never
                  meets, e.g. the login screen)
+--add REGEX      also list OLD's rules matching REGEX that STOCK doesn't have
+--images FILE    three tab-separated columns: stock selector, property, the
+                 color OLD drew there in a picture (a background-image)
 """
 import argparse
 import os
@@ -134,6 +144,8 @@ def main():
     ap.add_argument("--renames")
     ap.add_argument("--keep")
     ap.add_argument("--no-keep")
+    ap.add_argument("--add")
+    ap.add_argument("--images")
     ap.add_argument("--include-media", action="store_true")
     ap.add_argument("-h", "--help", action="store_true")
     args = ap.parse_args()
@@ -142,6 +154,12 @@ def main():
         return 0
 
     palette, renames = table(args.palette), table(args.renames)
+    images = {}
+    if args.images:
+        for line in open(args.images):
+            if line.strip() and not line.startswith("# "):
+                selector, prop, color = line.rstrip("\n").split("\t")[:3]
+                images[(selector, prop)] = color
     stock = declarations(open(args.stock).read(), args.include_media)
     old = declarations(open(args.old).read(), args.include_media)
     scope = re.compile(args.scope)
@@ -178,6 +196,9 @@ def main():
     def lookup(selector, prop):
         return old.get((selector, prop), old.get((selector, TWINS.get(prop, prop))))
 
+    def lookup_stock(selector, prop):
+        return stock.get((selector, prop), stock.get((selector, TWINS.get(prop, prop))))
+
     for (selector, prop), value in stock.items():
         if (selector, prop) not in in_scope:
             if selector in keep:
@@ -186,17 +207,27 @@ def main():
         renamed = selector
         for pattern, replacement in renames.items():
             renamed = re.sub(pattern, replacement, renamed)
-        if "-st-accent" in value:
+        weight = " !important" if "!important" in value else ""
+        if (selector, prop) in images:
+            then, source = images[(selector, prop)] + weight, "image"
+        elif "-st-accent" in value:
             then, source = swap(value, palette), "accent"
         elif lookup(selector, prop) is not None:
             then, source = lookup(selector, prop), "same"
         elif renamed != selector and lookup(renamed, prop) is not None:
             then, source = lookup(renamed, prop), "renamed"
         elif prop in initial and (selector in old_selectors or renamed in old_selectors):
-            then, source = initial[prop], "unset"
+            then, source = initial[prop] + weight, "unset"
         else:
             then, source = swap(value, palette), "derived"
         print(f"{selector}\t{prop}\t{value}\t{then}\t{source}")
+
+    # Rules STOCK dropped for elements it still has, after STOCK's own (so,
+    # as in OLD, they come after the rules they compete with).
+    if args.add:
+        for (selector, prop), value in old.items():
+            if re.search(args.add, selector) and lookup_stock(selector, prop) is None:
+                print(f"{selector}\t{prop}\t-\t{value}\tadded")
     return 0
 
 

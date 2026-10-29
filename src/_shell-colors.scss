@@ -3565,6 +3565,12 @@
   .search-entry StLabel.hint-text {
     color: shell-color-value("search-entry-stlabel-hint-text-color");
   }
+  .unlock-dialog-notifications-container .message StButton {
+    color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-color");
+  }
   .unlock-dialog .button {
     color: shell-color-value("unlock-dialog-button-color");
   }
@@ -3631,6 +3637,12 @@
   .unlock-dialog .screenshot-ui-show-pointer-button {
     background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-background-color");
   }
+  .unlock-dialog-notifications-container .message StButton:focus {
+    color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-color");
+  }
   .unlock-dialog .button:focus {
     color: shell-color-value("unlock-dialog-button-focus-color");
   }
@@ -3663,6 +3675,14 @@
   }
   .unlock-dialog .screenshot-ui-show-pointer-button:focus {
     color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:focus {
+    @if $mode == dark { box-shadow: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-box-shadow") !important; }
+    @if $mode == light { box-shadow: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-box-shadow") !important; }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus {
+    @if $mode == dark { box-shadow: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-box-shadow") !important; }
+    @if $mode == light { box-shadow: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-box-shadow") !important; }
   }
   .unlock-dialog .button:focus {
     @if $mode == dark { box-shadow: shell-color-value("unlock-dialog-button-focus-box-shadow") !important; }
@@ -3708,6 +3728,14 @@
     @if $mode == dark { box-shadow: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-box-shadow") !important; }
     @if $mode == light { box-shadow: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-box-shadow") !important; }
   }
+  .unlock-dialog-notifications-container .message StButton:focus {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-background-color"); }
+  }
   .unlock-dialog .button:focus {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-focus-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-button-focus-background-color"); }
@@ -3751,6 +3779,14 @@
   .unlock-dialog .screenshot-ui-show-pointer-button:focus {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-background-color"); }
+  }
+  .unlock-dialog-notifications-container .message StButton:focus:hover {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-focus-hover-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:focus:hover {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-focus-hover-background-color"); }
   }
   .unlock-dialog .button:focus:hover {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-focus-hover-background-color"); }
@@ -3796,6 +3832,12 @@
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-hover-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-focus-hover-background-color"); }
   }
+  .unlock-dialog-notifications-container .message StButton:hover {
+    color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-hover-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:hover {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-hover-color");
+  }
   .unlock-dialog .button:hover {
     color: shell-color-value("unlock-dialog-button-hover-color");
   }
@@ -3828,6 +3870,12 @@
   }
   .unlock-dialog .screenshot-ui-show-pointer-button:hover {
     color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-hover-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:hover {
+    background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-hover-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:hover {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-hover-background-color");
   }
   .unlock-dialog .button:hover {
     background-color: shell-color-value("unlock-dialog-button-hover-background-color");
@@ -3862,6 +3910,12 @@
   .unlock-dialog .screenshot-ui-show-pointer-button:hover {
     background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-hover-background-color");
   }
+  .unlock-dialog-notifications-container .message StButton:active {
+    color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-active-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-color");
+  }
   .unlock-dialog .button:active {
     color: shell-color-value("unlock-dialog-button-active-color");
   }
@@ -3894,6 +3948,12 @@
   }
   .unlock-dialog .screenshot-ui-show-pointer-button:active {
     color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-active-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:active {
+    background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-active-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-background-color");
   }
   .unlock-dialog .button:active {
     background-color: shell-color-value("unlock-dialog-button-active-background-color");
@@ -3928,6 +3988,12 @@
   .unlock-dialog .screenshot-ui-show-pointer-button:active {
     background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-active-background-color");
   }
+  .unlock-dialog-notifications-container .message StButton:active:hover {
+    background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-active-hover-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active:hover {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-hover-background-color");
+  }
   .unlock-dialog .button:active:hover {
     background-color: shell-color-value("unlock-dialog-button-active-hover-background-color");
   }
@@ -3960,6 +4026,14 @@
   }
   .unlock-dialog .screenshot-ui-show-pointer-button:active:hover {
     background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-active-hover-background-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:active:focus {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-active-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-active-focus-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:active:focus {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-active-focus-background-color"); }
   }
   .unlock-dialog .button:active:focus {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-active-focus-background-color"); }
@@ -4005,6 +4079,12 @@
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-active-focus-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-active-focus-background-color"); }
   }
+  .unlock-dialog-notifications-container .message StButton:checked {
+    color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-color");
+  }
   .unlock-dialog .button:checked {
     color: shell-color-value("unlock-dialog-button-checked-color");
   }
@@ -4037,6 +4117,14 @@
   }
   .unlock-dialog .screenshot-ui-show-pointer-button:checked {
     color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:checked {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-background-color"); }
   }
   .unlock-dialog .button:checked {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-checked-background-color"); }
@@ -4082,6 +4170,14 @@
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-background-color"); }
   }
+  .unlock-dialog-notifications-container .message StButton:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-hover-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-hover-background-color"); }
+  }
   .unlock-dialog .button:checked:hover {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-checked-hover-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-button-checked-hover-background-color"); }
@@ -4126,6 +4222,14 @@
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-hover-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-hover-background-color"); }
   }
+  .unlock-dialog-notifications-container .message StButton:checked:active {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-checked-active-background-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:checked:active {
+    @if $mode == dark { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-checked-active-background-color"); }
+  }
   .unlock-dialog .button:checked:active {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-button-checked-active-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-button-checked-active-background-color"); }
@@ -4169,6 +4273,14 @@
   .unlock-dialog .screenshot-ui-show-pointer-button:checked:active {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-active-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-checked-active-background-color"); }
+  }
+  .unlock-dialog-notifications-container .message StButton:insensitive {
+    @if $mode == dark { color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-insensitive-color"); }
+    @if $mode == light { color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-insensitive-color"); }
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:insensitive {
+    @if $mode == dark { color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-color"); }
+    @if $mode == light { color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-color"); }
   }
   .unlock-dialog .button:insensitive {
     @if $mode == dark { color: shell-color-value("unlock-dialog-button-insensitive-color"); }
@@ -4347,8 +4459,7 @@
     color: shell-color-value("toggle-switch-checked-hover-color");
   }
   .toggle-switch:checked .handle {
-    @if $mode == dark { background: shell-color-value("toggle-switch-checked-handle-background"); }
-    @if $mode == light { background: shell-color-value("toggle-switch-checked-handle-background"); }
+    background: shell-color-value("toggle-switch-checked-handle-background");
   }
   .slider {
     @if $mode == dark { color: shell-color-value("slider-color"); }
@@ -5682,6 +5793,26 @@
     @if $mode == dark { background-color: shell-color-value("app-folder-dialog-screenshot-ui-show-pointer-button-active-focus-background-color"); }
     @if $mode == light { background-color: shell-color-value("app-folder-dialog-screenshot-ui-show-pointer-button-active-focus-background-color"); }
   }
+  .word-suggestions StButton:focus:hover {
+    @if $mode == dark { background-color: shell-color-value("word-suggestions-stbutton-focus-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("word-suggestions-stbutton-focus-hover-background-color"); }
+  }
+  .word-suggestions StButton:active:hover {
+    @if $mode == dark { background-color: shell-color-value("word-suggestions-stbutton-active-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("word-suggestions-stbutton-active-hover-background-color"); }
+  }
+  .word-suggestions StButton:active:focus {
+    @if $mode == dark { background-color: shell-color-value("word-suggestions-stbutton-active-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("word-suggestions-stbutton-active-focus-background-color"); }
+  }
+  .word-suggestions StButton:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("word-suggestions-stbutton-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("word-suggestions-stbutton-checked-hover-background-color"); }
+  }
+  .word-suggestions StButton:checked:active {
+    @if $mode == dark { background-color: shell-color-value("word-suggestions-stbutton-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("word-suggestions-stbutton-checked-active-background-color"); }
+  }
   .lg-dialog .shell-link {
     color: shell-color-value("lg-dialog-shell-link-color");
   }
@@ -5735,16 +5866,50 @@
   #unlockDialogNotifications > .hhandle:active {
     background-color: shell-color-value("unlockdialognotifications-hhandle-active-background-color");
   }
+  .unlock-dialog-notifications-container {
+    background-color: shell-color-value("unlock-dialog-notifications-container-background-color");
+  }
   .unlock-dialog-notifications-container .message {
     border: shell-color-value("unlock-dialog-notifications-container-message-border");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source {
+    border: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-border");
+  }
+  .unlock-dialog-notifications-container .message {
     background-color: shell-color-value("unlock-dialog-notifications-container-message-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-background-color");
+  }
+  .unlock-dialog-notifications-container .message {
     color: shell-color-value("unlock-dialog-notifications-container-message-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source {
+    color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-color");
   }
   .unlock-dialog-notifications-container .message.critical {
     background-color: shell-color-value("unlock-dialog-notifications-container-message-critical-background-color");
   }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source.critical {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-critical-background-color");
+  }
   .unlock-dialog-notifications-container .message:active {
     background-color: shell-color-value("unlock-dialog-notifications-container-message-active-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source:active {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-active-background-color");
+  }
+  .unlock-dialog-notifications-container .message StButton {
+    background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-background-color");
+  }
+  .unlock-dialog-notifications-container .message StButton:insensitive {
+    background-color: shell-color-value("unlock-dialog-notifications-container-message-stbutton-insensitive-background-color");
+  }
+  .unlock-dialog-notifications-container .unlock-dialog-notification-source StButton:insensitive {
+    background-color: shell-color-value("unlock-dialog-notifications-container-unlock-dialog-notification-source-stbutton-insensitive-background-color");
   }
   .unlock-dialog-notifications-container .message .message-header {
     color: shell-color-value("unlock-dialog-notifications-container-message-message-header-color");
@@ -5798,16 +5963,16 @@
 // Menus and quick settings, and the controls drawn on them.
 @if shell-colors-on(1) {
   .popup-menu-item:hover {
-    @if $mode == dark { background-color: shell-color-value("popup-menu-item-hover-background-color") !important; }
-    @if $mode == light { background-color: shell-color-value("popup-menu-item-hover-background-color") !important; }
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-hover-background-color"); }
   }
   .popup-menu-item:selected {
-    @if $mode == dark { background-color: shell-color-value("popup-menu-item-selected-background-color") !important; }
-    @if $mode == light { background-color: shell-color-value("popup-menu-item-selected-background-color") !important; }
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-selected-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-selected-background-color"); }
   }
   .button.default:hover {
-    @if $mode == dark { background-color: shell-color-value("button-default-hover-background-color") !important; }
-    @if $mode == light { background-color: shell-color-value("button-default-hover-background-color") !important; }
+    @if $mode == dark { background-color: shell-color-value("button-default-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("button-default-hover-background-color"); }
   }
 }
 
@@ -5842,5 +6007,82 @@
   .pad-osd-window .button:insensitive {
     @if $mode == dark { color: shell-color-value("pad-osd-window-button-insensitive-color"); }
     @if $mode == light { color: shell-color-value("pad-osd-window-button-insensitive-color"); }
+  }
+}
+
+// Menus and quick settings, and the controls drawn on them.
+@if shell-colors-on(1) {
+  .popup-menu-item:selected:hover {
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-selected-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-selected-hover-background-color"); }
+  }
+  .popup-menu-item:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-checked-hover-background-color"); }
+  }
+  .popup-menu-item:selected:active {
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-selected-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-selected-active-background-color"); }
+  }
+  .popup-menu-item:checked:active {
+    @if $mode == dark { background-color: shell-color-value("popup-menu-item-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-menu-item-checked-active-background-color"); }
+  }
+  .popup-sub-menu .popup-menu-item:selected:hover {
+    @if $mode == dark { background-color: shell-color-value("popup-sub-menu-popup-menu-item-selected-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-sub-menu-popup-menu-item-selected-hover-background-color"); }
+  }
+  .popup-sub-menu .popup-menu-item:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("popup-sub-menu-popup-menu-item-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-sub-menu-popup-menu-item-checked-hover-background-color"); }
+  }
+  .popup-sub-menu .popup-menu-item:selected:active {
+    @if $mode == dark { background-color: shell-color-value("popup-sub-menu-popup-menu-item-selected-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-sub-menu-popup-menu-item-selected-active-background-color"); }
+  }
+  .popup-sub-menu .popup-menu-item:checked:active {
+    @if $mode == dark { background-color: shell-color-value("popup-sub-menu-popup-menu-item-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("popup-sub-menu-popup-menu-item-checked-active-background-color"); }
+  }
+}
+
+// Notifications and the date menu.
+@if shell-colors-on(2) {
+  .notification-banner {
+    @if $mode == dark { background-color: shell-color-value("notification-banner-background-color"); }
+    @if $mode == light { background-color: shell-color-value("notification-banner-background-color"); }
+  }
+  .notification-banner:hover {
+    @if $mode == dark { background-color: shell-color-value("notification-banner-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("notification-banner-hover-background-color"); }
+  }
+  .notification-banner:active {
+    @if $mode == dark { background-color: shell-color-value("notification-banner-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("notification-banner-active-background-color"); }
+  }
+  .notification-banner:hover {
+    box-shadow: shell-color-value("notification-banner-hover-box-shadow");
+  }
+  .notification-banner:focus {
+    box-shadow: shell-color-value("notification-banner-focus-box-shadow");
+  }
+  .notification-banner:active {
+    box-shadow: shell-color-value("notification-banner-active-box-shadow");
+  }
+  .notification-banner {
+    @if $mode == dark { border: shell-color-value("notification-banner-border"); }
+    @if $mode == light { border: shell-color-value("notification-banner-border"); }
+  }
+  .notification-banner:hover {
+    @if $mode == dark { border: shell-color-value("notification-banner-hover-border"); }
+    @if $mode == light { border: shell-color-value("notification-banner-hover-border"); }
+  }
+  .notification-banner:focus {
+    @if $mode == dark { border: shell-color-value("notification-banner-focus-border"); }
+    @if $mode == light { border: shell-color-value("notification-banner-focus-border"); }
+  }
+  .notification-banner:active {
+    @if $mode == dark { border: shell-color-value("notification-banner-active-border"); }
+    @if $mode == light { border: shell-color-value("notification-banner-active-border"); }
   }
 }

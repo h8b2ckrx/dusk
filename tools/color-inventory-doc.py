@@ -16,9 +16,11 @@ KEY = [
     ("Quick settings", ".quick-toggle-menu", "background-color"),
     ("Quick settings", ".button", "background-color"),
     ("Quick settings", ".button:hover", "background-color"),
+    ("Switches", ".toggle-switch", "background"),
     ("Notifications", ".message", "background-color"),
     ("Notifications", ".message:hover", "background-color"),
     ("Notifications", ".message:second-in-stack", "background-color"),
+    ("Notifications", ".notification-banner", "background-color"),
     ("Date menu", ".events-button", "background-color"),
     ("Date menu", ".world-clocks-button", "background-color"),
     ("Dialogs", ".modal-dialog", "background-color"),
@@ -35,6 +37,8 @@ SECTIONS = [
      "New in 26.04, so 24.04 has no value of its own: 26.04's formula with 24.04's colors swapped in."),
     ("renamed", "Renamed rows", "Same element, different selector in 24.04: its exact 24.04 value."),
     ("unset", "Unset rows", "24.04 drew nothing there."),
+    ("added", "Added rows", "24.04 rules 26.04 dropped, for elements 26.04 still draws: their exact 24.04 value."),
+    ("image", "Image rows", "24.04 drew these in a picture (its switches): the picture's color."),
 ]
 
 
@@ -62,6 +66,10 @@ def main():
         f"  - **{n['renamed']} renamed:** 24.04 has the element under another selector (scroll bar handles, the",
         "    password dialog's labels); its exact value. [The renames](inventory-shell-colors-renames.tsv).",
         f"  - **{n['unset']} unset:** 24.04 has the element but drew no background, border or shadow there: none.",
+        f"  - **{n['added']} added:** 24.04 rules 26.04 dropped (the notification banner's colors, menu items",
+        "    selected or checked while hovered or pressed): their exact 24.04 value, after 26.04's rules.",
+        f"  - **{n['image']} image:** 24.04 drew it in a picture (its switches): the picture's color.",
+        "    [Dark](inventory-shell-colors-images-dark.tsv), [light](inventory-shell-colors-images-light.tsv).",
         f"  - **{n['derived']} derived:** new in 26.04 (notification groups and stacks, CSS-drawn switches and",
         "    check boxes, the quick-toggle arrow button…): 26.04's own formula with 24.04's colors swapped in.",
         "    [Dark palette](inventory-shell-colors-palette-dark.tsv),"
@@ -69,8 +77,9 @@ def main():
         f"  - **{n['accent']} accent:** uses your accent color (focus rings, checked toggles, the selected day…):",
         "    26.04's formula stays, so it follows the Settings picker; only a surface color inside it becomes",
         "    24.04's.",
-        f"  - **{n['keep']} keep:** an out-of-scope rule (lock screen, Blur my Shell's surfaces, the overview's",
-        "    search entry…) that one of these would otherwise override. It keeps today's value: no visible change.",
+        f"  - **{n['keep']} keep:** an out-of-scope rule (lock screen and its notifications, Blur my Shell's",
+        "    surfaces, the overview's search entry…) that one of these would otherwise override. It keeps today's",
+        "    value: no visible change.",
         "- **Chunks:** 1 menus and quick settings, with the buttons, switches, entries, check boxes and scroll",
         "  bars drawn on them (so those change everywhere they appear); 2 notifications and the date menu; 3",
         "  dialogs (in 26.04's own layout), OSDs, Alt+Tab, tooltips and the screenshot panel.",

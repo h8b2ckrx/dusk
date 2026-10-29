@@ -34,6 +34,15 @@ Usage:
       Print every label on such a surface with text contrast below 4.5 and
       below 80% of stock Yaru's for it (disabled ones aside); exit 1 if any, or if
       none was checked.
+  colors.py follows SNAPSHOTS.json YARU.css YARU2404.css INVENTORY.tsv MODE
+      Print every element whose background or border one of the inventory's
+      rows with a 24.04 value of its own (same, unset, added) decides, by Yaru
+      plus all rows, where Yaru 24.04's own cascade on that element gives
+      another; exit 1 if any.
+  colors.py follows-rows YARU.css YARU2404.css INVENTORY.tsv MODE
+      The same for each such row's own element, in the state its selector
+      names, and menu items also as Shell shows them under the pointer and
+      pressed (MENU_ITEM_STATES); exit 1 if any.
 """
 import colorsys
 import json
@@ -219,7 +228,7 @@ def tsv_rules(tsv, mode, chunks, on=None):
         m, sel, prop, new, old, source, _, chunk = line.rstrip("\n").split("\t")
         if m not in ("both", mode) or int(chunk) not in on | {0}:
             continue
-        flag = " !important" if "!important" in new else ""
+        flag = " !important" if "!important" in old else ""
         value = old.replace("!important", "").strip()
         parsed = parse_color_rules(f"{sel} {{ {prop}: {value}{flag}; }}", origin=1)
         for rule in parsed:
@@ -228,6 +237,82 @@ def tsv_rules(tsv, mode, chunks, on=None):
         if int(chunk) in chunks:
             wanted += parsed
     return rules, wanted
+
+
+# Rows whose value is 24.04's own declaration for that element (or, unset,
+# its lack of one), so 24.04's own cascade can check them.
+OWN_2404 = ("same", "unset", "added")
+# The pseudo-classes Shell gives a menu item under the pointer: it's also
+# selected, and so focused; pressed adds active (popupMenu.js). Other
+# widgets only get the states their own selectors name.
+MENU_ITEM_STATES = [("hover", "selected", "focus"), ("hover", "selected", "focus", "active")]
+
+
+def follows_2404(records, yaru, yaru24, ours):
+    """Elements whose background or border one of `ours` with a 24.04 value
+    of its own (OWN_2404) decides, where Yaru 24.04's own cascade on the
+    element gives another color: [(index, slot, our rule, 24.04's rule)]."""
+    problems = []
+    theirs = cascade.winners(records, yaru24)
+    for i, best in enumerate(cascade.winners(records, yaru + ours)):
+        for slot in (0, 2):
+            rule = best[slot]
+            if rule is None or getattr(rule, "source", None) not in OWN_2404:
+                continue
+            old = theirs[i][slot]
+            want = evaluate(old.corners[slot]) if old else (0, 0, 0, 0)
+            got = evaluate(rule.corners[slot])
+            if want is not None and got is not None and any(abs(x - y) > 2 for x, y in zip(got, want)):
+                problems.append((i, slot, rule, old))
+    return problems
+
+
+def element(selector, extra=()):
+    """Records for the elements `selector` names, one per compound (its
+    subject last, also in the `extra` pseudo-classes), or None if it doesn't
+    parse."""
+    parsed = cascade.parse_selector(selector)
+    if parsed is None:
+        return None
+    compounds = parsed[0]
+    records = []
+    for i, (_, c) in enumerate(compounds):
+        pseudo = set(c["pseudo"]) - {"ltr"}
+        if i == len(compounds) - 1:
+            pseudo |= set(extra)
+        records.append({"parent": i - 1, "id": c["ids"][0] if c["ids"] else "", "classes": list(c["classes"]),
+                        "pseudo": sorted(pseudo), "types": ([c["type"]] if c["type"] else []) + ["StWidget"]})
+    return records
+
+
+def rows_follow_2404(tsv, mode, yaru, yaru24):
+    """follows_2404 on each OWN_2404 row's own element: problem lines."""
+    ours, _ = tsv_rules(tsv, mode, [1, 2, 3])
+    selectors = []
+    for line in open(tsv):
+        if line.strip() and not line.startswith("# "):
+            m, sel, _, _, _, source, _, _ = line.rstrip("\n").split("\t")
+            if m in ("both", mode) and source in OWN_2404 and sel not in selectors:
+                selectors.append(sel)
+    lines = set()
+    names = ["background", "text", "border", "shadow"]
+    for sel in selectors:
+        records = element(sel)
+        if records is None:
+            continue
+        subject = records[-1]
+        states = [()]
+        if "popup-menu-item" in subject["classes"] and "insensitive" not in subject["pseudo"]:
+            states += MENU_ITEM_STATES
+        for extra in states:
+            records = element(sel, extra)
+            for i, slot, rule, old in follows_2404(records, yaru, yaru24, ours):
+                if i == len(records) - 1:
+                    state = "".join(f":{p}" for p in extra if p not in subject["pseudo"])
+                    lines.add(f"{sel}{state} {names[slot]}: ours "
+                              f"{evaluate(rule.corners[slot])} from '{rule.selector}' ({rule.source}), 24.04's "
+                              f"{evaluate(old.corners[slot]) if old else (0, 0, 0, 0)} from '{old.selector if old else '-'}'")
+    return sorted(lines)
 
 
 def expect(snapshots, yaru, tsv, mode, chunks, on=None):
@@ -289,8 +374,8 @@ def legibility(snapshots, yaru, tsv, mode, chunks, on=None, minimum=4.5):
             while k >= 0 and best[k][1] is None:
                 k = cascade.st_parent(records, k)
             text = best[k][1] if k >= 0 else None
-            if (getattr(text, "source", None) in ("same", "renamed")
-                    and getattr(best[j][0], "source", None) in ("same", "renamed", "unset")):
+            if (getattr(text, "source", None) in ("same", "renamed", "added")
+                    and getattr(best[j][0], "source", None) in ("same", "renamed", "unset", "added", "image")):
                 continue
             ratio = contrast(over(record["colors"][1], bg), bg)
             before, behind = stock[i][1], stock[j][0]
@@ -335,6 +420,25 @@ def main():
         print("\n".join(sorted(set(problems))[:40]))
         print(f"{n} {'colors compared' if fn is expect else 'labels checked'}, {len(problems)} problems")
         return 1 if problems or not n else 0
+    if len(sys.argv) == 7 and sys.argv[1] == "follows":
+        snapshots = json.load(open(sys.argv[2]))
+        yaru = parse_color_rules(open(sys.argv[3]).read(), origin=0)
+        yaru24 = parse_color_rules(open(sys.argv[4]).read(), origin=0)
+        ours, _ = tsv_rules(sys.argv[5], sys.argv[6], [1, 2, 3])
+        names = ["background", "text", "border", "shadow"]
+        lines = set()
+        for state, records in snapshots.items():
+            for i, slot, rule, old in follows_2404(records, yaru, yaru24, ours):
+                lines.add(f"{state}: {cascade.describe(records, i)} {names[slot]}: ours "
+                          f"{evaluate(rule.corners[slot])} from '{rule.selector}' ({rule.source}), 24.04's "
+                          f"{evaluate(old.corners[slot]) if old else (0, 0, 0, 0)} from '{old.selector if old else '-'}'")
+        print("\n".join(sorted(lines)))
+        return 1 if lines else 0
+    if len(sys.argv) == 6 and sys.argv[1] == "follows-rows":
+        lines = rows_follow_2404(sys.argv[4], sys.argv[5], parse_color_rules(open(sys.argv[2]).read(), origin=0),
+                                 parse_color_rules(open(sys.argv[3]).read(), origin=0))
+        print("\n".join(lines))
+        return 1 if lines else 0
     if len(sys.argv) < 4 or sys.argv[1] not in ("check", "clobbered", "shadowed"):
         print(__doc__.strip(), file=sys.stderr)
         return 2

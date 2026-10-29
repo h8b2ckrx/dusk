@@ -281,12 +281,14 @@ export default class DuskProbe extends Extension {
         // A top bar button with a menu and a submenu, like an extension adds.
         const button = new PanelMenu.Button(0.5, 'dusk-probe');
         button.add_child(new St.Icon({icon_name: 'emblem-system-symbolic', style_class: 'system-status-icon'}));
-        button.menu.addMenuItem(new PopupMenu.PopupMenuItem('First item'));
+        const first = new PopupMenu.PopupMenuItem('First item');
+        button.menu.addMenuItem(first);
         const sub = new PopupMenu.PopupSubMenuMenuItem('Submenu');
         sub.menu.addMenuItem(new PopupMenu.PopupMenuItem('Sub item 1'));
         sub.menu.addMenuItem(new PopupMenu.PopupMenuItem('Sub item 2'));
         button.menu.addMenuItem(sub);
         button.menu.addMenuItem(new PopupMenu.PopupSwitchMenuItem('Switch', true));
+        button.menu.addMenuItem(new PopupMenu.PopupSwitchMenuItem('Switch off', false));
         // A separator and an item you can't click (St marks both :insensitive),
         // like an app menu's section title or info line.
         button.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
@@ -322,6 +324,16 @@ export default class DuskProbe extends Extension {
         button.menu.open();
         sub.setSubmenuShown(true);
         await take('panel-menu');
+        // An item under the pointer (Shell also selects and focuses it), then
+        // pressed. The pointer can't move here, so :hover is set by hand.
+        first.add_style_pseudo_class('hover');
+        first.active = true;
+        await take('menu-item-hover');
+        first.add_style_pseudo_class('active');
+        await take('menu-item-pressed');
+        first.remove_style_pseudo_class('active');
+        first.remove_style_pseudo_class('hover');
+        first.active = false;
         button.menu.close();
         await sleep(500);
 

@@ -101,6 +101,11 @@ and isn't listed is added there for the owner to see.
     26.04's own formula applied to 24.04's palette (e.g. "the card color lightened 4%" with
     24.04's card color).
   - Alpha tints (hover = text color at 10%, etc.) keep 24.04's form, so they work in both modes.
+  - A 24.04 rule 26.04 dropped, for an element 26.04 still draws, comes back with its 24.04
+    value (a reviewed list: the notification banner's colors, and menu items that are selected
+    or checked while hovered or pressed). Where 24.04 drew a color in a picture (its SVG
+    switches), the color comes from that picture. A 24.04 value keeps 24.04's own weight
+    (`!important` or not), so 26.04's `!important` can't make 24.04's state rules dead (§9).
 - **Accent (builder's call):** wherever 26.04 uses the accent (`-st-accent-color`: checked
   toggles, switches, the selected day, focus rings, focused backgrounds), 26.04's own accent
   expression stays, so it keeps following the picker and keeps the contrast 26.04 tuned for it
@@ -149,3 +154,33 @@ Calls made while writing this (owner: check these):
 - Accent expressions stay 26.04's; only surfaces inside them change (§5).
 - Other extensions' own floating UI (e.g. Tiling Shell's snap assistant and layout editor) is
   theirs, like apps: not in scope.
+
+## 9. Final review (2026-10-29)
+
+The whole-branch review found five places that weren't 24.04's yet; all five are fixed, each with
+a test that failed first:
+
+1. **Menu hover and press:** 26.04 makes its menu item hover `!important`; with 24.04's value in it,
+   24.04's pressed and selected-while-hovered colors never showed. 24.04 values now keep 24.04's
+   own weight, and 24.04's state rules 26.04 dropped are back.
+2. **Notification banners** took the message list's color; 24.04 drew them darker, with a border.
+   24.04's banner rules are back.
+3. **Off switches** showed only their knob: 24.04 drew switches as pictures, read as "no
+   background". The track and knob now take the pictures' colors
+   (`docs/inventory-shell-colors-images-{dark,light}.tsv`).
+4. **Lock-screen media buttons** would take dusk's button colors; the lock screen's notification
+   rules are kept stock.
+5. **26.04 colors inside accent mixes** (a focused entry, a pressed menu item, see-through flat
+   buttons) now use the same widget's 24.04 color (the palettes).
+
+Tests: every row with a 24.04 value of its own, on its element (menu items also hovered and
+pressed, as Shell shows them), and every probed widget it colors, get what Yaru 24.04's own cascade
+gives; no `unset` row where 24.04 drew a picture; no 26.04-only color left; the lock screen's
+notifications unchanged.
+
+Known limits the owner accepted:
+- **High Contrast:** with dusk on, Settings' High Contrast no longer changes the pop-ups (dusk's
+  stylesheet wins, and Shell gives extensions only a dark and a light stylesheet).
+- **Dim text in light mode:** a few of 24.04's own dim greys (date menu headers, week numbers)
+  stay below the usual 4.5:1 contrast, exactly as in 24.04.
+

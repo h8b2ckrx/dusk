@@ -104,7 +104,9 @@ corners install **Rounded Window Corners Reborn** (see below).
 hand-set tokens. Switch a chunk off or on with `$shell-color-chunks` in `src/_tokens.scss` (1 menus
 and quick settings, 2 notifications and the date menu, 3 dialogs, OSDs, Alt+Tab, tooltips and the
 screenshot panel). To change which 24.04 color a new-in-26.04 part gets, edit the palette files
-`docs/inventory-shell-colors-palette-{dark,light}.tsv` and regenerate:
+`docs/inventory-shell-colors-palette-{dark,light}.tsv` (the colors 24.04 drew in pictures, like its
+switches: `docs/inventory-shell-colors-images-{dark,light}.tsv`; 24.04 rules brought back, and stock
+rules kept: `ADD` and `KEEP` in `tools/shell-color-inventory.sh`) and regenerate:
 
 ```bash
 tools/shell-color-inventory.sh > docs/inventory-shell-colors.tsv

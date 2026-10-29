@@ -20,8 +20,16 @@ EXCLUDE='unlock-dialog|login-dialog|#panel|#dash|#LookingGlass|lg-dialog|app-fol
 # and the folder pop-up's name entry keep their stock colors. Found by the
 # headless contrast check (light mode: light entry, light hint text).
 # The lock screen's password entry is another (a class under .unlock-dialog
-# StEntry).
-KEEP='^\.search-entry|folder-name-entry|login-dialog-prompt-entry'
+# StEntry), and so are its notifications' buttons (a StButton rule under
+# .unlock-dialog-notifications-container, which .message-media-control would
+# override).
+KEEP='^\.search-entry|folder-name-entry|login-dialog-prompt-entry|^\.unlock-dialog-notifications-container'
+# 24.04 rules 26.04 dropped, for elements 26.04 still draws: the notification
+# banner's own colors (in 26.04 a banner is a message with a banner class,
+# as in 24.04, but 26.04 gives it no colors of its own), and menu items that
+# are selected or checked and also hovered or pressed (Shell selects the item
+# under the pointer, so these are a menu's hover and press colors).
+ADD='^\.notification-banner|^(\.popup-sub-menu )?\.popup-menu-item:(selected|checked):(hover|active)$'
 # Never kept: the login screen, which never loads dusk.
 NO_KEEP='#panel\.login-screen|\.login-dialog[ ,{]|\.login-dialog$|login-dialog-user-list|login-dialog-not-listed|web-login-dialog|\.qr-code'
 
@@ -35,12 +43,14 @@ gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource 
 for mode in dark light; do
   "$REPO/tools/color-inventory.py" "$WORK/stock-$mode.css" \
     "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" \
-    --scope "$SCOPE" --exclude "$EXCLUDE" --keep "$KEEP" --no-keep "$NO_KEEP" \
+    --scope "$SCOPE" --exclude "$EXCLUDE" --keep "$KEEP" --no-keep "$NO_KEEP" --add "$ADD" \
     --palette "$REPO/docs/inventory-shell-colors-palette-$mode.tsv" \
-    --renames "$REPO/docs/inventory-shell-colors-renames.tsv" > "$WORK/$mode.tsv"
+    --renames "$REPO/docs/inventory-shell-colors-renames.tsv" \
+    --images "$REPO/docs/inventory-shell-colors-images-$mode.tsv" > "$WORK/$mode.tsv"
 done
 
 "$REPO/tools/color-inventory-table.py" "$WORK/dark.tsv" "$WORK/light.tsv" \
   "Shell pop-up colors (design decision 22), made with tools/shell-color-inventory.sh: don't edit by hand." \
   "26.04: the installed Yaru Shell stylesheets. 24.04: docs/reference/. Scope, exclusions: the script." \
-  "Palettes: docs/inventory-shell-colors-palette-{dark,light}.tsv. Renames: docs/inventory-shell-colors-renames.tsv."
+  "Palettes: docs/inventory-shell-colors-palette-{dark,light}.tsv. Renames: docs/inventory-shell-colors-renames.tsv." \
+  "Colors 24.04 drew in pictures: docs/inventory-shell-colors-images-{dark,light}.tsv."
