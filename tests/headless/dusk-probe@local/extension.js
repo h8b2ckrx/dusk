@@ -3,7 +3,8 @@
 // (desktop, overview, quick settings open, a quick-toggle menu open, a top bar
 // menu with an open submenu and a switch, a notification banner, the date menu
 // with calendar and message list, the volume popup, the app grid, an app
-// folder, search results, the screenshot UI, the on-screen keyboard) and records every visible actor with the corner
+// folder, search results, the screenshot UI, the on-screen keyboard, the lock
+// screen and its password prompt) and records every visible actor with the corner
 // radii Shell computed for it, in snapshots.json, with a screenshot of each
 // state. Then it opens modal dialogs with 1, 2 and 3
 // buttons (the 2-button one mimics a polkit prompt: password entry focused,
@@ -12,12 +13,15 @@
 // their geometry in result.json and saves a screenshot of each to
 // $DUSK_PROBE_OUT. Finally it disables dusk@local and reopens Log Out and the
 // overview, to check Shell's own values come back, then writes `done`.
+import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {ExtensionState} from 'resource:///org/gnome/shell/misc/extensionUtils.js';
+import * as AuthPrompt from 'resource:///org/gnome/shell/gdm/authPrompt.js';
 import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
 import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -27,6 +31,7 @@ import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
+import * as UnlockDialog from 'resource:///org/gnome/shell/ui/unlockDialog.js';
 
 const OUT = GLib.getenv('DUSK_PROBE_OUT');
 
@@ -291,6 +296,33 @@ export default class DuskProbe extends Extension {
         Main.keyboard.close();
         await sleep(800);
 
+        // The lock screen, without locking: Shell's lock-screen session mode
+        // is what decides whether dusk stays on, and the unlock dialog is
+        // built by hand. Locking for real would mark the owner's own login
+        // session as locked (this headless Shell runs inside it), and the
+        // password prompt would start a real sign-in with GDM, so its begin()
+        // is stubbed.
+        const begin = AuthPrompt.AuthPrompt.prototype.begin;
+        AuthPrompt.AuthPrompt.prototype.begin = () => {};
+        Main.sessionMode.pushMode('unlock-dialog');
+        await sleep(1000);
+        this._lock = {
+            duskActive: Main.extensionManager.lookup('dusk@local')?.state === ExtensionState.ACTIVE,
+        };
+        const unlock = new UnlockDialog.UnlockDialog(Main.layoutManager.uiGroup);
+        unlock.add_constraint(new Clutter.BindConstraint({
+            source: global.stage, coordinate: Clutter.BindCoordinate.ALL,
+        }));
+        unlock.open();
+        await take('lock-screen');
+        unlock.activate();
+        await take('lock-prompt');
+        unlock.popModal();
+        unlock.destroy();
+        Main.sessionMode.popMode('unlock-dialog');
+        AuthPrompt.AuthPrompt.prototype.begin = begin;
+        await sleep(1000);
+
         write('snapshots.json', JSON.stringify(snapshots));
     }
 
@@ -361,6 +393,7 @@ export default class DuskProbe extends Extension {
         await sleep(800);
 
         // The app grid's icon size, with dusk on and after disabling it.
+        results['lock'] = this._lock;
         results['app-grid'] = this._appGrid;
         Main.overview.showApps();
         await sleep(1500);

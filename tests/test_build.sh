@@ -45,12 +45,14 @@ EOF
   done
 }
 
-# Lock screen and GDM stay stock (spec §2).
-test_no_lock_or_login_selectors() {
+# The login screen (GDM) stays stock (spec §2): it never loads dusk, so
+# rules for it would be dead weight. The lock screen does follow dusk
+# (decision 21); its prompt shares the .login-dialog-button buttons.
+test_no_login_screen_selectors() {
   build
   for f in "${SHELL_CSS[@]}"; do
-    ! grep -qE 'unlock-dialog|login-dialog|screen-shield' "$REPO/$f" \
-      || fail "$f styles the lock or login screen"
+    ! grep -qE '#panel\.login-screen|\.login-dialog[ ,{]|login-dialog-user-list|login-dialog-not-listed|web-login-dialog|\.qr-code' "$REPO/$f" \
+      || fail "$f styles the login screen"
   done
 }
 

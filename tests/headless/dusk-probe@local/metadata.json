@@ -1,1 +1,1 @@
-{"uuid": "dusk-probe@local", "name": "dusk probe", "description": "Test only.", "shell-version": ["50"]}
+{"uuid": "dusk-probe@local", "name": "dusk probe", "description": "Test only.", "shell-version": ["50"], "session-modes": ["user", "unlock-dialog"]}

@@ -2,5 +2,6 @@
   "uuid": "dusk@local",
   "name": "dusk",
   "description": "Personal theme overrides (stylesheet only).",
-  "shell-version": ["50"]
+  "shell-version": ["50"],
+  "session-modes": ["user", "unlock-dialog"]
 }

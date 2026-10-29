@@ -725,3 +725,92 @@ StScrollBar > .hhandle {
 #dashtodockContainer.right .dash-item-container .grid-search-result .overview-icon {
   border-radius: $radius-dock-item;
 }
+
+// ===========================================================================
+// Lock screen (design decision 21): dusk stays on while the screen is locked
+// (metadata.json session-modes), so the unlock dialog follows the theme too.
+// Yaru's lock-screen rules, in Yaru's source order. The login screen (GDM) is
+// a separate Shell that never loads dusk and stays stock.
+// ===========================================================================
+
+// Buttons in lock-screen notifications.
+.unlock-dialog-notifications-container .message StButton,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source StButton {
+  border-radius: $radius-icon-button;
+}
+
+// Text buttons in the unlock dialog.
+.unlock-dialog .button {
+  border-radius: $radius-button;
+}
+
+// Icon buttons in the unlock dialog, and the notification header buttons.
+.unlock-dialog .icon-button,
+.unlock-dialog .message-notification-group .message-collapse-button,
+.message-notification-group .unlock-dialog .message-collapse-button,
+.unlock-dialog .message .message-header .message-expand-button,
+.message .message-header .unlock-dialog .message-expand-button,
+.unlock-dialog .message .message-header .message-close-button,
+.message .message-header .unlock-dialog .message-close-button,
+.unlock-dialog .screenshot-ui-show-pointer-button {
+  border-radius: $radius-icon-button;
+}
+
+// The password entry.
+.unlock-dialog .login-dialog-prompt-entry {
+  border-radius: $radius-entry;
+}
+
+// The sign-in method button next to the password entry. These round buttons
+// are squared like every other pill.
+.login-dialog-button.login-dialog-auth-menu-button {
+  border-radius: $radius-icon-button;
+}
+
+// The web sign-in start button.
+.login-dialog-button.web-login-intro-button {
+  border-radius: $radius-pill-button;
+}
+
+// Back, switch user, accessibility and session buttons.
+.login-dialog-button.a11y-button,
+.login-dialog-button.cancel-button,
+.login-dialog-button.switch-user-button,
+.login-dialog-button.login-dialog-session-list-button {
+  border-radius: $radius-icon-button;
+}
+
+// Top bar items while locked, like the unlocked top bar.
+#panel.unlock-screen .panel-button.screen-recording-indicator,
+#panel.unlock-screen .panel-button.screen-sharing-indicator,
+#panel.unlock-screen .panel-button,
+#panel.unlock-screen .panel-button.clock-display,
+#panel.unlock-screen .panel-button.clock-display .clock {
+  border-radius: $radius-topbar-item;
+}
+
+// Sign-in method list items.
+.unlock-dialog .login-dialog-auth-list-item {
+  border-radius: $radius-menu-item;
+}
+
+// The hint under the lock-screen clock.
+.unlock-dialog-clock .unlock-dialog-clock-hint {
+  border-radius: $radius-osd-label;
+}
+
+// The screen-time limit shield's button.
+.parental-controls-shield .parental-controls-shield-button {
+  border-radius: $radius-pill-button;
+}
+
+// Lock-screen notifications.
+.unlock-dialog-notifications-container .message,
+.unlock-dialog-notifications-container .unlock-dialog-notification-source {
+  border-radius: $radius-notification;
+}
+
+// The count badge on grouped lock-screen notifications.
+.unlock-dialog-notification-count-text {
+  border-radius: $radius-round;
+}

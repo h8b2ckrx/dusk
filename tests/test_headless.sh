@@ -13,6 +13,7 @@ for key in ("workspace", "workspace-disabled"):
     results.pop(key)  # checked by test_headless_workspace_corners_follow_stylesheet
 for key in ("app-grid", "app-grid-disabled"):
     results.pop(key, None)  # checked by test_headless_app_grid_icons_follow_stylesheet
+results.pop("lock", None)  # checked by test_headless_lock_screen_follows_tokens
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 # With dusk disabled, Shell's own 12px gap is back (extension.js disable()).
 assert results.pop("logout-disabled")["spacing"] == 12, "disable() did not restore the gap"
@@ -179,4 +180,21 @@ else:
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF
+}
+
+# The lock screen follows dusk (decision 21): dusk stays on in Shell's
+# lock-screen session mode, and the unlock dialog, its password prompt and
+# the locked top bar get Yaru plus our stylesheet. The probe shows them
+# without locking for real (see tests/headless/dusk-probe@local).
+test_headless_lock_screen_follows_tokens() {
+  local out; out=$(probe_dir dark)
+  python3 - "$out/result.json" <<'EOF' || fail "dusk is not on while the screen is locked"
+import json, sys
+lock = json.load(open(sys.argv[1])).get("lock")
+assert lock and lock["duskActive"], lock
+EOF
+  local selectors=()
+  mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO/tests/headless/lock.selectors")
+  "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
+    || fail "lock screen selectors not found on screen"
 }

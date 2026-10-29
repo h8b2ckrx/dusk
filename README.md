@@ -15,7 +15,7 @@ One file, [src/_tokens.scss](src/_tokens.scss), holds every value. Change a toke
 
 | Layer | Hook | dusk's file |
 |---|---|---|
-| GNOME Shell | the `dusk@local` extension's stylesheet, loaded by Shell | `extension/stylesheet-dark.css` / `-light.css` (linked file by file into `~/.local/share/gnome-shell/extensions/dusk@local/`) |
+| GNOME Shell (and the lock screen) | the `dusk@local` extension's stylesheet, loaded by Shell | `extension/stylesheet-dark.css` / `-light.css` (linked file by file into `~/.local/share/gnome-shell/extensions/dusk@local/`) |
 | GTK4 / libadwaita apps | `~/.config/gtk-4.0/gtk.css` | `build/gtk4.css` |
 | GTK3 apps | `~/.config/gtk-3.0/gtk.css` | `build/gtk3.css` |
 
@@ -184,6 +184,9 @@ extension.
 - **The volume and brightness slider tracks** have round ends drawn in Shell's code (`barLevel.js`).
   Left as they are.
 - **Ubuntu Dock's right-click menus** follow the menu token (they share Shell's menu style).
+- **The login screen** (after power-on or logging out) stays stock Yaru. It's a separate Shell
+  run by the system before anyone logs in, and it never loads dusk. The lock screen does
+  follow dusk.
 - **Switch tracks** stay pills, by choice; every other pill is squared.
 - **Plain GTK4 apps** (GTK4 without libadwaita, like Mutter's title bars for X11 apps) use
   Yaru's separate `gtk-4.0` stylesheet. dusk's GTK4 rules are mirrored from libadwaita's, which

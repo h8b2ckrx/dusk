@@ -154,6 +154,11 @@ Success looks like:
     the button's 24px icon box, which is also what draws the title bars of
     X11 apps (Mutter's frames helper, plain GTK4). Any other token value
     squares them again: GTK3 then swaps the gradient for a flat tint.
+21. Lock screen (owner, 2026-10-29), replacing decision 7 for the lock
+    screen only: `metadata.json` adds `session-modes: ["user",
+    "unlock-dialog"]`, so dusk's stylesheet styles the unlock dialog, and
+    Yaru's lock-screen rules are mirrored with tokens. The login screen
+    (GDM) stays stock: it never loads dusk.
 20. App grid icon size (owner, 2026-10-29): a third small JS exception.
     Shell 50 picks the app grid's icon size in code from 96/64/48/32px,
     starting at 64px, and its icons ignore CSS `icon-size`. dusk sets the

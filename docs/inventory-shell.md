@@ -167,9 +167,14 @@ Each gets checked in LG; any that don't use `.panel-button` get a rule with `top
 
 ## Excluded (stay stock)
 
-- **Lock screen and login (design §2):** `#panel.login-screen …`, `#panel.unlock-screen …`
-  (10 selectors), `.qr-code` and `.web-login-*` (web login), `.parental-controls-shield …`,
-  `.conflicting-session-dialog …`.
+- **Login screen (design §2):** `#panel.login-screen …`, `.login-dialog …`, the user list,
+  `.qr-code` and `.web-login-*` (web login), `.conflicting-session-dialog …`. The login screen
+  is a separate Shell that never loads dusk.
+- ~~Lock screen~~: brought in by the owner after Task 12 (decision 21). dusk mirrors Yaru's
+  lock-screen rules (`.unlock-dialog …`, `#panel.unlock-screen …`, the `.login-dialog-button`
+  buttons the password prompt shares, the screen-time shield) at the end of `src/shell.scss`,
+  each on the token of its normal counterpart (entry, button, icon button, top bar item,
+  notification, menu item, OSD label; the count badge stays round).
 - ~~Ubuntu Dock's own styling~~: brought in by the owner during Task 8, see "Ubuntu Dock" below.
 - **Done in Task 3:** every `.modal-dialog …` selector.
 - **Decorative animations:** `.ripple-box` / `.ripple-box:rtl` (the hot-corner ripple) and

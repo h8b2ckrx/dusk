@@ -6,8 +6,9 @@ import json, sys
 m = json.load(open(sys.argv[1]))
 assert m["uuid"] == "dusk@local", m["uuid"]
 assert m["shell-version"] == ["50"], m["shell-version"]
-# No session-modes: the extension (and so its stylesheet) stays off on the lock screen.
-assert "session-modes" not in m, "session-modes must not be set"
+# On in the normal session and on the lock screen (decision 21), so its
+# stylesheet styles the unlock dialog too. The login screen never loads it.
+assert m["session-modes"] == ["user", "unlock-dialog"], m.get("session-modes")
 EOF
 }
 

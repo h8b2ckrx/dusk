@@ -1,0 +1,8 @@
+# Lock screen selectors the probe should find on screen (decision 21): the
+# locked top bar, the clock page and the password prompt. Lock-screen
+# notifications only show when there are any, so they aren't listed.
+#panel.unlock-screen .panel-button
+.unlock-dialog-clock .unlock-dialog-clock-hint
+.unlock-dialog .login-dialog-prompt-entry
+.login-dialog-button.cancel-button
+.login-dialog-button.login-dialog-auth-menu-button
