@@ -5,7 +5,7 @@
 // with calendar and message list, the volume popup, the app grid, an app
 // folder, search results, the screenshot UI, the on-screen keyboard, the lock
 // screen and its password prompt) and records every visible actor with the corner
-// radii Shell computed for it, in snapshots.json, with a screenshot of each
+// radii and colors Shell computed for it, in snapshots.json, with a screenshot of each
 // state. Then it opens modal dialogs with 1, 2 and 3
 // buttons (the 2-button one mimics a polkit prompt: password entry focused,
 // default button insensitive), then Shell's own Log Out and Power Off dialog,
@@ -67,6 +67,11 @@ function typeNames(actor) {
 // Every mapped actor under the stage as a flat list: parent index, id (actor
 // name), style classes, pseudo classes, type names, and for St widgets the
 // computed corner radii [top-left, top-right, bottom-right, bottom-left].
+// A theme node color as [r, g, b, a] (0-255), or null.
+function rgba(color) {
+    return color ? [color.red, color.green, color.blue, color.alpha] : null;
+}
+
 function snapshotStage() {
     const records = [];
     const walk = (actor, parent) => {
@@ -82,6 +87,12 @@ function snapshotStage() {
             pseudo: isWidget ? (actor.get_style_pseudo_class() ?? '').split(/\s+/).filter(Boolean) : [],
             types: typeNames(actor),
             radii: node ? [0, 1, 2, 3].map(corner => node.get_border_radius(corner)) : null,
+            colors: node ? [
+                rgba(node.get_background_color()),
+                rgba(node.get_foreground_color()),
+                rgba(node.get_border_color(St.Side.TOP)),
+                rgba(node.get_box_shadow()?.color ?? null),
+            ] : null,
         });
         for (const child of actor.get_children())
             walk(child, index);

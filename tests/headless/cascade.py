@@ -106,8 +106,11 @@ def expand(prop, value):
     return dict(enumerate(parts[:4]))
 
 
-def parse_rules(css, origin):
-    """Radius rules in source order, one per selector in each list."""
+def parse_rules(css, origin, props=PROPS, expand=None):
+    """Radius rules in source order, one per selector in each list. Other
+    properties with `props` and `expand(prop, value) -> {slot: raw}`
+    (tests/headless/colors.py uses this for colors)."""
+    expand = expand or globals()["expand"]
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     rules, order = [], 0
     stack, buf = [], ""
@@ -121,7 +124,7 @@ def parse_rules(css, origin):
                 for decl in buf.split(";"):
                     prop, _, value = decl.partition(":")
                     prop = prop.strip()
-                    if prop not in PROPS:
+                    if prop not in props:
                         continue
                     important = "!important" in value
                     value = value.replace("!important", "").strip()
@@ -133,7 +136,9 @@ def parse_rules(css, origin):
                             continue
                         compounds, specificity = parsed
                         key = (origin, important, specificity, order)
-                        rules.append(Rule(selector, compounds, specificity, key, expand(prop, value)))
+                        slots = expand(prop, value)
+                        if slots:
+                            rules.append(Rule(selector, compounds, specificity, key, slots))
             buf = ""
         elif ch == ";" and not stack:
             buf = ""

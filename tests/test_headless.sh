@@ -73,6 +73,14 @@ yaru_dark_css() {
   echo "$css"
 }
 
+# The light one (Shell loads it in light mode).
+yaru_light_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell.css > "$css"
+  echo "$css"
+}
+
 # In every probed UI state, each widget's computed radius is what Yaru plus
 # our stylesheet predict (so our rules take effect where they should), and
 # every chunk selector expected on screen matches a real element.
@@ -229,4 +237,20 @@ if not kept or not kept["apps"] or any(s == want or s > 64 for s in kept["apps"]
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF
+}
+
+# In every probed UI state, in dark and light, each widget's computed colors
+# (background, text, border, shadow) are what Yaru plus our stylesheet
+# predict, and no general color rule of ours erases a more specific Yaru one
+# (decision 22; tests/headless/colors.py).
+test_headless_shell_colors_match_stylesheets() {
+  local mode out yaru
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    yaru=$("yaru_${mode}_css")
+    "$REPO/tests/headless/colors.py" check "$out/snapshots.json" "$yaru" \
+      "$REPO/extension/stylesheet-$mode.css" || fail "$mode: computed colors differ from the stylesheets"
+    "$REPO/tests/headless/colors.py" clobbered "$out/snapshots.json" "$yaru" \
+      "$REPO/extension/stylesheet-$mode.css" || fail "$mode: our color rules override Yaru special cases"
+  done
 }
