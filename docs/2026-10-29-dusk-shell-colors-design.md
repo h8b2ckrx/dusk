@@ -1,6 +1,6 @@
 # dusk: Shell pop-up colors like Ubuntu 24.04 (design)
 
-Status: approved by the owner 2026-10-29 (after a builder check). Design decision 22 in
+Status: approved by the owner 2026-10-29 (after a builder check), and built: all three chunks are on. Design decision 22 in
 [2026-10-28-dusk-design.md](2026-10-28-dusk-design.md) points here. It builds on that design:
 same repo, same hooks, same rules (tokens only, mirror stock rules, owner gates).
 

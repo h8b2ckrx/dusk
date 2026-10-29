@@ -362,22 +362,18 @@ New tokens join `_tokens.scss` with their layer.
 
 ### 7.2 Colors
 
-- Per-surface color tokens, grouped by layer and mode:
-  - Shell: notifications, quick settings, calendar, dialogs, OSDs (background,
-    foreground, and the new dialog divider).
-  - Apps: map one-to-one onto libadwaita's color variables.
-- Every color token defaults to **unset**. An unset token emits no rule, so
-  the stock Yaru color shows. Setting a token is the only way a color
-  changes.
-- Exception: the dialog divider and the dialog button hover/pressed
-  backgrounds are new (stock 26.04 has no such thing). They start at the
-  24.04 Yaru values.
+- **Shell pop-ups (decision 22):** Yaru 24.04's colors, in dark and light, for every floating
+  surface except what Blur my Shell styles. They're generated from
+  [inventory-shell-colors.tsv](inventory-shell-colors.tsv), not hand-set tokens; chunks switch on
+  in `src/_tokens.scss` (`$shell-color-chunks`). Design and details:
+  [2026-10-29-dusk-shell-colors-design.md](2026-10-29-dusk-shell-colors-design.md).
+- **Apps:** tokens map one-to-one onto libadwaita's color variables. Every one is unset (an unset
+  token emits no rule, so the stock Yaru color shows).
 - Accent and top bar colors have no tokens at all (non-goals).
 
 ### 7.3 Spacing
 
-Only the spacing the dialog rework needs (dialog content padding, button
-padding). Nothing else.
+None: the 24.04 dialog spacing went with decision 23.
 
 ## 8. Repo layout
 

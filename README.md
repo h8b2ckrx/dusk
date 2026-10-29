@@ -54,6 +54,8 @@ Each just makes Shell honour the stylesheet's value, and `disable()` gives Shell
 | `tools/radius-inventory.py` | lists the radius of every selector in a stock stylesheet |
 | `tools/mirror-radius.py` | turns an inventory `.tsv` into the generated `src/_*-radius.scss` |
 | `tools/shell-reload.sh` | reloads the Shell stylesheet, checks Shell's log and that dusk is ACTIVE |
+| `tools/shell-color-inventory.sh` and the other `color-*`/`mirror-colors` tools | the Shell pop-up colors: inventory, its doc, the generated rules and values |
+| `tools/yaru-2404-shell.sh`, `docs/reference/` | Yaru 24.04's Shell stylesheets, compiled from source, that the colors follow |
 | `tools/check_gtk_css.py` | loads a CSS file in GTK 3 or 4 and fails on parse errors |
 | `tools/headless-probe.sh` | throwaway headless Shell (isolated from your desktop) that measures and screenshots the Shell |
 | `tools/headless-gtk.sh` | the same for real GTK4 widgets (libadwaita, and plain GTK4) |
@@ -97,6 +99,28 @@ corners install **Rounded Window Corners Reborn** (see below).
 3. **Shell** changes show at once. **Apps** read `gtk.css` when they start, so reopen them.
    Title bars of X11 apps (e.g. VLC) come from a Mutter helper that starts at login, and a
    change to `extension/extension.js` needs one too: log out and back in.
+
+**Shell pop-up colors** (decision 22) are Yaru 24.04's, generated from the color inventory, not
+hand-set tokens. Switch a chunk off or on with `$shell-color-chunks` in `src/_tokens.scss` (1 menus
+and quick settings, 2 notifications and the date menu, 3 dialogs, OSDs, Alt+Tab, tooltips and the
+screenshot panel). To change which 24.04 color a new-in-26.04 part gets, edit the palette files
+`docs/inventory-shell-colors-palette-{dark,light}.tsv` and regenerate:
+
+```bash
+tools/shell-color-inventory.sh > docs/inventory-shell-colors.tsv
+```
+
+```bash
+tools/color-inventory-doc.py docs/inventory-shell-colors.tsv > docs/inventory-shell-colors.md
+```
+
+```bash
+tools/mirror-colors.py docs/inventory-shell-colors.tsv rules > src/_shell-colors.scss
+```
+
+```bash
+tools/mirror-colors.py docs/inventory-shell-colors.tsv values > src/_shell-color-values.scss
+```
 
 Check that dusk is running at any time:
 
@@ -176,7 +200,11 @@ Most updates change nothing. After an Ubuntu upgrade (e.g. 26.10):
    regenerate `src/_gtk4-radius.scss`.
 4. **GTK3:** the same, with `gresource list /usr/share/themes/<your theme>/gtk-3.0/gtk.gresource`,
    `docs/inventory-gtk3.md` and `docs/inventory-gtk3.tsv`.
-5. Run `tests/run.sh` again, then `./install.sh && tools/shell-reload.sh`.
+5. **Shell colors:** `test_color_inventory_matches_installed_yaru` lists the color rules that
+   changed. Regenerate the inventory and its outputs (the four commands under "Changing a value"),
+   and look at any new `derived` rows in `docs/inventory-shell-colors.md`. The 24.04 reference
+   (`docs/reference/`) never changes; `tools/yaru-2404-shell.sh` rebuilds it from the source.
+6. Run `tests/run.sh` again, then `./install.sh && tools/shell-reload.sh`.
 
 ## Bottom window corners
 
