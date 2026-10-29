@@ -452,6 +452,12 @@ StScrollBar > .hhandle {
   border-radius: $radius-round;
 }
 
+// The app grid's icon size, a dusk property: extension.js reads it on the
+// main app grid only (exception 3), so folder grids keep Shell's size.
+.icon-grid {
+  -dusk-app-icon-size: $app-grid-icon-size;
+}
+
 // Workspace backgrounds in the overview.
 .workspace-background {
   border-radius: $radius-workspace;

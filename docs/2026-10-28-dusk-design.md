@@ -63,11 +63,13 @@ Success looks like:
 - Ubuntu Dock's look other than corners (decision 17).
 - High-contrast mode.
 - Qt apps, icons, cursors, fonts, wallpapers.
-- Patching Shell JavaScript or layouts. **Two approved exceptions** (owner,
-  2026-10-28), both of the form "make Shell honour a CSS value it sets in code
-  instead": (1) §6, the dialog button row follows the CSS `spacing`; (2) the
-  overview's workspace wallpaper follows `.workspace-background`'s CSS
-  `border-radius` (Shell hard-codes 30px in `workspace.js`). Nothing else.
+- Patching Shell JavaScript or layouts. **Three approved exceptions** (owner,
+  2026-10-28 and 2026-10-29), all of the form "make Shell honour a CSS value
+  it sets in code instead": (1) §6, the dialog button row follows the CSS
+  `spacing`; (2) the overview's workspace wallpaper follows
+  `.workspace-background`'s CSS `border-radius` (Shell hard-codes 30px in
+  `workspace.js`); (3) the main app grid's icons follow `-dusk-app-icon-size`
+  (§4.20). Nothing else.
 - Window corners for apps that aren't libadwaita/GTK3 CSD, and the bottom
   corners of GTK3 windows: the owner uses the "Rounded Window Corners Reborn"
   extension, and the README points to it. We don't reimplement it.
@@ -152,6 +154,13 @@ Success looks like:
     the button's 24px icon box, which is also what draws the title bars of
     X11 apps (Mutter's frames helper, plain GTK4). Any other token value
     squares them again: GTK3 then swaps the gradient for a flat tint.
+20. App grid icon size (owner, 2026-10-29): a third small JS exception.
+    Shell 50 picks the app grid's icon size in code from 96/64/48/32px,
+    starting at 64px, and its icons ignore CSS `icon-size`. dusk sets the
+    main grid's own `fixed-icon-size` property from `$app-grid-icon-size`
+    (96px), read from `-dusk-app-icon-size` on `.icon-grid`. The grid then
+    fits fewer icons per page. Folder grids, the dock and search keep
+    Shell's sizes; `disable()` gives Shell its own size back.
 
 ## 5. Architecture
 
@@ -357,7 +366,7 @@ padding). Nothing else.
   src/gtk4.scss        # libadwaita overrides
   src/gtk3.scss        # Yaru GTK3 overrides
   src/shell.scss       # Shell overrides incl. modal dialogs
-  extension/           # metadata.json, extension.js (two approved exceptions, §4.15–16), compiled stylesheet-dark.css / stylesheet-light.css
+  extension/           # metadata.json, extension.js (three approved exceptions, §4.15–16, §4.20), compiled stylesheet-dark.css / stylesheet-light.css
   build/               # compiled gtk4.css / gtk3.css (gitignored)
   docs/                # this design doc
   install.sh

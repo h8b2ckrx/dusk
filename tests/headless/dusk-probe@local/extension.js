@@ -115,6 +115,18 @@ function measureWorkspaces() {
     return found;
 }
 
+// The main app grid's icon size: what its layout uses, what the first app
+// icon is drawn at, and the columns per page that size leaves room for.
+function measureAppGrid() {
+    const grid = Main.overview._overview?._controls?._appDisplay?._grid;
+    const first = grid && findActor(grid, a => a instanceof AppDisplay.AppIcon);
+    return grid ? {
+        layout: grid.layout_manager.icon_size,
+        first: first?.icon.iconSize ?? null,
+        columns: grid.layout_manager.columns_per_page,
+    } : null;
+}
+
 async function screenshotScreen(name) {
     const stream = Gio.File.new_for_path(`${OUT}/state-${name}.png`)
         .replace(null, false, Gio.FileCreateFlags.NONE, null);
@@ -248,6 +260,7 @@ export default class DuskProbe extends Extension {
         // The app grid, then an app folder opened from it.
         Main.overview.showApps();
         await take('app-grid');
+        this._appGrid = measureAppGrid();
         const folder = findActor(global.stage, a => a instanceof AppDisplay.FolderIcon);
         if (folder) {
             folder.open();
@@ -344,6 +357,14 @@ export default class DuskProbe extends Extension {
         Main.overview.show();
         await sleep(1500);
         results['workspace-disabled'] = measureWorkspaces();
+        Main.overview.hide();
+        await sleep(800);
+
+        // The app grid's icon size, with dusk on and after disabling it.
+        results['app-grid'] = this._appGrid;
+        Main.overview.showApps();
+        await sleep(1500);
+        results['app-grid-disabled'] = measureAppGrid();
         Main.overview.hide();
         await sleep(800);
 

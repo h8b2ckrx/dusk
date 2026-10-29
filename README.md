@@ -29,13 +29,14 @@ groups. dusk therefore:
 - **GTK4 and GTK3:** mirrors **every** stock radius rule, in the stock order, with values from
   tokens, square ones included. These rules are generated from the inventories.
 
-**Two small code exceptions** live in [extension/extension.js](extension/extension.js). They're
+**Three small code exceptions** live in [extension/extension.js](extension/extension.js). They're
 the only things CSS can't do in Shell 50:
 
 1. the gap between dialog buttons (Shell sets 12px in code);
-2. the overview's workspace corners (Shell clips them at 30px in code).
+2. the overview's workspace corners (Shell clips them at 30px in code);
+3. the app grid's icon size (Shell picks 64px in code; dusk uses `$app-grid-icon-size`, 96px).
 
-Both just make Shell honour the stylesheet's value, and `disable()` gives Shell its own values back.
+Each just makes Shell honour the stylesheet's value, and `disable()` gives Shell its own values back.
 
 ## Files
 
@@ -48,7 +49,7 @@ Both just make Shell honour the stylesheet's value, and `disable()` gives Shell 
 | `src/_gtk4-radius.scss`, `src/_gtk3-radius.scss` | **generated** mirrors of the stock radius rules; don't edit by hand |
 | `build.sh` | compiles `src/` into `build/gtk4.css`, `build/gtk3.css` and the extension's stylesheets |
 | `install.sh`, `uninstall.sh` | link / unlink the outputs, with backups and a state file |
-| `extension/` | the `dusk@local` extension: metadata, `extension.js` (the two exceptions), compiled stylesheets |
+| `extension/` | the `dusk@local` extension: metadata, `extension.js` (the three exceptions), compiled stylesheets |
 | `docs/inventory-*.md` / `.tsv` | the approved radius tables; the `.tsv` files map every stock rule to a token |
 | `tools/radius-inventory.py` | lists the radius of every selector in a stock stylesheet |
 | `tools/mirror-radius.py` | turns an inventory `.tsv` into the generated `src/_*-radius.scss` |

@@ -11,6 +11,8 @@ import json, sys
 results = json.load(open(sys.argv[1]))
 for key in ("workspace", "workspace-disabled"):
     results.pop(key)  # checked by test_headless_workspace_corners_follow_stylesheet
+for key in ("app-grid", "app-grid-disabled"):
+    results.pop(key, None)  # checked by test_headless_app_grid_icons_follow_stylesheet
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 # With dusk disabled, Shell's own 12px gap is back (extension.js disable()).
 assert results.pop("logout-disabled")["spacing"] == 12, "disable() did not restore the gap"
@@ -148,5 +150,33 @@ icons = [r for i, r in enumerate(recs) if "overview-icon" in r["classes"] and un
 assert bg and icons, ("dock not on screen", len(bg), len(icons))
 assert all(r["radii"] == [dock] * 4 for r in bg), ([r["radii"] for r in bg], dock)
 assert all(r["radii"] == [item] * 4 for r in icons), ({tuple(r["radii"]) for r in icons}, item)
+EOF
+}
+
+# Shell picks the app grid's icon size in code (64px on this screen);
+# extension.js makes the main grid use the stylesheet's -dusk-app-icon-size
+# (decision 20), on the real headless Shell. Disabling dusk gives Shell its
+# own size back.
+test_headless_app_grid_icons_follow_stylesheet() {
+  local out; out=$(probe_dir dark)
+  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+import json, re, sys
+results = json.load(open(sys.argv[1]))
+css = open(sys.argv[2]).read()
+m = re.search(r"-dusk-app-icon-size: (\d+)px", css)
+bad = []
+if not m:
+    bad.append("no -dusk-app-icon-size in the stylesheet")
+want = int(m.group(1)) if m else None
+on, off = results.get("app-grid"), results.get("app-grid-disabled")
+if not on or not off:
+    bad.append(f"app grid not measured: {on}, {off}")
+else:
+    if on["layout"] != want or on["first"] != want:
+        bad.append(f"with dusk: grid {on['layout']}px, first icon {on['first']}px, want {want}px")
+    if off["layout"] == want or off["layout"] > 64:
+        bad.append(f"after disabling dusk: grid {off['layout']}px, want Shell's own (64px or less)")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
 EOF
 }

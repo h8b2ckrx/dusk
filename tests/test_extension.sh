@@ -11,10 +11,11 @@ assert "session-modes" not in m, "session-modes must not be set"
 EOF
 }
 
-# extension.js holds exactly two approved exceptions (design §2, §4.15–16):
-# dialog button rows honour CSS `spacing`, and the overview's workspace
-# wallpaper honours .workspace-background's CSS radius. Nothing else.
-test_extension_js_patches_only_the_two_exceptions() {
+# extension.js holds exactly three approved exceptions (design §2,
+# §4.15–16, §4.20): dialog button rows honour CSS `spacing`, the overview's
+# workspace wallpaper honours .workspace-background's CSS radius, and the
+# main app grid's icons honour -dusk-app-icon-size. Nothing else.
+test_extension_js_patches_only_the_three_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   assert_contains "$js" "import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';"
@@ -35,6 +36,11 @@ test_extension_js_patches_only_the_two_exceptions() {
   assert_contains "$js" "typeof wsProto?._updateBorderRadius !== 'function'"
   assert_contains "$js" "overrideMethod(wsProto, '_updateBorderRadius'"
   assert_contains "$js" "get_border_radius(St.Corner.TOPLEFT)"
+  # The app grid: the main grid only, through the layout's own property, and
+  # disable() puts back the value Shell had.
+  assert_contains "$js" "const grid = Main.overview._overview?._controls?._appDisplay?._grid;"
+  assert_contains "$js" "lookup_length('-dusk-app-icon-size', false)"
+  assert_contains "$js" "this._setAppGridIconSize(this._appGrid.original);"
 }
 
 # gjs can't resolve Shell's resource:// imports outside Shell, but it parses

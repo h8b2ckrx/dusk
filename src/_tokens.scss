@@ -92,6 +92,13 @@ $titlebutton-active-bg: unquote("alpha(currentColor, 0.25)");
 $titlebutton-backdrop-bg: transparent;
 
 // ---------------------------------------------------------------------------
+// The app grid's icon size (owner, 2026-10-29; decision 20). Shell picks
+// 64px in code; extension.js gives the main grid this size instead. Folder
+// grids, the dock and search keep Shell's own sizes.
+// ---------------------------------------------------------------------------
+$app-grid-icon-size: 96px;
+
+// ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag
 // 24.04.3-0ubuntu1, gnome-shell-sass widgets/_dialogs.scss and
 // _common.scss %bubble_button. Colors are in $shell-colors below.
