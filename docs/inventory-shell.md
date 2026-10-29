@@ -16,6 +16,10 @@ Waiting for the owner's approval. Approve, or edit the **Proposed** column, befo
   (found live in Task 5), so our rules win anyway. The flip side: a general rule of ours also
   erases Yaru's more specific special cases, so those get re-asserted. The tests check both.
 
+> **Scale changed again by the owner (2026-10-29), a little rounder:** xs 3 · sm 4 · md 6 ·
+> lg 7 · xl 9 · xxl 12. The tokens in the tables are unchanged; read their px values with the
+> current scale in `src/_tokens.scss`.
+
 > **Scale changed by the owner after chunk A (2026-10-28), twice:** steps are now xs 2, sm 3,
 > md 4, lg 5, xl 6, xxl 8. The tokens in the tables are unchanged; read their px values with
 > the new scale (e.g. `popover` → lg → 5).

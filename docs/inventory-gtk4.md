@@ -15,9 +15,13 @@ don't look like check boxes.
 - **Exact mapping:** [inventory-gtk4.tsv](inventory-gtk4.tsv) has every rule in libadwaita's
   order: selector, property, libadwaita value, dusk token (`0` = stays square). Task 9 builds
   `src/gtk4.scss` from it, and its tests check against it.
-- **Proposed** values use your current scale: xs 2 · sm 3 · md 4 · lg 5 · xl 6 · xxl 8 ·
+- **Proposed** values use the scale at the time: xs 2 · sm 3 · md 4 · lg 5 · xl 6 · xxl 8 ·
   pill · circle. libadwaita's own steps line up one-to-one: 6 → xs, 9 → sm, 12 → md, 15 → lg,
   18 → xl.
+
+> **Scale changed again by the owner (2026-10-29), a little rounder:** xs 3 · sm 4 · md 6 ·
+> lg 7 · xl 9 · xxl 12. The tokens in the tables are unchanged; read their px values with the
+> current scale in `src/_tokens.scss`.
 
 ## How Task 9 will apply it
 

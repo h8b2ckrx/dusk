@@ -3,15 +3,16 @@
 // Design: docs/2026-10-28-dusk-design.md §7.
 
 // ---------------------------------------------------------------------------
-// Radius scale (§7.1). Owner asked twice for squarer corners (2026-10-28):
-// now a third of the first proposal (6/9/12/15/18/24).
+// Radius scale (§7.1). Owner asked twice for squarer corners (2026-10-28),
+// down to a third of the first proposal (6/9/12/15/18/24), then for a little
+// rounder (2026-10-29): now half of it, in whole pixels.
 // ---------------------------------------------------------------------------
-$r-xs: 2px;
-$r-sm: 3px;
-$r-md: 4px;
-$r-lg: 5px;
-$r-xl: 6px;
-$r-xxl: 8px; // large overview surfaces only (approved with docs/inventory-shell.md)
+$r-xs: 3px;
+$r-sm: 4px;
+$r-md: 6px;
+$r-lg: 7px;
+$r-xl: 9px;
+$r-xxl: 12px; // large overview surfaces only (approved with docs/inventory-shell.md)
 $r-pill: 999px;
 $r-circle: 50%;
 
@@ -29,7 +30,7 @@ $radius-switch: $r-pill; // the track (pill, as stock: owner, Task 12); its knob
 $radius-slider: $r-sm; // tracks; knobs use $radius-round. owner: no pills (Task 8)
 // Menus and surfaces
 $radius-menu-item: $r-sm;
-$radius-topbar-item: $r-sm; // owner: square them too (was pill; Task 8)
+$radius-topbar-item: $r-md; // owner: squared (was pill; Task 8), then a step rounder than buttons (2026-10-29)
 $radius-card: $r-md;
 $radius-popover: $r-lg;
 $radius-notification: $r-lg;

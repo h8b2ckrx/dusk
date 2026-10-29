@@ -280,8 +280,9 @@ radius minus the padding between them.
 
 `xs 6px · sm 9px · md 12px · lg 15px · xl 18px · pill 999px · circle 50%`
 
-**Changed by the owner (2026-10-28, after chunk A): squarer corners, twice.** The scale is
-now `xs 2px · sm 3px · md 4px · lg 5px · xl 6px · xxl 8px · pill · circle`. Element tokens still
+**Changed by the owner (2026-10-28, after chunk A): squarer corners, twice**, to
+`xs 2px · sm 3px · md 4px · lg 5px · xl 6px · xxl 8px`. **Then a little rounder (2026-10-29):**
+now `xs 3px · sm 4px · md 6px · lg 7px · xl 9px · xxl 12px · pill · circle`. Element tokens still
 point at the same steps; only the step values changed, so the px numbers in the tables below and
 in the inventories are from the first proposal.
 

@@ -17,9 +17,13 @@ get written.
 - **Exact mapping:** [inventory-gtk3.tsv](inventory-gtk3.tsv), every rule in Yaru's order:
   selector, property, Yaru value, dusk token (`0` = stays square). Task 11 builds the GTK3 rules
   from it with the same generator as GTK4 (`tools/mirror-radius.py`).
-- **Proposed** values use your scale (xs 2 · sm 3 · md 4 · lg 5 · xl 6 · xxl 8) and the no-pills
+- **Proposed** values use the scale at the time (xs 2 · sm 3 · md 4 · lg 5 · xl 6 · xxl 8) and the no-pills
   rule. **No new tokens:** every GTK3 element maps onto a token you already have, so GTK3 apps
   match your libadwaita apps and the Shell.
+
+> **Scale changed again by the owner (2026-10-29), a little rounder:** xs 3 · sm 4 · md 6 ·
+> lg 7 · xl 9 · xxl 12. The tokens in the tables are unchanged; read their px values with the
+> current scale in `src/_tokens.scss`.
 
 ## How Task 11 will apply it
 
