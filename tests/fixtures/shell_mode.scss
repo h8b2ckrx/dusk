@@ -1,4 +1,8 @@
 @import 'shell';
-$shell-colors: (dark: (k: #111111), light: (k: #222222));
+$shell-color-values: (dark: ("k": #111111), light: ("k": #222222));
 $mode: light;
-.x { color: shell-color(k); }
+.x { color: shell-color-value("k"); }
+$shell-color-chunks: (1: false, 2: true, 3: false);
+.on { a: shell-colors-on(1); b: shell-colors-on(2); c: shell-colors-on(0); }
+$shell-color-chunks: (1: false, 2: false, 3: false);
+.off { c: shell-colors-on(0); }

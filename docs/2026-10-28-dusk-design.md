@@ -159,6 +159,12 @@ Success looks like:
     "unlock-dialog"]`, so dusk's stylesheet styles the unlock dialog, and
     Yaru's lock-screen rules are mirrored with tokens. The login screen
     (GDM) stays stock: it never loads dusk.
+23. Dialogs back to 26.04's layout (owner, 2026-10-29), replacing decisions 6 and 15: every
+    Shell dialog (Log Out / Power Off / Restart, password prompts, the rest) keeps Yaru 26.04's
+    own layout, with separate buttons and Shell's 12px gaps. dusk's 24.04 dialog styling (flush
+    buttons, 1px dividers, outline, its own button colors, the default button in accent text) and
+    the button-gap JS exception are removed. Dialogs keep dusk's corners (`$radius-dialog`, and
+    `$radius-dialog-button` on the md step) and stay in the color work (decision 22, chunk 3).
 22. Shell pop-up colors like Ubuntu 24.04 (owner, 2026-10-29), in dark and light: every floating
     Shell surface takes 24.04 Yaru's exact colors, except what Blur my Shell styles. Replaces
     decision 10 ("colors from Yaru") for those surfaces. Design:
@@ -229,6 +235,9 @@ rules" (per mode):
   decision, not part of this build.
 
 ## 6. Shell modal dialogs
+
+> **Superseded by decision 23 (2026-10-29):** dialogs are back to Yaru 26.04's own layout; the
+> 24.04 layout below, and the JS exception it needed, are history.
 
 **Target look (Ubuntu 24.04 / GNOME 46 Yaru):** buttons sit flush against the
 bottom edge of the dialog and split its full width equally. A 1px divider runs

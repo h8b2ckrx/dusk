@@ -26,9 +26,20 @@ test_color_vars_skips_null() {
   assert_not_contains "$out" "--view-bg-color"
 }
 
-test_shell_color_follows_mode() {
+# shell-color-value: this mode's value for a pop-up color token.
+test_shell_color_value_follows_mode() {
   local out; out=$(mktemp)
   compile_fixture shell_mode.scss > "$out"
   assert_contains "$out" "color: #222222"
   assert_not_contains "$out" "#111111"
+}
+
+# shell-colors-on: a chunk's switch; chunk 0 (kept rules) is on when any is.
+test_shell_colors_on_follows_switches() {
+  local out; out=$(mktemp)
+  compile_fixture shell_mode.scss > "$out"
+  assert_contains "$out" "a: false"
+  assert_contains "$out" "b: true"
+  assert_contains "$out" "c: true"
+  grep -A1 '^\.off' "$out" | grep -q 'c: false' || fail "chunk 0 on with every chunk off"
 }

@@ -5,29 +5,33 @@
 # Power Off dialog (created before extensions load), the buttons touch the
 # dialog's left, right and bottom edges, with exactly a 1px gap between
 # neighbours ($dialog-divider-width).
-check_flush() {
-  python3 - "$1/result.json" <<'EOF'
+# check_stock_dialogs PROBE_DIR: dialogs keep Yaru 26.04's own layout
+# (decision 23): Shell's 12px gaps between separate buttons, which don't
+# reach the dialog's edges, with dusk's corner tokens on the dialog and its
+# buttons. With dusk disabled, the gap is still Shell's.
+check_stock_dialogs() {
+  python3 - "$REPO" "${SASSC:-sassc}" "$1/result.json" <<'EOF'
 import json, sys
-results = json.load(open(sys.argv[1]))
-for key in ("workspace", "workspace-disabled"):
-    results.pop(key)  # checked by test_headless_workspace_corners_follow_stylesheet
-for key in ("app-grid", "app-grid-disabled"):
-    results.pop(key, None)  # checked by test_headless_app_grid_icons_follow_stylesheet
-results.pop("lock", None)  # checked by test_headless_lock_screen_follows_tokens
-for key in ("search", "search-disabled", "search-on-screen-disabled"):
-    results.pop(key, None)  # checked by test_headless_search_icons_follow_stylesheet
+repo, sassc = sys.argv[1], sys.argv[2]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dialog", "dialog-button"]).items()}
+results = json.load(open(sys.argv[3]))
+for key in ("workspace", "workspace-disabled", "app-grid", "app-grid-disabled", "lock",
+            "search", "search-disabled", "search-on-screen-disabled"):
+    results.pop(key, None)  # checked by their own tests
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
-# With dusk disabled, Shell's own 12px gap is back (extension.js disable()).
-assert results.pop("logout-disabled")["spacing"] == 12, "disable() did not restore the gap"
+assert results.pop("logout-disabled")["spacing"] == 12, "Shell's gap changed with dusk disabled"
 for n, r in results.items():
     d, b = r["dialog"], r["buttons"]
     assert len(b) == int(n) if n.isdigit() else len(b) >= 2, (n, len(b))
+    assert r["spacing"] == 12, (n, "spacing", r["spacing"])
     gaps = [b[i + 1]["x"] - (b[i]["x"] + b[i]["w"]) for i in range(len(b) - 1)]
-    assert all(abs(g - 1) < 0.01 for g in gaps), (n, "gaps", gaps)
-    assert abs(b[0]["x"] - d["x"]) < 0.01, (n, "left edge")
-    assert abs((b[-1]["x"] + b[-1]["w"]) - (d["x"] + d["w"])) < 0.01, (n, "right edge")
-    for btn in b:
-        assert abs((btn["y"] + btn["h"]) - (d["y"] + d["h"])) < 0.01, (n, "bottom edge")
+    assert all(abs(g - 12) < 0.01 for g in gaps), (n, "gaps", gaps)
+    assert b[0]["x"] > d["x"] + 1 and b[-1]["x"] + b[-1]["w"] < d["x"] + d["w"] - 1, (n, "buttons reach the edges")
+    assert all(btn["y"] + btn["h"] < d["y"] + d["h"] - 1 for btn in b), (n, "buttons reach the bottom")
+    assert abs(d["radius"] - t["dialog"]) < 0.5, (n, "dialog radius", d["radius"], t["dialog"])
+    assert all(abs(btn["radius"] - t["dialog-button"]) < 0.5 for btn in b), (n, "button radius", [x["radius"] for x in b])
 EOF
 }
 
@@ -57,12 +61,12 @@ probe_dir() {
   echo "$out"
 }
 
-test_headless_dark_dialog_buttons_flush() {
-  check_flush "$(probe_dir dark)"
+test_headless_dark_dialogs_stock_layout() {
+  check_stock_dialogs "$(probe_dir dark)" || fail "dark dialogs aren't 26.04's layout"
 }
 
-test_headless_light_dialog_buttons_flush() {
-  check_flush "$(probe_dir light)"
+test_headless_light_dialogs_stock_layout() {
+  check_stock_dialogs "$(probe_dir light)" || fail "light dialogs aren't 26.04's layout"
 }
 
 # The stylesheet Shell loads for Yaru (dark), extracted for the cascade check.

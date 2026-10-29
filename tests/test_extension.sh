@@ -12,26 +12,19 @@ assert m["session-modes"] == ["user", "unlock-dialog"], m.get("session-modes")
 EOF
 }
 
-# extension.js holds exactly three approved exceptions (design §2,
-# §4.15–16, §4.20): dialog button rows honour CSS `spacing`, the overview's
-# workspace wallpaper honours .workspace-background's CSS radius, and app
-# icons (the main app grid, search's app results) honour -dusk-app-icon-size.
-# Nothing else.
-test_extension_js_patches_only_the_three_exceptions() {
+# extension.js holds exactly two approved exceptions (design §2, §4.16,
+# §4.20): the overview's workspace wallpaper honours .workspace-background's
+# CSS radius, and app icons (the main app grid, search's app results) honour
+# -dusk-app-icon-size. The dialog button-gap exception (§4.15) is gone with
+# the 24.04 dialogs (decision 23). Nothing else.
+test_extension_js_patches_only_the_two_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
-  assert_contains "$js" "import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
-  assert_eq "$(grep -c 'overrideMethod(' "$js")" 3 "number of overrides"
-  assert_contains "$js" "overrideMethod(proto, '_createDialog'"
-  assert_contains "$js" "const proto = Dialog.Dialog?.prototype;"
-  assert_contains "$js" "typeof proto?._createDialog !== 'function'"
-  assert_contains "$js" "lookup_length('spacing', false)"
+  assert_eq "$(grep -c 'overrideMethod(' "$js")" 2 "number of overrides"
+  assert_not_contains "$js" "dialog.js"
+  assert_not_contains "$js" "_createDialog"
   assert_contains "$js" "this._injections.clear();"
-  # Dialogs Shell built before enable() (Log Out / Power Off) are adopted too,
-  # and disable() gives every adopted row back its own spacing.
-  assert_contains "$js" "this._findRows(global.stage).forEach(row => this._adopt(row));"
-  assert_contains "$js" "row.layout_manager.spacing = original;"
   # The workspace wallpaper: Shell's own method still runs first, and
   # disable() re-runs it so Shell's radius comes back.
   assert_contains "$js" "import * as Workspace from 'resource:///org/gnome/shell/ui/workspace.js';"

@@ -29,10 +29,6 @@ $mode: dark !default;
   @return map-get($shell-color-chunks, $chunk);
 }
 
-// shell-color($key): this mode's value from $shell-colors (null = stock).
-@function shell-color($key) {
-  @return token(map-get($shell-colors, $mode), $key);
-}
 
 // ===========================================================================
 // Generic controls (chunk B of docs/inventory-shell.md). They come first:
@@ -97,88 +93,19 @@ StScrollBar > .hhandle {
 }
 
 // ===========================================================================
-// Modal dialogs (design §6): log out / power off, polkit prompts, extension
-// install, and any other dialog built on dialog.js. Ubuntu 24.04 layout:
-// buttons flush at the bottom, splitting the full width, 1px gaps between
-// them, only the outer bottom corners rounded.
+// Modal dialogs: log out / power off, polkit prompts, and every other dialog
+// built on dialog.js. They keep Yaru 26.04's own layout (decision 23): dusk
+// sets only their corners here (their colors come with chunk 3).
 // ===========================================================================
 
-// Dialog frame (.modal-dialog: content area + button row, stacked). No outer
-// padding, so the button row reaches the edges; a thin outline inside the edge.
+// The dialog frame.
 .modal-dialog {
-  padding: 0;
-  spacing: 0;
   border-radius: $radius-dialog;
-  @if shell-color(dialog-outline) {
-    box-shadow: inset 0 0 0 $dialog-outline-width shell-color(dialog-outline);
-  }
 }
 
-// Dialog content area (.modal-dialog-content-box): title, text, fields.
-.modal-dialog .modal-dialog-content-box {
-  padding: 0;
-  margin: $dialog-content-margin;
-  spacing: $dialog-content-spacing;
-}
-
-// Dialog button row (.modal-dialog-button-box). `spacing` is the gap between
-// buttons; it only takes effect because extension.js makes the row honour it.
-.modal-dialog .modal-dialog-button-box {
-  padding: 0;
-  spacing: $dialog-divider-width;
-}
-
-// Dialog buttons (.modal-dialog-button): square, tinted, flush. Later rules
-// win at equal specificity, so the order of the states below matters.
+// Dialog buttons: separate, with Shell's gaps, as in 26.04.
 .modal-dialog .modal-dialog-button-box .modal-dialog-button {
-  border-radius: 0;
-  padding: $dialog-button-padding;
-  font-weight: $dialog-button-font-weight;
-  color: shell-color(dialog-button-fg);
-  background-color: shell-color(dialog-button-bg);
-
-  &:hover {
-    background-color: shell-color(dialog-button-hover-bg);
-  }
-
-  &:active {
-    background-color: shell-color(dialog-button-active-bg);
-  }
-
-  &:active:hover {
-    background-color: shell-color(dialog-button-active-hover-bg);
-  }
-
-  // Yaru's focus ring stays; only the text color is 24.04's.
-  &:focus {
-    color: shell-color(dialog-button-fg);
-  }
-
-  // The default button: accent text, no accent background.
-  &:default {
-    color: shell-color(dialog-default-fg);
-  }
-
-  // Disabled (e.g. Authenticate before a password is typed), default or not.
-  &:insensitive {
-    color: shell-color(dialog-button-insensitive-fg);
-    background-color: shell-color(dialog-button-insensitive-bg);
-  }
-
-  // Only the dialog's outer bottom corners are rounded, just inside the outline.
-  &:first-child:ltr,
-  &:last-child:rtl {
-    border-radius: 0 0 0 $radius-dialog-button;
-  }
-
-  &:last-child:ltr,
-  &:first-child:rtl {
-    border-radius: 0 0 $radius-dialog-button 0;
-  }
-
-  &:first-child:last-child {
-    border-radius: 0 0 $radius-dialog-button $radius-dialog-button;
-  }
+  border-radius: $radius-dialog-button;
 }
 
 // ===========================================================================

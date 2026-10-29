@@ -179,3 +179,10 @@ test_color_inventory_matches_installed_yaru() {
 $(echo "$d" | head -20)
 Re-run tools/shell-color-inventory.sh and review the changed rows."
 }
+
+# docs/inventory-shell-colors.md is what tools/color-inventory-doc.py makes
+# from the table (it never drifts from the rows).
+test_color_inventory_doc_up_to_date() {
+  diff <("$REPO/tools/color-inventory-doc.py" "$REPO/docs/inventory-shell-colors.tsv") "$REPO/docs/inventory-shell-colors.md" > /dev/null \
+    || fail "docs/inventory-shell-colors.md is stale: run tools/color-inventory-doc.py docs/inventory-shell-colors.tsv > docs/inventory-shell-colors.md"
+}

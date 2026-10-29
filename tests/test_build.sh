@@ -75,60 +75,28 @@ test_check_gtk_css_rejects_bad_css() {
   done
 }
 
-# The dialog layout applies in light style too, so its button colors must
-# exist there (design §5, plan Task 3).
-test_light_dialog_has_button_colors() {
+# Dialogs keep Yaru 26.04's own layout (decision 23): dusk sets only their
+# corners (and, by chunk, their colors), never padding, spacing, margins,
+# fonts or outlines.
+test_dialogs_set_only_corners_and_colors() {
   build
-  python3 - "$REPO/extension/stylesheet-light.css" <<'PY' || fail "light stylesheet has no dialog button background"
-import sys
-css = open(sys.argv[1]).read()
-for block in css.split("}"):
-    selector, _, body = block.partition("{")
-    if ".modal-dialog-button" in selector and "background-color" in body:
-        sys.exit(0)
-sys.exit(1)
-PY
-}
-
-# Ubuntu 24.04 dialog details (design §6; Yaru 24.04.3 %bubble_button and
-# button($style: bubble)), checked on the compiled stylesheets.
-test_dialog_matches_2404() {
-  build
-  python3 - "$REPO/extension" <<'PY' || fail "dialog rules differ from Ubuntu 24.04"
-import re, sys
-B = ".modal-dialog .modal-dialog-button-box .modal-dialog-button"
-# style: (foreground as rgb, as hex, disabled text alpha)
-expect = {
-    "dark": ("247, 247, 247", "#F7F7F7", "0.5"),
-    "light": ("61, 61, 61", "#3D3D3D", "0.4"),
-}
-ok = True
-for style, (fg, fg_hex, dim) in expect.items():
-    css = open(f"{sys.argv[1]}/stylesheet-{style}.css").read()
-    rules = {}
-    for block in css.split("}"):
-        sel, _, body = block.partition("{")
-        for s in sel.split(","):
-            rules.setdefault(" ".join(s.split()), "")
-            rules[" ".join(s.split())] += body
-    def has(selector, decl):
-        global ok
-        body = " " + " ".join(rules.get(selector, "").split())
-        if decl not in body:
-            print(f"{style}: {selector} lacks '{decl}'")
-            ok = False
-    has(".modal-dialog", f"box-shadow: inset 0 0 0 1px rgba({fg}, 0.15)")
-    has(B, "font-weight: normal")
-    has(B, f" color: {fg_hex}")
-    has(B + ":insensitive", f" color: rgba({fg}, {dim})")
-    has(B + ":insensitive", f"background-color: rgba({fg}, 0.17)")
-    has(B + ":active:hover", f"background-color: rgba({fg}, 0.19)")
-    # Button corners sit 1px inside the dialog's outline: dialog radius - 1.
-    dialog = re.search(r"(\d+)px", rules.get(".modal-dialog", "").split("border-radius:")[1]).group(1)
-    corner = f"{int(dialog) - 1}px"
-    has(B + ":first-child:ltr", f"border-radius: 0 0 0 {corner}")
-    has(B + ":last-child:ltr", f"border-radius: 0 0 {corner} 0")
-sys.exit(0 if ok else 1)
+  python3 - "$REPO" <<'PY' || fail "dusk changes the dialogs' layout"
+import importlib.util, re, sys
+repo = sys.argv[1]
+sys.path.insert(0, f"{repo}/tests/headless")
+import colors
+bad = []
+for mode in ("dark", "light"):
+    css = re.sub(r"/\*.*?\*/", "", open(f"{repo}/extension/stylesheet-{mode}.css").read(), flags=re.S)
+    for m in re.finditer(r"([^{}]+)\{([^}]*)\}", css):
+        if ".modal-dialog" not in m.group(1):
+            continue
+        for decl in m.group(2).split(";"):
+            prop = decl.partition(":")[0].strip()
+            if prop and not (prop.endswith("radius") or prop in colors.PROPS):
+                bad.append(f"{mode}: {' '.join(m.group(1).split())[:60]}: {decl.strip()}")
+print("\n".join(bad[:10]))
+sys.exit(1 if bad else 0)
 PY
 }
 

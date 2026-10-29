@@ -13,9 +13,8 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # the general controls drawn on them.
 SCOPE='^(\.(popup-|quick-|message|notification-banner|notification-button|calendar|events-|world-clocks|weather|datemenu|modal-dialog|prompt-dialog|end-session|run-dialog|audio-device|polkit|dialog-list|osd-|pad-osd|resize-popup|workspace-switcher|ws-switcher|switcher-|cycler|dash-label|window-caption|screenshot-ui-(panel|tooltip|type-button|capture-button|close-button|shot-cast|show-pointer)|candidate-|background-app|keyboard-brightness|device-subtitle|shell-link|button|flat|default|icon-button|check-box|toggle-switch|slider)|StEntry|StScrollBar)'
 # Out of scope (design §3): the lock and login screens, the top bar, the
-# dock, Looking Glass, what Blur my Shell styles, the on-screen keyboard, and
-# the dialog buttons dusk already styles like 24.04 (design §6).
-EXCLUDE='unlock-dialog|login-dialog|#panel|#dash|#LookingGlass|lg-dialog|app-folder|search-section|keyboard-key|word-suggestions|emoji-|modal-dialog-button'
+# dock, Looking Glass, what Blur my Shell styles, the on-screen keyboard.
+EXCLUDE='unlock-dialog|login-dialog|#panel|#dash|#LookingGlass|lg-dialog|app-folder|search-section|keyboard-key|word-suggestions|emoji-'
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT

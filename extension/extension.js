@@ -1,44 +1,36 @@
 // dusk is a stylesheet: GNOME Shell loads stylesheet-dark.css or
 // stylesheet-light.css from this folder while the extension is enabled.
 //
-// Three owner-approved exceptions (design §2, §4.15–16, §4.20), each making
-// Shell honour a CSS value it otherwise sets in code, so the values stay in
+// Two owner-approved exceptions (design §2, §4.16, §4.20), each making Shell
+// honour a CSS value it otherwise sets in code, so the values stay in
 // src/_tokens.scss:
 //
-// 1. Shell 50 sets a 12px gap between modal dialog buttons. Every dialog's
-//    button row follows the stylesheet's `spacing` instead. It covers dialogs
-//    created from now on and dialogs that already exist (Shell builds its
-//    Log Out / Power Off dialog at startup, before extensions load).
-// 2. Shell clips the overview's workspace wallpaper at 30px. It follows the
+// 1. Shell clips the overview's workspace wallpaper at 30px. It follows the
 //    stylesheet's border-radius on .workspace-background instead.
-// 3. Shell picks the size of app icons in code (64px on most screens). The
+// 2. Shell picks the size of app icons in code (64px on most screens). The
 //    main app grid, and the app results in search, use the stylesheet's
 //    -dusk-app-icon-size instead.
 //
-// disable() gives everything back to Shell. If a future Shell renames what a
-// patch relies on, that patch is skipped: the stylesheet still applies, but
-// that one value stays Shell's (dialog buttons keep Shell's 12px gaps, the
-// workspace wallpaper its 30px corners, app icons Shell's size).
-import Clutter from 'gi://Clutter';
+// (A third, for the 24.04-style dialogs' button gaps, went with them;
+// decision 23.) disable() gives everything back to Shell. If a future Shell
+// renames what a patch relies on, that patch is skipped: the stylesheet
+// still applies, but that one value stays Shell's (the workspace wallpaper
+// its 30px corners, app icons Shell's size).
 import St from 'gi://St';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
 import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
-import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Workspace from 'resource:///org/gnome/shell/ui/workspace.js';
 
-const ROW_CLASS = 'modal-dialog-button-box';
 
 export default class DuskExtension extends Extension {
     enable() {
         this._injections = new InjectionManager();
-        this._rows = new Map();
         this._backgrounds = new Map();
         this._appGrid = null;
         this._searchIcons = new Map();
         try {
-            this._patchDialogs();
             this._patchWorkspaceBackgrounds();
             this._patchAppGridIconSize();
             this._patchSearchIcons();
@@ -53,12 +45,6 @@ export default class DuskExtension extends Extension {
     disable() {
         this._injections.clear();
         this._injections = null;
-
-        for (const [row, {original, handlerIds}] of this._rows) {
-            handlerIds.forEach(id => row.disconnect(id));
-            row.layout_manager.spacing = original;
-        }
-        this._rows = null;
 
         // Shell's own method is back; re-run it so its radius returns.
         for (const [background, handlerIds] of this._backgrounds) {
@@ -81,57 +67,7 @@ export default class DuskExtension extends Extension {
         this._searchIcons = null;
     }
 
-    // Exception 1: dialog button rows follow the stylesheet's `spacing`.
-    _patchDialogs() {
-        const proto = Dialog.Dialog?.prototype;
-        if (typeof proto?._createDialog !== 'function')
-            return;
-
-        // Dialogs created from now on.
-        const adopt = row => this._adopt(row);
-        this._injections.overrideMethod(proto, '_createDialog', original => function (...args) {
-            original.call(this, ...args);
-            adopt(this.buttonLayout);
-        });
-
-        // Dialogs that already exist.
-        this._findRows(global.stage).forEach(row => this._adopt(row));
-    }
-
-    // Make a dialog button row follow the stylesheet's `spacing`, remembering
-    // the spacing Shell gave it.
-    _adopt(row) {
-        if (!(row?.layout_manager instanceof Clutter.BoxLayout) || this._rows.has(row))
-            return;
-
-        const apply = () => {
-            const [found, spacing] = row.get_theme_node().lookup_length('spacing', false);
-            if (found)
-                row.layout_manager.spacing = spacing;
-        };
-        this._rows.set(row, {
-            original: row.layout_manager.spacing,
-            handlerIds: [
-                row.connect('style-changed', apply),
-                row.connect('destroy', () => this._rows.delete(row)),
-            ],
-        });
-
-        // Already styled rows won't emit style-changed again until something
-        // changes, so apply now.
-        if (row.get_stage())
-            apply();
-    }
-
-    // Every dialog button row under `actor`.
-    _findRows(actor) {
-        const rows = actor.has_style_class_name?.(ROW_CLASS) ? [actor] : [];
-        for (const child of actor.get_children())
-            rows.push(...this._findRows(child));
-        return rows;
-    }
-
-    // Exception 2: the overview's workspace wallpaper follows the
+    // Exception 1: the overview's workspace wallpaper follows the
     // stylesheet's border-radius. Shell's method still runs first (it also
     // scales the radius from 0 on the desktop to full in the overview); we
     // redo its last step with the stylesheet's radius.
@@ -173,7 +109,7 @@ export default class DuskExtension extends Extension {
         return found;
     }
 
-    // Exception 3: the main app grid's icons follow the stylesheet's
+    // Exception 2: the main app grid's icons follow the stylesheet's
     // -dusk-app-icon-size, through the grid layout's own fixed-icon-size
     // property. Folder grids keep Shell's size.
     _patchAppGridIconSize() {
@@ -213,7 +149,7 @@ export default class DuskExtension extends Extension {
         grid.queue_relayout();
     }
 
-    // Exception 3, search: app results are app grid icons, which Shell makes
+    // Exception 2, search: app results are app grid icons, which Shell makes
     // at its default size; give each the app grid's size as it's made. Only
     // when the app grid's own size applied (it holds the stylesheet's value).
     _patchSearchIcons() {

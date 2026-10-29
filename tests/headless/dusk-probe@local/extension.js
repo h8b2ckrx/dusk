@@ -197,10 +197,11 @@ async function measure(results, name, dialogLayout) {
     const box = geometry(dialogLayout._dialog);
     results[name] = {
         spacing: row.layout_manager.spacing,
-        dialog: box,
+        dialog: {...box, radius: dialogLayout._dialog.get_theme_node().get_border_radius(St.Corner.TOPLEFT)},
         buttons: row.get_children().filter(b => b.visible).map(b => ({
             ...geometry(b),
             pseudo: b.get_style_pseudo_class(),
+            radius: b.get_theme_node().get_border_radius(St.Corner.TOPLEFT),
         })),
     };
     const stream = Gio.File.new_for_path(`${OUT}/dialog-${name}.png`)

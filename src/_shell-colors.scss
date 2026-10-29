@@ -3212,6 +3212,64 @@
 
 // Dialogs, OSDs, switchers, tooltips and the screenshot panel.
 @if shell-colors-on(3) {
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-color"); }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:focus {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-color"); }
+    @if $mode == dark { box-shadow: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-box-shadow") !important; }
+    @if $mode == light { box-shadow: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-box-shadow") !important; }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:focus:hover {
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-focus-hover-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:hover {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-hover-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-hover-color"); }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-hover-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:active {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-color"); }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:active:hover {
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-hover-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:active:focus {
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-active-focus-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:checked {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-color"); }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:checked:hover {
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-hover-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:checked:active {
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-active-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-checked-active-background-color"); }
+  }
+  .modal-dialog .modal-dialog-button-box .modal-dialog-button:insensitive {
+    @if $mode == dark { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-insensitive-color"); }
+    @if $mode == light { color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-insensitive-color"); }
+    @if $mode == dark { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-insensitive-background-color"); }
+    @if $mode == light { background-color: shell-color-value("modal-dialog-modal-dialog-button-box-modal-dialog-button-insensitive-background-color"); }
+  }
   .dash-label {
     background-color: shell-color-value("dash-label-background-color");
   }
