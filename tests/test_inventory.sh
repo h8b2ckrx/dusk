@@ -211,3 +211,14 @@ test_color_inventory_keep_closure_and_no_keep() {
 .x .c keep
 .x .y .c keep"
 }
+
+# The winning declaration counts, not the last: an earlier !important value
+# beats a later plain one (Yaru's inactive menu items: transparent !important,
+# then a grey that never shows).
+test_color_inventory_important_wins() {
+  local dir; dir=$(mktemp -d)
+  printf '.m:insensitive { background-color: transparent !important; }\n.m:insensitive { color: #111111; background-color: #424247; }\n' > "$dir/new.css"
+  printf '.m:insensitive { background-color: transparent !important; }\n.m:insensitive { background-color: #343434; }\n' > "$dir/old.css"
+  assert_eq "$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.m' | grep -P '\tbackground-color\t' | cut -f3-5)" \
+    $'transparent !important\ttransparent !important\tsame'
+}

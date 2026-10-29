@@ -313,3 +313,21 @@ test_headless_notification_colors_follow_2404() {
 test_headless_dialog_osd_colors_follow_2404() {
   check_chunk_colors 3 .modal-dialog .modal-dialog-button .osd-window .screenshot-ui-panel
 }
+
+# A menu's separator and its items you can't click draw no background of
+# their own, in dark and light (24.04 and 26.04 both: transparent !important).
+test_headless_inactive_menu_items_have_no_background() {
+  local mode
+  for mode in dark light; do
+    python3 - "$(probe_dir "$mode")/snapshots.json" <<'PY' || fail "$mode: inactive menu items have a background"
+import json, sys
+recs = json.load(open(sys.argv[1]))["panel-menu"]
+found = [r for r in recs if r.get("colors") and (
+    "popup-separator-menu-item" in r["classes"]
+    or ("popup-menu-item" in r["classes"] and "insensitive" in r["pseudo"]))]
+assert len(found) >= 2, ("separator and inactive item not on screen", len(found))
+bad = [(r["classes"], r["colors"][0]) for r in found if r["colors"][0][3] != 0]
+assert not bad, bad
+PY
+  done
+}

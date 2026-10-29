@@ -256,6 +256,10 @@ export default class DuskProbe extends Extension {
         sub.menu.addMenuItem(new PopupMenu.PopupMenuItem('Sub item 2'));
         button.menu.addMenuItem(sub);
         button.menu.addMenuItem(new PopupMenu.PopupSwitchMenuItem('Switch', true));
+        // A separator and an item you can't click (St marks both :insensitive),
+        // like an app menu's section title or info line.
+        button.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        button.menu.addMenuItem(new PopupMenu.PopupMenuItem('Inactive', {reactive: false}));
         Main.panel.addToStatusArea('dusk-probe', button);
 
         // A quick toggle with a menu, like Wi-Fi or Bluetooth.

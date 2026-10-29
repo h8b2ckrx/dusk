@@ -2868,6 +2868,12 @@
   .datemenu-today-button {
     box-shadow: shell-color-value("datemenu-today-button-box-shadow");
   }
+  .calendar:insensitive {
+    background-color: shell-color-value("calendar-insensitive-background-color") !important;
+  }
+  .datemenu-today-button:insensitive {
+    background-color: shell-color-value("datemenu-today-button-insensitive-background-color") !important;
+  }
   .calendar:hover {
     @if $mode == dark { color: shell-color-value("calendar-hover-color"); }
     @if $mode == light { color: shell-color-value("calendar-hover-color"); }
@@ -2955,14 +2961,6 @@
   .datemenu-today-button:insensitive {
     @if $mode == dark { color: shell-color-value("datemenu-today-button-insensitive-color"); }
     @if $mode == light { color: shell-color-value("datemenu-today-button-insensitive-color"); }
-  }
-  .calendar:insensitive {
-    @if $mode == dark { background-color: shell-color-value("calendar-insensitive-background-color"); }
-    @if $mode == light { background-color: shell-color-value("calendar-insensitive-background-color"); }
-  }
-  .datemenu-today-button:insensitive {
-    @if $mode == dark { background-color: shell-color-value("datemenu-today-button-insensitive-background-color"); }
-    @if $mode == light { background-color: shell-color-value("datemenu-today-button-insensitive-background-color"); }
   }
 }
 
@@ -4450,6 +4448,9 @@
     border-color: shell-color-value("popup-menu-item-border-color");
     box-shadow: shell-color-value("popup-menu-item-box-shadow");
   }
+  .popup-menu-item:insensitive {
+    background-color: shell-color-value("popup-menu-item-insensitive-background-color") !important;
+  }
   .popup-menu-item:active {
     @if $mode == dark { color: shell-color-value("popup-menu-item-active-color"); }
     @if $mode == light { color: shell-color-value("popup-menu-item-active-color"); }
@@ -4481,8 +4482,6 @@
   .popup-menu-item:insensitive {
     @if $mode == dark { color: shell-color-value("popup-menu-item-insensitive-color"); }
     @if $mode == light { color: shell-color-value("popup-menu-item-insensitive-color"); }
-    @if $mode == dark { background-color: shell-color-value("popup-menu-item-insensitive-background-color"); }
-    @if $mode == light { background-color: shell-color-value("popup-menu-item-insensitive-background-color"); }
   }
   .popup-inactive-menu-item {
     @if $mode == dark { color: shell-color-value("popup-inactive-menu-item-color"); }
@@ -4501,6 +4500,9 @@
     background-color: shell-color-value("popup-sub-menu-popup-menu-item-background-color");
     border-color: shell-color-value("popup-sub-menu-popup-menu-item-border-color");
     box-shadow: shell-color-value("popup-sub-menu-popup-menu-item-box-shadow");
+  }
+  .popup-sub-menu .popup-menu-item:insensitive {
+    background-color: shell-color-value("popup-sub-menu-popup-menu-item-insensitive-background-color") !important;
   }
   .popup-sub-menu .popup-menu-item:active {
     @if $mode == dark { color: shell-color-value("popup-sub-menu-popup-menu-item-active-color"); }
@@ -4543,8 +4545,6 @@
   .popup-sub-menu .popup-menu-item:insensitive {
     @if $mode == dark { color: shell-color-value("popup-sub-menu-popup-menu-item-insensitive-color"); }
     @if $mode == light { color: shell-color-value("popup-sub-menu-popup-menu-item-insensitive-color"); }
-    @if $mode == dark { background-color: shell-color-value("popup-sub-menu-popup-menu-item-insensitive-background-color"); }
-    @if $mode == light { background-color: shell-color-value("popup-sub-menu-popup-menu-item-insensitive-background-color"); }
   }
   .popup-separator-menu-item {
     border: shell-color-value("popup-separator-menu-item-border") !important;

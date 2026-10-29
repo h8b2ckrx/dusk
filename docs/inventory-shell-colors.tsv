@@ -981,6 +981,8 @@ both	.calendar	border-color	transparent	transparent	same	calendar-border-color	2
 both	.datemenu-today-button	border-color	transparent	transparent	same	datemenu-today-button-border-color	2
 both	.calendar	box-shadow	none	none	same	calendar-box-shadow	2
 both	.datemenu-today-button	box-shadow	none	none	same	datemenu-today-button-box-shadow	2
+both	.calendar:insensitive	background-color	transparent !important	transparent !important	same	calendar-insensitive-background-color	2
+both	.datemenu-today-button:insensitive	background-color	transparent !important	transparent !important	same	datemenu-today-button-insensitive-background-color	2
 dark	.calendar:hover	color	white	#F7F7F7	same	calendar-hover-color	2
 light	.calendar:hover	color	#222222	#3D3D3D	same	calendar-hover-color	2
 dark	.datemenu-today-button:hover	color	white	#F7F7F7	same	datemenu-today-button-hover-color	2
@@ -1025,10 +1027,6 @@ dark	.calendar:insensitive	color	st-transparentize(white, 0.5)	rgba(247, 247, 24
 light	.calendar:insensitive	color	st-transparentize(#222222, 0.6)	rgba(61, 61, 61, 0.4)	same	calendar-insensitive-color	2
 dark	.datemenu-today-button:insensitive	color	st-transparentize(white, 0.5)	rgba(247, 247, 247, 0.5)	same	datemenu-today-button-insensitive-color	2
 light	.datemenu-today-button:insensitive	color	st-transparentize(#222222, 0.6)	rgba(61, 61, 61, 0.4)	same	datemenu-today-button-insensitive-color	2
-dark	.calendar:insensitive	background-color	st-darken(#47474c, 3%)	#272727	same	calendar-insensitive-background-color	2
-light	.calendar:insensitive	background-color	st-lighten(white, 3%)	white	same	calendar-insensitive-background-color	2
-dark	.datemenu-today-button:insensitive	background-color	st-darken(#47474c, 3%)	#272727	same	datemenu-today-button-insensitive-background-color	2
-light	.datemenu-today-button:insensitive	background-color	st-lighten(white, 3%)	white	same	datemenu-today-button-insensitive-background-color	2
 dark	StEntry	background-color	#48484c	#313131	same	stentry-background-color	1
 light	StEntry	background-color	#e5e5e5	#e3e3e3	same	stentry-background-color	1
 dark	StEntry	color	rgba(255, 255, 255, 0.7)	rgba(247, 247, 247, 0.7)	same	stentry-color	1
@@ -1681,6 +1679,7 @@ light	.candidate-popup-content	box-shadow	0 2px 4px 0 rgba(0, 0, 0, 0.05)	0 2px 
 both	.popup-menu-item	background-color	transparent	transparent	same	popup-menu-item-background-color	1
 both	.popup-menu-item	border-color	transparent	transparent	same	popup-menu-item-border-color	1
 both	.popup-menu-item	box-shadow	none	none	same	popup-menu-item-box-shadow	1
+both	.popup-menu-item:insensitive	background-color	transparent !important	transparent !important	same	popup-menu-item-insensitive-background-color	1
 dark	.popup-menu-item:active	color	white	#F7F7F7	same	popup-menu-item-active-color	1
 light	.popup-menu-item:active	color	#222222	#3D3D3D	same	popup-menu-item-active-color	1
 dark	.popup-menu-item:active	background-color	st-lighten(#424247, 9%)	#535353	same	popup-menu-item-active-background-color	1
@@ -1699,8 +1698,6 @@ dark	.popup-menu-item:checked	background-color	st-lighten(#424247, 7%)	#505050	s
 light	.popup-menu-item:checked	background-color	st-darken(#f2f2f2, 7%)	#d4d4d4	same	popup-menu-item-checked-background-color	1
 dark	.popup-menu-item:insensitive	color	st-transparentize(white, 0.5)	rgba(247, 247, 247, 0.5)	same	popup-menu-item-insensitive-color	1
 light	.popup-menu-item:insensitive	color	st-transparentize(#222222, 0.6)	rgba(61, 61, 61, 0.4)	same	popup-menu-item-insensitive-color	1
-dark	.popup-menu-item:insensitive	background-color	#424247	#343434	same	popup-menu-item-insensitive-background-color	1
-light	.popup-menu-item:insensitive	background-color	#f2f2f2	#f0f0f0	same	popup-menu-item-insensitive-background-color	1
 dark	.popup-inactive-menu-item	color	white	#F7F7F7	same	popup-inactive-menu-item-color	1
 light	.popup-inactive-menu-item	color	#222222	#3D3D3D	same	popup-inactive-menu-item-color	1
 dark	.popup-inactive-menu-item:insensitive	color	#9b9b9d	#8a8a8a	same	popup-inactive-menu-item-insensitive-color	1
@@ -1711,6 +1708,7 @@ light	.popup-sub-menu	background-color	#d4d4d4	transparent	unset	popup-sub-menu-
 both	.popup-sub-menu .popup-menu-item	background-color	transparent	transparent	same	popup-sub-menu-popup-menu-item-background-color	1
 both	.popup-sub-menu .popup-menu-item	border-color	transparent	transparent	same	popup-sub-menu-popup-menu-item-border-color	1
 both	.popup-sub-menu .popup-menu-item	box-shadow	none	none	same	popup-sub-menu-popup-menu-item-box-shadow	1
+both	.popup-sub-menu .popup-menu-item:insensitive	background-color	transparent !important	transparent !important	same	popup-sub-menu-popup-menu-item-insensitive-background-color	1
 dark	.popup-sub-menu .popup-menu-item:active	color	white	#F7F7F7	same	popup-sub-menu-popup-menu-item-active-color	1
 light	.popup-sub-menu .popup-menu-item:active	color	#222222	#3D3D3D	same	popup-sub-menu-popup-menu-item-active-color	1
 dark	.popup-sub-menu .popup-menu-item:active	background-color	st-lighten(#56565c, 9%)	#646464	same	popup-sub-menu-popup-menu-item-active-background-color	1
@@ -1733,8 +1731,6 @@ dark	.popup-sub-menu .popup-menu-item:checked	background-color	st-lighten(#56565
 light	.popup-sub-menu .popup-menu-item:checked	background-color	st-darken(#d4d4d4, 7%)	#d4d4d4	same	popup-sub-menu-popup-menu-item-checked-background-color	1
 dark	.popup-sub-menu .popup-menu-item:insensitive	color	st-transparentize(white, 0.5)	rgba(247, 247, 247, 0.5)	same	popup-sub-menu-popup-menu-item-insensitive-color	1
 light	.popup-sub-menu .popup-menu-item:insensitive	color	st-transparentize(#222222, 0.6)	rgba(61, 61, 61, 0.4)	same	popup-sub-menu-popup-menu-item-insensitive-color	1
-dark	.popup-sub-menu .popup-menu-item:insensitive	background-color	#56565c	#454545	same	popup-sub-menu-popup-menu-item-insensitive-background-color	1
-light	.popup-sub-menu .popup-menu-item:insensitive	background-color	#d4d4d4	#f0f0f0	same	popup-sub-menu-popup-menu-item-insensitive-background-color	1
 both	.popup-separator-menu-item	border	none !important	none !important	same	popup-separator-menu-item-border	1
 dark	.popup-separator-menu-item .popup-separator-menu-item-separator	background-color	rgba(255, 255, 255, 0.1)	#464646	same	popup-separator-menu-item-popup-separator-menu-item-separator-background-color	1
 light	.popup-separator-menu-item .popup-separator-menu-item-separator	background-color	rgba(34, 34, 34, 0.15)	#c7c7c7	same	popup-separator-menu-item-popup-separator-menu-item-separator-background-color	1

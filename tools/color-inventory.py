@@ -54,7 +54,9 @@ TWINS = {"background": "background-color", "background-color": "background"}
 
 
 def declarations(css, include_media=False):
-    """{(selector, property): value}, in source order of each pair's last declaration."""
+    """{(selector, property): value}, the winning declaration for each pair
+    (the last one, unless an earlier one is !important), in the source order
+    of the winners."""
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     found, stack, buf = {}, [], ""
     for ch in css:
@@ -70,10 +72,15 @@ def declarations(css, include_media=False):
                     prop = prop.strip()
                     if prop not in colors.PROPS:
                         continue
+                    value = " ".join(value.split())
                     for selector in prelude.split(","):
                         key = (" ".join(selector.split()), prop)
+                        # An earlier !important declaration beats a later
+                        # plain one: the winner counts, not the last.
+                        if "!important" in found.get(key, "") and "!important" not in value:
+                            continue
                         found.pop(key, None)  # keep cascade order
-                        found[key] = " ".join(value.split())
+                        found[key] = value
             buf = ""
         elif ch == ";" and not stack:
             buf = ""
