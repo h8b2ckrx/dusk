@@ -3,8 +3,8 @@
 // (desktop, overview, quick settings open, a quick-toggle menu open, a top bar
 // menu with an open submenu and a switch, a notification banner, the date menu
 // with calendar and message list, the volume popup, the app grid, an app
-// folder, search results, the screenshot UI, the on-screen keyboard, the lock
-// screen and its password prompt) and records every visible actor with the corner
+// folder, search results, the screenshot UI, the on-screen keyboard, a modal
+// dialog, the lock screen and its password prompt) and records every visible actor with the corner
 // radii and colors Shell computed for it, in snapshots.json, with a screenshot of each
 // state. Then it opens modal dialogs with 1, 2 and 3
 // buttons (the 2-button one mimics a polkit prompt: password entry focused,
@@ -346,6 +346,18 @@ export default class DuskProbe extends Extension {
         Main.keyboard.open(Main.layoutManager.primaryIndex);
         await take('keyboard');
         Main.keyboard.close();
+        await sleep(800);
+
+        // A modal dialog with three buttons, like Power Off's.
+        const dialog = new ModalDialog.ModalDialog({destroyOnClose: true});
+        dialog.contentLayout.add_child(new Dialog.MessageDialogContent({
+            title: 'Power Off', description: 'The system will power off automatically.',
+        }));
+        dialog.setButtons(['Cancel', 'Restart', 'Power Off'].map((label, i) =>
+            ({label, action: () => {}, default: i === 2})));
+        dialog.open();
+        await take('dialog');
+        dialog.close();
         await sleep(800);
 
         // The lock screen, without locking: Shell's lock-screen session mode

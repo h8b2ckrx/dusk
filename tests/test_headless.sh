@@ -306,3 +306,10 @@ EOF
 test_headless_notification_colors_follow_2404() {
   check_chunk_colors 2 .message .calendar .events-button .datemenu-today-button
 }
+
+# Chunk 3: dialogs, OSDs, switchers, tooltips and the screenshot panel. The
+# switchers and tooltips need windows and dash hovers the headless session
+# doesn't have; the mirror and shadowing tests cover their rules.
+test_headless_dialog_osd_colors_follow_2404() {
+  check_chunk_colors 3 .modal-dialog .modal-dialog-button .osd-window .screenshot-ui-panel
+}

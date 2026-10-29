@@ -209,8 +209,9 @@ def contrast(a, b):
 def tsv_rules(tsv, mode, chunks, on=None):
     """The inventory's rows for `mode` as rules (origin 1) with their 24.04
     values, for the chunks switched `on` (default: `chunks`) plus chunk 0 —
-    what the mirror emits; and the rules of `chunks` alone."""
-    on = set(on or chunks)
+    what the mirror emits (`chunks` always counted on); and the rules of
+    `chunks` alone."""
+    on = set(on or ()) | set(chunks)
     rules, wanted = [], []
     for line in open(tsv):
         if not line.strip() or line.startswith("# "):
