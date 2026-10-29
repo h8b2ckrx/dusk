@@ -159,6 +159,10 @@ Success looks like:
     "unlock-dialog"]`, so dusk's stylesheet styles the unlock dialog, and
     Yaru's lock-screen rules are mirrored with tokens. The login screen
     (GDM) stays stock: it never loads dusk.
+22. Shell pop-up colors like Ubuntu 24.04 (owner, 2026-10-29), in dark and light: every floating
+    Shell surface takes 24.04 Yaru's exact colors, except what Blur my Shell styles. Replaces
+    decision 10 ("colors from Yaru") for those surfaces. Design:
+    [2026-10-29-dusk-shell-colors-design.md](2026-10-29-dusk-shell-colors-design.md).
 20. App grid icon size (owner, 2026-10-29): a third small JS exception.
     Shell 50 picks the app grid's icon size in code from 96/64/48/32px,
     starting at 64px, and its icons ignore CSS `icon-size`. dusk sets the
