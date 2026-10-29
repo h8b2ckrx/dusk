@@ -63,12 +63,26 @@ Each just makes Shell honour the stylesheet's value, and `disable()` gives Shell
 
 ## Install
 
+On a fresh Ubuntu 26.04, get the two tools it needs, then the repo (any folder works; the links
+point wherever you clone it):
+
+```bash
+sudo apt install git sassc
+```
+
+```bash
+git clone https://github.com/h8b2ckrx/dusk.git ~/dusk
+```
+
+Then install:
+
 ```bash
 cd ~/dusk && ./install.sh
 ```
 
 The **first time,** log out and back in once: Shell only discovers a new extension at login.
-Then run `./install.sh` again to enable it.
+Then run `./install.sh` again to enable it. Reopen your apps, and for rounded bottom window
+corners install **Rounded Window Corners Reborn** (see below).
 
 ## Changing a value
 
