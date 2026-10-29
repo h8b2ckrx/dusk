@@ -102,6 +102,27 @@ test_enable_failure_prints_relogin_hint() {
   assert_contains "$HOME.out" "Log out and back in once"
 }
 
+# Uninstall and reinstall within one session: Shell already knows the
+# extension, so it's enabled again at once, without a log-out.
+test_reinstall_in_same_session_enables_without_relogin() {
+  setup_home
+  install_dusk
+  uninstall_dusk
+  install_dusk
+  assert_contains "$HOME.out" "Extension dusk@local enabled"
+  assert_not_contains "$HOME.out" "Log out"
+}
+
+# enable can succeed without the extension running (Shell hasn't loaded it):
+# the hint follows the real state.
+test_inactive_after_enable_prints_relogin_hint() {
+  setup_home
+  install_dusk
+  DUSK_STUB_STATE=INACTIVE install_dusk
+  assert_contains "$HOME.out" "Log out and back in once"
+  assert_not_contains "$HOME.out" "Extension dusk@local enabled"
+}
+
 test_flatpak_absent_skips_override() {
   setup_home
   install_dusk

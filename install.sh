@@ -53,7 +53,7 @@ backup_path() {
 }
 
 # link TARGET SOURCE: make TARGET a symlink to SOURCE, backing up whatever
-# was there. Prints "new" if it created the link this run.
+# was there.
 link() {
   local target="$1" src="$2" backup
   ensure_dir "$(dirname "$target")"
@@ -71,7 +71,6 @@ link() {
   fi
   ln -s "$src" "$target"
   record link "$target"
-  echo new
 }
 
 # The state file comes first, so it can record the directories made for it.
@@ -82,9 +81,9 @@ while IFS= read -r d; do
   [ -n "$d" ] && record dir "$d"
 done <<< "$state_dirs"
 
-link "$CONFIG/gtk-4.0/gtk.css" "$REPO/build/gtk4.css" > /dev/null
-link "$CONFIG/gtk-3.0/gtk.css" "$REPO/build/gtk3.css" > /dev/null
-new_extension=$(link "$DATA/gnome-shell/extensions/$UUID" "$REPO/extension")
+link "$CONFIG/gtk-4.0/gtk.css" "$REPO/build/gtk4.css"
+link "$CONFIG/gtk-3.0/gtk.css" "$REPO/build/gtk3.css"
+link "$DATA/gnome-shell/extensions/$UUID" "$REPO/extension"
 
 # Flatpak apps can read our gtk.css only if the config folders and the
 # symlinks' real target (build/) are exposed to them.
@@ -110,8 +109,10 @@ echo "  $CONFIG/gtk-4.0/gtk.css -> $REPO/build/gtk4.css"
 echo "  $CONFIG/gtk-3.0/gtk.css -> $REPO/build/gtk3.css"
 echo "  $DATA/gnome-shell/extensions/$UUID -> $REPO/extension"
 
-# On Wayland, Shell only discovers a new extension at login.
-if gnome-extensions enable "$UUID" 2> /dev/null && [ -z "$new_extension" ]; then
+# On Wayland, Shell only discovers a new extension at login. Within the
+# session it was installed in (or after an uninstall), it already knows it.
+if gnome-extensions enable "$UUID" 2> /dev/null \
+  && gnome-extensions info "$UUID" 2> /dev/null | grep -q 'State: ACTIVE'; then
   echo "Extension $UUID enabled. Restart apps to pick up GTK changes;"
   echo "run tools/shell-reload.sh to reload the Shell stylesheet."
 else
