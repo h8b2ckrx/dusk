@@ -9,7 +9,7 @@
 # DUSK_EXTRA_EXTENSIONS="uuid …" also loads those installed extensions (your
 # own copies, read-only), e.g. to see how their top bar items come out.
 # DUSK_GSETTINGS="schema key value;…" sets those in the isolated session only,
-# e.g. to lay out Ubuntu Dock like yours.
+# e.g. to lay out Ubuntu Dock like yours (also those extensions' own keys).
 # Writes OUTDIR/snapshots.json, OUTDIR/result.json, OUTDIR/state-*.png,
 # OUTDIR/dialog-*.png and OUTDIR/shell.log.
 # Exits 0 if the probe finished, 1 otherwise (see OUTDIR/error.txt).
@@ -34,6 +34,10 @@ for uuid in ${DUSK_EXTRA_EXTENSIONS:-}; do
     if [ -d "$dir/$uuid" ]; then
       ln -sfn "$dir/$uuid" "$XDG_DATA_HOME/gnome-shell/extensions/$uuid"
       extra+=("$uuid")
+      # Its own settings schemas, so DUSK_GSETTINGS can set its keys.
+      if [ -d "$dir/$uuid/schemas" ]; then
+        export GSETTINGS_SCHEMA_DIR="$dir/$uuid/schemas${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
+      fi
       break
     fi
   done

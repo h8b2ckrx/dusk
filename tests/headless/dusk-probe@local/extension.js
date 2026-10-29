@@ -164,6 +164,37 @@ function measureSearchIcons() {
     return sizes;
 }
 
+// The top bar clock's pill and the notification indicator (the bell) next to
+// it: geometry, corner radius, padding and the icon's drawn size. Screenshots
+// the clock button.
+async function measureClockIndicator() {
+    const button = Main.panel.statusArea.dateMenu;
+    const indicator = button?._indicator;
+    if (!indicator?.mapped)
+        return {unmapped: {visible: indicator?.visible, unseen: indicator?._count}};
+    const pill = actor => {
+        const node = actor.get_theme_node();
+        const content = node.get_content_box(actor.get_allocation_box());
+        return {
+            ...geometry(actor),
+            radius: node.get_border_radius(St.Corner.TOPLEFT),
+            padding: [St.Side.TOP, St.Side.RIGHT, St.Side.BOTTOM, St.Side.LEFT].map(side => node.get_padding(side)),
+            content: {w: content.get_width(), h: content.get_height()},
+        };
+    };
+    const found = {
+        panel: geometry(Main.panel),
+        clock: pill(button._clockDisplay),
+        indicator: {...pill(indicator), iconSize: indicator.get_theme_node().get_length('icon-size')},
+    };
+    const box = geometry(button);
+    const stream = Gio.File.new_for_path(`${OUT}/panel-clock.png`)
+        .replace(null, false, Gio.FileCreateFlags.NONE, null);
+    await new Shell.Screenshot().screenshot_area(box.x - 8, box.y, box.w + 16, box.h, stream);
+    stream.close(null);
+    return found;
+}
+
 // Search for `apps` then `others` in the overview, measuring the result
 // icons after each.
 async function searchIcons(apps, others) {
@@ -495,6 +526,18 @@ export default class DuskProbe extends Extension {
         notifications.set_boolean('show-banners', true);
         await sleep(500);
         results['search-after-dnd'] = await searchIcons('set', 'lock');
+
+        // An unseen notification shows the indicator (a bell) next to the
+        // clock. Low urgency: no banner, which would count as seeing it.
+        const unseen = new MessageTray.Notification({
+            source: MessageTray.getSystemSource(),
+            title: 'Probe notification',
+            body: 'Not seen yet',
+            urgency: MessageTray.Urgency.LOW,
+        });
+        MessageTray.getSystemSource().addNotification(unseen);
+        await sleep(1500);
+        results['clock-indicator'] = await measureClockIndicator();
 
         write('result.json', JSON.stringify(results, null, 1));
         write('done', 'ok');

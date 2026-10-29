@@ -18,7 +18,7 @@ from tokens import token_values
 t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dialog", "dialog-button"]).items()}
 results = json.load(open(sys.argv[3]))
 for key in ("workspace", "workspace-disabled", "app-grid", "app-grid-disabled", "lock",
-            "search", "search-disabled", "search-on-screen-disabled", "search-reenabled", "search-after-dnd"):
+            "search", "search-disabled", "search-on-screen-disabled", "search-reenabled", "search-after-dnd", "clock-indicator"):
     results.pop(key, None)  # checked by their own tests
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 assert results.pop("logout-disabled")["spacing"] == 12, "Shell's gap changed with dusk disabled"
@@ -39,7 +39,9 @@ EOF
 # across tests while src/, extension/, tests/headless/, the probe tool and the
 # installed system (stock_key) are unchanged.
 # "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
-# extended, shrink); "accent" picks the blue accent instead of slate.
+# extended, shrink); "accent" picks the blue accent instead of slate; "blur"
+# loads Blur my Shell with its Contrasted top bar (dark pills behind the top
+# bar's items).
 probe_dir() {
   local key out variant="${2:-}"
   key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
@@ -50,6 +52,10 @@ probe_dir() {
     local extra="" settings=""
     if [ "$variant" = accent ]; then
       settings="org.gnome.desktop.interface accent-color blue"
+    fi
+    if [ "$variant" = blur ]; then
+      extra=blur-my-shell@aunetx
+      settings="org.gnome.shell.extensions.blur-my-shell.panel style-panel 3"
     fi
     if [ "$variant" = dock ]; then
       extra=ubuntu-dock@ubuntu.com
@@ -264,6 +270,36 @@ for key in ("search", "search-after-dnd"):
     got = results.get(key)
     if not got or not got["apps"] or any(s != want for s in got["apps"]):
         bad.append(f"{key}: app results at {got and got['apps']}, want {want}px")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+}
+
+# The notification indicator (a bell, shown for unseen notifications) next to
+# the top bar clock. Blur my Shell's Contrasted top bar gives it a pill of its
+# own, round and padded so far that its 16px icon shrank to 10px (seen live).
+# Its pill has the clock's corners and height, and room for the whole icon.
+test_headless_clock_indicator_matches_clock() {
+  local blur
+  for blur in "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx" \
+      /usr/share/gnome-shell/extensions/blur-my-shell@aunetx; do
+    [ -d "$blur" ] && break
+  done
+  [ -d "$blur" ] || fail "Blur my Shell isn't installed; this test checks the bell in its Contrasted top bar"
+  local out; out=$(probe_dir dark blur)
+  python3 - "$out/result.json" <<'EOF'
+import json, sys
+found = json.load(open(sys.argv[1])).get("clock-indicator")
+if not found or "indicator" not in found:
+    sys.exit(f"the indicator wasn't on screen: {found}")
+clock, bell = found["clock"], found["indicator"]
+bad = []
+if bell["radius"] != clock["radius"]:
+    bad.append(f"corners {bell['radius']}px, the clock's are {clock['radius']}px")
+if bell["h"] != clock["h"]:
+    bad.append(f"pill {bell['h']}px tall, the clock's is {clock['h']}px")
+if min(bell["content"]["w"], bell["content"]["h"]) < round(bell["iconSize"]):
+    bad.append(f"room for the icon {bell['content']}, the icon is {round(bell['iconSize'])}px")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF

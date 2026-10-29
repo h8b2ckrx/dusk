@@ -92,6 +92,14 @@ $titlebutton-active-bg: unquote("alpha(currentColor, 0.25)");
 $titlebutton-backdrop-bg: transparent;
 
 // ---------------------------------------------------------------------------
+// The notification indicator (a bell) next to the top bar clock (owner,
+// 2026-10-29; decision 24): padding above and below its 16px icon. In Blur
+// my Shell's Contrasted top bar (3px borders) its pill is then the top bar's
+// full 32px, as tall as the clock's, with the whole icon showing.
+// ---------------------------------------------------------------------------
+$topbar-indicator-padding: 5px;
+
+// ---------------------------------------------------------------------------
 // The app grid's icon size (owner, 2026-10-29; decision 20), also used by
 // search results. Shell picks 64px in code; extension.js gives the main grid
 // and search's app results this size instead. Folder grids and the dock keep

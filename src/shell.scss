@@ -128,6 +128,16 @@ StScrollBar > .hhandle {
   border-radius: $radius-topbar-item;
 }
 
+// The notification indicator (a bell) next to the clock. Blur my Shell's
+// Contrasted top bar gives it a pill of its own, round and padded so far that
+// its icon shrinks (decision 24): the clock's corners, and room for the whole
+// icon in a pill as tall as the clock's.
+#panel .panel-button.clock-display .messages-indicator {
+  border-radius: $radius-topbar-item;
+  padding-top: $topbar-indicator-padding;
+  padding-bottom: $topbar-indicator-padding;
+}
+
 // Activities button's workspace dots.
 #panel .panel-button#panelActivities .workspace-dot {
   border-radius: $radius-round;

@@ -183,6 +183,14 @@ Success looks like:
     the results: Ubuntu Dock patches that method too, and whenever Do Not
     Disturb changes it takes its patch off and back on, removing ours (found
     live, 2026-10-29).
+24. The notification indicator next to the top bar clock (owner,
+    2026-10-29). Shell shows a bell there for unseen notifications. Blur my
+    Shell's Contrasted top bar gives it a pill of its own with 14px corners
+    and 8px padding inside 3px borders, which left its 16px icon 10px of the
+    32px top bar. dusk gives it the clock's corners (`$radius-topbar-item`)
+    and `$topbar-indicator-padding` (5px) above and below the icon: the
+    whole icon shows, in a pill as tall as the clock's. Without that top bar
+    style the bell has no pill and looks as stock.
 
 ## 5. Architecture
 
@@ -377,7 +385,8 @@ New tokens join `_tokens.scss` with their layer.
 
 ### 7.3 Spacing
 
-None: the 24.04 dialog spacing went with decision 23.
+None, except the padding of the bell next to the top bar clock (decision 24). The 24.04 dialog
+spacing went with decision 23.
 
 ## 8. Repo layout
 
