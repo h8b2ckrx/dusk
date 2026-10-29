@@ -372,9 +372,10 @@ export default class DuskProbe extends Extension {
         Main.overview.hide();
         await sleep(1000);
 
-        // Search results.
+        // Search results, typed into the focused search entry.
         Main.overview.show();
         await sleep(800);
+        Main.overview.searchEntry.grab_key_focus();
         Main.overview.searchEntry.set_text('set');
         await sleep(1500);
         await take('search');

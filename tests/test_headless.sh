@@ -340,6 +340,39 @@ EOF
   done
 }
 
+# With Blur my Shell loaded, the overview's search entry shows Blur my
+# Shell's own look (decision 25): Shell's computed colors are what Yaru plus
+# Blur my Shell alone give it, in every probed state it's on screen.
+test_headless_blur_my_shell_search_entry_keeps_its_look() {
+  local out; out=$(probe_dir dark blur)
+  local blur=$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
+  [ -f "$blur/stylesheet.css" ] || blur=/usr/share/gnome-shell/extensions/blur-my-shell@aunetx
+  python3 - "$REPO/tests/headless" "$out/snapshots.json" "$(yaru_dark_css)" "$blur/stylesheet.css" <<'EOF' \
+    || fail "the search entry isn't Blur my Shell's"
+import json, sys
+sys.path.insert(0, sys.argv[1])
+import cascade, colors
+yaru = colors.parse_color_rules(open(sys.argv[3]).read(), origin=0)
+blur = colors.parse_color_rules(open(sys.argv[4]).read(), origin=1)
+names = ["background", "text", "border", "shadow"]
+seen, bad = 0, []
+for state, records in json.load(open(sys.argv[2])).items():
+    want = colors.predict(records, yaru + blur)
+    for i, record in enumerate(records):
+        if "search-entry" not in record["classes"] or not record.get("colors"):
+            continue
+        seen += 1
+        for slot in (0, 1):
+            got = record["colors"][slot]
+            if want[i][slot] is not None and (got is None or any(abs(a - b) > 2 for a, b in zip(got, want[i][slot]))):
+                bad.append(f"{state}: {':'.join(record['pseudo'])} {names[slot]}: Shell {got}, Blur my Shell's {list(want[i][slot])}")
+if not seen:
+    sys.exit("no search entry on screen")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+}
+
 # In every probed UI state, in dark and light, each widget's computed colors
 # (background, text, border, shadow) are what Yaru plus our stylesheet
 # predict, and no general color rule of ours erases a more specific Yaru one

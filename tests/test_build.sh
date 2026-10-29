@@ -217,6 +217,8 @@ PY
 # Outside the scope (the top bar, dock, lock and login screens, Blur my
 # Shell's surfaces, the keyboard), every color dusk sets, with every chunk
 # on, is the installed Yaru 26.04 value: only re-asserted, never changed.
+# Rules under Blur my Shell's style classes re-assert its look instead
+# (decision 25; test_blur_my_shell_entries_keep_its_look checks them).
 test_no_color_rules_outside_scope() {
   local tmp; tmp=$(mktemp -d)
   shell_colors_on "$tmp"
@@ -233,6 +235,8 @@ for mode in ("dark", "light"):
     stock = ci.declarations(open(f"{tmp}/stock-{mode}.css").read())
     norm = lambda v: " ".join(v.replace("!important", "").split()).lower()
     for (sel, prop), value in ci.declarations(open(f"{tmp}/{mode}.css").read()).items():
+        if re.search(r"\.(overview-components|appfolder-dialogs)-", sel):
+            continue
         if outside.search(sel) and norm(value) != norm(stock.get((sel, prop), "")):
             bad.append(f"{mode}: {sel} {prop}: {value} (stock: {stock.get((sel, prop))})")
 print("\n".join(bad[:20]))
@@ -254,5 +258,55 @@ test_shell_colors_shadow_nothing() {
     "$REPO/tests/headless/colors.py" shadowed "$tmp/stock.css" "$tmp/$mode.css" \
       '#panel\.login-screen|\.login-dialog[ ,{]|\.login-dialog$|login-dialog-user-list|login-dialog-not-listed|web-login-dialog|\.qr-code' \
       > "$tmp/shadowed-$mode.txt" || fail "$mode: $(wc -l < "$tmp/shadowed-$mode.txt") rules erased, e.g. $(head -3 "$tmp/shadowed-$mode.txt")"
+  done
+}
+
+# Blur my Shell's own look wins on the overview's search entry and an app
+# folder's name entry (owner, decision 25): with each of its styles on, in
+# dark and light and in every state dusk's rules style, the colors are what
+# Yaru plus Blur my Shell alone give. Its stylesheet loads before ours, so
+# ours come later in the cascade. A Blur my Shell update that changes its
+# colors fails here too.
+test_blur_my_shell_entries_keep_its_look() {
+  local blur mode
+  for blur in "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx" \
+      /usr/share/gnome-shell/extensions/blur-my-shell@aunetx; do
+    [ -f "$blur/stylesheet.css" ] && break
+  done
+  [ -f "$blur/stylesheet.css" ] || { fail "Blur my Shell isn't installed"; return; }
+  build > /dev/null
+  for mode in dark light; do
+    local name=gnome-shell.css stock; stock=$(mktemp --suffix=.css)
+    [ "$mode" = dark ] && name=gnome-shell-dark.css
+    gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+      "/org/gnome/shell/theme/Yaru/$name" > "$stock"
+    python3 - "$REPO/tests/headless" "$stock" "$blur/stylesheet.css" "$REPO/extension/stylesheet-$mode.css" <<'EOF' \
+      || fail "$mode: Blur my Shell's entries changed by dusk"
+import sys
+sys.path.insert(0, sys.argv[1])
+import colors
+yaru = colors.parse_color_rules(open(sys.argv[2]).read(), origin=0)
+blur = colors.parse_color_rules(open(sys.argv[3]).read(), origin=1)
+dusk = colors.parse_color_rules(open(sys.argv[4]).read(), origin=1)
+for rule in dusk:  # loaded after Blur my Shell's
+    origin, important, specificity, order = rule.key
+    rule.key = (origin, important, specificity, order + 10 ** 6)
+names = ["background", "text", "border", "shadow"]
+bad = []
+for style in ("transparent", "light", "dark"):
+    entries = [f"#uiGroup.overview-components-{style} StBoxLayout StEntry.search-entry",
+               f"StBoxLayout.app-folder-dialog.appfolder-dialogs-{style} StBoxLayout.folder-name-container StEntry.folder-name-entry"]
+    for entry in entries:
+        for state in ((), ("hover",), ("focus",), ("hover", "focus"), ("insensitive",)):
+            records = colors.element(entry, state)
+            want = colors.predict(records, yaru + blur)[-1]
+            got = colors.predict(records, yaru + blur + dusk)[-1]
+            for slot in range(4):
+                if want[slot] != got[slot]:
+                    bad.append(f"{style} {entry.split()[-1]}{''.join(':' + p for p in state)} {names[slot]}: "
+                               f"Blur my Shell's {want[slot]}, with dusk {got[slot]}")
+print("\n".join(bad[:12]))
+sys.exit(1 if bad else 0)
+EOF
   done
 }

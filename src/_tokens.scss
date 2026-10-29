@@ -118,6 +118,20 @@ $app-grid-icon-size: 96px;
 $shell-color-chunks: (1: true, 2: true, 3: true);
 @import 'shell-color-values';
 
+// Blur my Shell's own look for the overview's search entry and an app
+// folder's name entry (owner, 2026-10-30; decision 25), copied from its
+// stylesheet.css: the background per style (its overview and folder style
+// classes), and white text with no border or shadow in all of them. dusk
+// re-asserts it so its own rules never override it there; a Blur my Shell
+// update that changes it fails test_blur_my_shell_entries_keep_its_look.
+$blur-my-shell-entry-backgrounds: (
+  transparent: rgba(0, 0, 0, 0),
+  light: rgba(200, 200, 200, 0.2),
+  dark: rgba(100, 100, 100, 0.35),
+);
+$blur-my-shell-entry-text: white;
+$blur-my-shell-entry-border: transparent;
+
 // Dialog buttons: separate buttons in Yaru 26.04's layout (decision 23), on
 // the same step as app dialogs' response buttons.
 $radius-dialog-button: $r-md;

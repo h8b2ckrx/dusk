@@ -178,6 +178,10 @@ pressed, as Shell shows them), and every probed widget it colors, get what Yaru 
 gives; no `unset` row where 24.04 drew a picture; no 26.04-only color left; the lock screen's
 notifications unchanged.
 
+The review also found that dusk overrode Blur my Shell's look on the overview's search entry and an
+app folder's name entry; the owner chose to let Blur my Shell win there (decision 25 in the main
+design).
+
 Known limits the owner accepted:
 - **High Contrast:** with dusk on, Settings' High Contrast no longer changes the pop-ups (dusk's
   stylesheet wins, and Shell gives extensions only a dark and a light stylesheet).

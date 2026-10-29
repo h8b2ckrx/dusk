@@ -769,3 +769,37 @@ StScrollBar > .hhandle {
 // Shell pop-up colors like Ubuntu 24.04 (design decision 22), generated.
 // ===========================================================================
 @import 'shell-colors';
+
+// ===========================================================================
+// Blur my Shell's search entry and folder name entry (decision 25): its own
+// look wins. Its stylesheet loads before ours, so dusk's general entry rules
+// and the stock rules kept for these entries (above, in states it doesn't
+// name) would beat it. Its look is re-asserted under its own style classes
+// (on the stage's uiGroup for the overview, on the folder dialog for
+// folders), one step more specific than those and !important. Without its
+// style on, the kept stock rules apply.
+// ===========================================================================
+@each $style, $background in $blur-my-shell-entry-backgrounds {
+  // The overview's search entry.
+  .overview-components-#{$style} .search-entry,
+  .overview-components-#{$style} .search-entry:hover,
+  .overview-components-#{$style} .search-entry:focus,
+  .overview-components-#{$style} .search-entry:insensitive {
+    color: $blur-my-shell-entry-text !important;
+    background-color: $background !important;
+    border-color: $blur-my-shell-entry-border !important;
+    box-shadow: none !important;
+  }
+
+  // An app folder's name entry.
+  .appfolder-dialogs-#{$style}.app-folder-dialog .folder-name-container .folder-name-entry,
+  .appfolder-dialogs-#{$style}.app-folder-dialog .folder-name-container .folder-name-entry:hover,
+  .appfolder-dialogs-#{$style}.app-folder-dialog .folder-name-container .folder-name-entry:focus,
+  .appfolder-dialogs-#{$style}.app-folder-dialog .folder-name-container .folder-name-entry:insensitive {
+    color: $blur-my-shell-entry-text !important;
+    background-color: $background !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+}
+

@@ -191,6 +191,17 @@ Success looks like:
     and `$topbar-indicator-padding` (5px) above and below the icon: the
     whole icon shows, in a pill as tall as the clock's. Without that top bar
     style the bell has no pill and looks as stock.
+25. Blur my Shell's search entry and folder name entry (owner,
+    2026-10-30). dusk's general entry colors, and the stock rules it keeps
+    for the overview's search entry and an app folder's name entry, came out
+    as strong as Blur my Shell's own rules for them; dusk's stylesheet loads
+    later, so the search entry turned solid grey with a focus ring while
+    typing, and the folder name entry solid. dusk now re-asserts Blur my
+    Shell's own look there (`$blur-my-shell-entry-*`, copied from its
+    stylesheet), under its own style classes, so it applies only while that
+    style is on; with it off, the kept stock rules apply (the search entry
+    stays readable in light mode). A Blur my Shell update that changes those
+    colors fails `test_blur_my_shell_entries_keep_its_look`.
 
 ## 5. Architecture
 
