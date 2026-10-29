@@ -39,7 +39,7 @@ the numbers change.
 | `entry` | sm 3 | 9 | entries, spin buttons (and their end buttons' outer corners) |
 | `checkbox` | xs 2 | 6 | check boxes |
 | `radio` | circle | circle | radio buttons, grouped check buttons |
-| `switch` | sm 3 | pill | switch tracks (the knob is `round`) |
+| `switch` | pill | pill | switch tracks, kept as pills (owner, Task 12); the knob is `round` |
 | `slider` | sm 3 | pill | slider troughs, fill, highlight (knobs are `round`) |
 | `menu-item` | sm 3 | 9 | menu items, menu bar items, emoji picker items |
 | `popover` | lg 5 | 15 | popovers, menus |
@@ -71,7 +71,7 @@ the numbers change.
 
 ## Decided while reviewing
 
-- **No pills** (owner): scrollbars, switches, sliders, progress bars, toasts, and circular
+- **No pills** (owner): scrollbars, sliders, progress bars, toasts, and circular
   and pill buttons all become scale steps (see the tables). Knobs, avatars, dots, badges and
   radio buttons stay round.
 - **Big but consistent changes:** at your scale, buttons and entries go 9 → 3, cards 12 → 4,

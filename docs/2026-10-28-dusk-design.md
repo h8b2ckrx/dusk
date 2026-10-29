@@ -140,7 +140,8 @@ Success looks like:
 18. No pills (owner, during Task 8): every element that was a pill uses a
     scale step instead, in Shell and apps. Only truly round things stay round:
     avatars, dots, badges, round icon backgrounds, switch and slider knobs,
-    handles, radio buttons.
+    handles, radio buttons. **Exception (owner, Task 12): switch tracks are
+    back to their original pill shape**, in Shell and apps alike.
 
 ## 5. Architecture
 

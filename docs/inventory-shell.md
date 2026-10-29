@@ -21,10 +21,11 @@ Waiting for the owner's approval. Approve, or edit the **Proposed** column, befo
 > the new scale (e.g. `popover` → lg → 5).
 
 > **No pills (owner, Task 8):** everything that was a pill now uses a scale step: top bar
-> items, pill buttons, round icon buttons, switch tracks, sliders, OSD popups, the search entry,
+> items, pill buttons, round icon buttons, sliders, OSD popups, the search entry,
 > tooltips and labels, calendar days. Only truly round things stay round (`round`): avatars,
 > dots and indicator bars, badges, round icon backgrounds, switch and slider knobs, handles.
-> Rows below that still say "pill" read with this rule.
+> Rows below that still say "pill" read with this rule. **Except switch tracks: back to pills
+> (owner, Task 12).**
 
 ## Scale change to decide first
 

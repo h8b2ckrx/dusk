@@ -51,6 +51,9 @@ def radii(name):
         problems.append(f"{name}: not measured ({got.get(name)})")
     return r
 def want(name, corners):
+    # A pill token (999px) is drawn capped at half the widget's height.
+    if all(c >= 100 for c in corners):
+        return round_(name)
     r = radii(name)
     if r is not None and any(abs(a - b) > 0.5 for a, b in zip(r, corners)):
         problems.append(f"{name}: drawn {r}, want {corners}")

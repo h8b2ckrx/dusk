@@ -35,7 +35,7 @@ Yaru's GTK3 uses its own steps (mostly 6, 8 and 5), so the mapping is by element
 | `entry` | sm 3 | 6 | entries, spin buttons (and their end buttons' outer corners) |
 | `checkbox` | xs 2 | 3–5 | check boxes, selection checks in Files' grid |
 | `radio` | circle | circle | radio buttons |
-| `switch` | sm 3 | 14 | switch tracks |
+| `switch` | pill | 14 | switch tracks, kept as pills (owner, Task 12) |
 | `round` | circle | circle | switch and slider knobs, avatars |
 | `slider` | sm 3 | 3–5 | slider troughs, fill, highlight |
 | `bar` | sm 3 | 1–6 | progress and level bars (thin bars stay capped at half their height) |
