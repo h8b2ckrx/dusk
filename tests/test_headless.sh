@@ -266,15 +266,18 @@ test_headless_shell_colors_match_stylesheets() {
 # color a row of CHUNKS decides shows that row's 24.04 value (decision 22),
 # its labels stay legible (contrast 4.5), and the SELECTORS are on screen.
 check_chunk_colors() {
-  local chunks="$1" mode out yaru
+  local chunks="$1" mode out yaru on
   shift
+  # The chunks switched on in src/_tokens.scss (what the stylesheet has).
+  on=$(sed -n 's/^\$shell-color-chunks: (\(.*\));/\1/p' "$REPO/src/_tokens.scss" \
+    | tr ',' '\n' | sed -n 's/ *\([0-9]\): true/\1/p' | paste -sd, -)
   for mode in dark light; do
     out=$(probe_dir "$mode")
     yaru=$("yaru_${mode}_css")
     "$REPO/tests/headless/colors.py" expect "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" || fail "$mode: chunk $chunks colors aren't 24.04's"
+      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks colors aren't 24.04's"
     "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" || fail "$mode: chunk $chunks text isn't legible"
+      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks text isn't legible"
     "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "$@" || fail "$mode: chunk $chunks surfaces not on screen"
   done
 }
@@ -297,4 +300,9 @@ slate, blue = checked(sys.argv[1]), checked(sys.argv[2])
 assert slate and blue, ("no checked quick toggle", slate, blue)
 assert slate != blue, ("same color with both accents", slate)
 EOF
+}
+
+# Chunk 2: notifications and the date menu.
+test_headless_notification_colors_follow_2404() {
+  check_chunk_colors 2 .message .calendar .events-button .datemenu-today-button
 }

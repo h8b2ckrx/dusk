@@ -237,3 +237,20 @@ print("\n".join(bad[:20]))
 sys.exit(1 if bad else 0)
 PY
 }
+
+# Static, for states the probe doesn't show (hover, pressed, and the lock
+# screen's notifications): with every chunk on, no color rule of ours would
+# erase a more specific Yaru one for the same slot. Only the login screen,
+# which never loads dusk, is left out.
+test_shell_colors_shadow_nothing() {
+  local tmp; tmp=$(mktemp -d)
+  shell_colors_on "$tmp"
+  local mode
+  for mode in dark light; do
+    gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+      "/org/gnome/shell/theme/Yaru/gnome-shell$([ "$mode" = dark ] && echo -dark).css" > "$tmp/stock.css"
+    "$REPO/tests/headless/colors.py" shadowed "$tmp/stock.css" "$tmp/$mode.css" \
+      '#panel\.login-screen|\.login-dialog[ ,{]|\.login-dialog$|login-dialog-user-list|login-dialog-not-listed|web-login-dialog|\.qr-code' \
+      > "$tmp/shadowed-$mode.txt" || fail "$mode: $(wc -l < "$tmp/shadowed-$mode.txt") rules erased, e.g. $(head -3 "$tmp/shadowed-$mode.txt")"
+  done
+}
