@@ -169,7 +169,7 @@ test_shell_colors_generated_up_to_date() {
 # on, compiled to DIR/dark.css and DIR/light.css.
 shell_colors_on() {
   cp -r "$REPO/src" "$1/src"
-  sed -i -E 's/^\$shell-color-chunks: \(1: false, 2: false, 3: false\);/$shell-color-chunks: (1: true, 2: true, 3: true);/' "$1/src/_tokens.scss"
+  sed -i -E 's/^\$shell-color-chunks: \(1: (true|false), 2: (true|false), 3: (true|false)\);/$shell-color-chunks: (1: true, 2: true, 3: true);/' "$1/src/_tokens.scss"
   grep -q '^\$shell-color-chunks: (1: true, 2: true, 3: true);' "$1/src/_tokens.scss" || fail "no \$shell-color-chunks switches"
   "${SASSC:-sassc}" --style expanded -I "$1/src" "$1/src/shell-dark.scss" > "$1/dark.css"
   "${SASSC:-sassc}" --style expanded -I "$1/src" "$1/src/shell-light.scss" > "$1/light.css"

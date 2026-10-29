@@ -15,6 +15,15 @@ SCOPE='^(\.(popup-|quick-|message|notification-banner|notification-button|calend
 # Out of scope (design §3): the lock and login screens, the top bar, the
 # dock, Looking Glass, what Blur my Shell styles, the on-screen keyboard.
 EXCLUDE='unlock-dialog|login-dialog|#panel|#dash|#LookingGlass|lg-dialog|app-folder|search-section|keyboard-key|word-suggestions|emoji-'
+# Out-of-scope entries the general StEntry rules would change, which the
+# static check can't see (a class on an entry): the overview's search entry
+# and the folder pop-up's name entry keep their stock colors. Found by the
+# headless contrast check (light mode: light entry, light hint text).
+# The lock screen's password entry is another (a class under .unlock-dialog
+# StEntry).
+KEEP='^\.search-entry|folder-name-entry|login-dialog-prompt-entry'
+# Never kept: the login screen, which never loads dusk.
+NO_KEEP='#panel\.login-screen|\.login-dialog[ ,{]|\.login-dialog$|login-dialog-user-list|login-dialog-not-listed|web-login-dialog|\.qr-code'
 
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
@@ -26,7 +35,7 @@ gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource 
 for mode in dark light; do
   "$REPO/tools/color-inventory.py" "$WORK/stock-$mode.css" \
     "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" \
-    --scope "$SCOPE" --exclude "$EXCLUDE" \
+    --scope "$SCOPE" --exclude "$EXCLUDE" --keep "$KEEP" --no-keep "$NO_KEEP" \
     --palette "$REPO/docs/inventory-shell-colors-palette-$mode.tsv" \
     --renames "$REPO/docs/inventory-shell-colors-renames.tsv" > "$WORK/$mode.tsv"
 done

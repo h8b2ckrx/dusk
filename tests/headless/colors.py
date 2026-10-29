@@ -25,6 +25,14 @@ Usage:
       (hover, pressed): print every more specific Yaru rule for a slot one of
       our rules sets, on a subset of what ours targets, not re-asserted in
       ours; exit 1 if any.
+  colors.py expect SNAPSHOTS.json YARU.css INVENTORY.tsv MODE CHUNKS
+      Print every element whose color a row of CHUNKS (e.g. 1 or 1,2)
+      decides, by Yaru plus the inventory's rows, where Shell's color isn't
+      that row's 24.04 value; exit 1 if any, or if none was compared.
+  colors.py contrast SNAPSHOTS.json YARU.css INVENTORY.tsv MODE CHUNKS
+      Print every label on such a surface with text contrast below 4.5 and
+      below stock Yaru's for it (disabled ones aside); exit 1 if any, or if
+      none was checked.
 """
 import colorsys
 import json
@@ -35,7 +43,8 @@ import cascade
 
 SLOTS = {"background-color": 0, "color": 1, "border-color": 2, "box-shadow": 3}
 PROPS = set(SLOTS) | {"background", "border", "border-top"}
-NAMED = {"white": (255, 255, 255, 255), "black": (0, 0, 0, 255), "transparent": (0, 0, 0, 0)}
+NAMED = {"white": (255, 255, 255, 255), "black": (0, 0, 0, 255), "transparent": (0, 0, 0, 0),
+         "whitesmoke": (245, 245, 245, 255)}
 COLOR_START = re.compile(r"#[0-9a-fA-F]{3,8}\b|(?:rgba?|st-[a-z]+)\(|-st-accent-color|\b(?:white|black|transparent)\b")
 
 
@@ -180,6 +189,105 @@ def shadowed(yaru, dusk, exclude=None):
     return sorted(pairs)
 
 
+def over(fg, bg):
+    """fg composited over an opaque bg, as an opaque color."""
+    a = fg[3] / 255
+    return tuple(round(f * a + b * (1 - a)) for f, b in zip(fg[:3], bg[:3])) + (255,)
+
+
+def contrast(a, b):
+    """WCAG contrast ratio between two opaque colors."""
+    def lum(c):
+        ch = [x / 255 for x in c[:3]]
+        ch = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in ch]
+        return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
+    hi, lo = sorted((lum(a), lum(b)), reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def tsv_rules(tsv, mode, chunks):
+    """The inventory's rows for `mode` as rules (origin 1) with their 24.04
+    values, for `chunks` plus chunk 0 (what the mirror emits with those
+    chunks on); and the rules of `chunks` alone."""
+    rules, wanted = [], []
+    for line in open(tsv):
+        if not line.strip() or line.startswith("# "):
+            continue
+        m, sel, prop, new, old, _, _, chunk = line.rstrip("\n").split("\t")
+        if m not in ("both", mode) or int(chunk) not in set(chunks) | {0}:
+            continue
+        flag = " !important" if "!important" in new else ""
+        value = old.replace("!important", "").strip()
+        parsed = parse_color_rules(f"{sel} {{ {prop}: {value}{flag}; }}", origin=1)
+        rules += parsed
+        if int(chunk) in chunks:
+            wanted += parsed
+    return rules, wanted
+
+
+def expect(snapshots, yaru, tsv, mode, chunks):
+    """Elements whose color a row of `chunks` decides, with Shell's computed
+    color differing from that row's 24.04 value: (problems, compared)."""
+    ours, wanted = tsv_rules(tsv, mode, chunks)
+    wanted = {id(r) for r in wanted}
+    problems, compared = [], 0
+    names = ["background", "text", "border", "shadow"]
+    for state, records in snapshots.items():
+        for i, best in enumerate(cascade.winners(records, yaru + ours)):
+            computed = records[i].get("colors")
+            if not computed:
+                continue
+            for slot, rule in enumerate(best):
+                if rule is None or id(rule) not in wanted:
+                    continue
+                want = evaluate(rule.corners[slot])
+                got = computed[slot]
+                if want is None or (slot == 3 and got is None):
+                    continue
+                compared += 1
+                if got is None or any(abs(x - y) > 2 for x, y in zip(got, want)):
+                    problems.append(f"{state}: {cascade.describe(records, i)} {names[slot]}: "
+                                    f"Shell {got}, want {list(want)} from '{rule.selector}'")
+    return problems, compared
+
+
+def legibility(snapshots, yaru, tsv, mode, chunks, minimum=4.5):
+    """Labels on a surface whose background a row of `chunks` decides, with
+    text contrast below `minimum` and below what stock Yaru gives the same
+    label (some text is dim by design), disabled ones aside: (problems,
+    checked)."""
+    ours, wanted = tsv_rules(tsv, mode, chunks)
+    wanted = {id(r) for r in wanted}
+    problems, checked = [], 0
+    for state, records in snapshots.items():
+        best = cascade.winners(records, yaru + ours)
+        stock = predict(records, yaru)
+        for i, record in enumerate(records):
+            if "StLabel" not in record["types"] or not record.get("colors"):
+                continue
+            # St marks every non-reactive widget :insensitive (labels, plain
+            # boxes); only an insensitive control means disabled text.
+            j, disabled = i, False
+            while j >= 0:
+                control = any(k in t for t in records[j]["types"] for k in ("Button", "MenuItem", "StEntry"))
+                disabled |= control and "insensitive" in records[j]["pseudo"]
+                bg = (records[j].get("colors") or [None])[0]
+                if bg and bg[3] >= 250:
+                    break
+                j = records[j]["parent"]
+            if j < 0 or disabled or best[j][0] is None or id(best[j][0]) not in wanted:
+                continue
+            checked += 1
+            ratio = contrast(over(record["colors"][1], bg), bg)
+            before, behind = stock[i][1], stock[j][0]
+            floor = minimum
+            if before and behind and behind[3] >= 250:
+                floor = min(minimum, contrast(over(before, behind), behind) - 0.25)
+            if ratio < floor:
+                problems.append(f"{state}: {cascade.describe(records, i)}: contrast {ratio:.1f}")
+    return problems, checked
+
+
 def check(snapshots, rules):
     problems = []
     names = ["background", "text", "border", "shadow"]
@@ -200,6 +308,15 @@ def check(snapshots, rules):
 
 
 def main():
+    if len(sys.argv) >= 7 and sys.argv[1] in ("expect", "contrast"):
+        snapshots = json.load(open(sys.argv[2]))
+        yaru = parse_color_rules(open(sys.argv[3]).read(), origin=0)
+        chunks = [int(c) for c in sys.argv[6].split(",")]
+        fn = expect if sys.argv[1] == "expect" else legibility
+        problems, n = fn(snapshots, yaru, sys.argv[4], sys.argv[5], chunks)
+        print("\n".join(sorted(set(problems))[:40]))
+        print(f"{n} {'colors compared' if fn is expect else 'labels checked'}, {len(problems)} problems")
+        return 1 if problems or not n else 0
     if len(sys.argv) < 4 or sys.argv[1] not in ("check", "clobbered", "shadowed"):
         print(__doc__.strip(), file=sys.stderr)
         return 2

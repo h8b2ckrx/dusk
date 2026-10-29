@@ -186,3 +186,28 @@ test_color_inventory_doc_up_to_date() {
   diff <("$REPO/tools/color-inventory-doc.py" "$REPO/docs/inventory-shell-colors.tsv") "$REPO/docs/inventory-shell-colors.md" > /dev/null \
     || fail "docs/inventory-shell-colors.md is stale: run tools/color-inventory-doc.py docs/inventory-shell-colors.tsv > docs/inventory-shell-colors.md"
 }
+
+# --keep REGEX: out-of-scope stock rules the static check can't tie to an
+# in-scope one (a class on an element a type rule styles, like the
+# overview's .search-entry under StEntry) are kept too.
+test_color_inventory_keep_regex() {
+  local dir; dir=$(mktemp -d)
+  printf 'StEntry { background-color: #e5e5e5; }\n.search-entry { background-color: #3b3b3b; }\n.other { color: red; }\n' > "$dir/new.css"
+  : > "$dir/old.css"
+  local out; out=$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^StEntry' --keep '^\.search-entry')
+  assert_eq "$(cut -f1,5 <<< "$out" | tr '\t' ' ')" "StEntry derived
+.search-entry keep"
+}
+
+# Kept rules are protected too: a kept rule that would itself override a
+# more specific stock rule keeps that one as well. --no-keep drops rules
+# dusk never meets (the login screen).
+test_color_inventory_keep_closure_and_no_keep() {
+  local dir; dir=$(mktemp -d)
+  printf '.c { color: #111111; }\n.x .c { color: #222222; }\n.x .y .c { color: #333333; }\n.login-dialog .c { color: #444444; }\n' > "$dir/new.css"
+  : > "$dir/old.css"
+  local out; out=$("$REPO/tools/color-inventory.py" "$dir/new.css" "$dir/old.css" --scope '^\.c$' --keep '^\.x \.c$' --no-keep '^\.login-dialog')
+  assert_eq "$(cut -f1,5 <<< "$out" | tr '\t' ' ')" ".c derived
+.x .c keep
+.x .y .c keep"
+}

@@ -39,7 +39,7 @@ EOF
 # across tests while src/, extension/, tests/headless/, the probe tool and the
 # installed system (stock_key) are unchanged.
 # "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
-# extended, shrink).
+# extended, shrink); "accent" picks the blue accent instead of slate.
 probe_dir() {
   local key out variant="${2:-}"
   key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
@@ -48,6 +48,9 @@ probe_dir() {
   out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
   if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
     local extra="" settings=""
+    if [ "$variant" = accent ]; then
+      settings="org.gnome.desktop.interface accent-color blue"
+    fi
     if [ "$variant" = dock ]; then
       extra=ubuntu-dock@ubuntu.com
       settings="org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM"
@@ -257,4 +260,41 @@ test_headless_shell_colors_match_stylesheets() {
     "$REPO/tests/headless/colors.py" clobbered "$out/snapshots.json" "$yaru" \
       "$REPO/extension/stylesheet-$mode.css" || fail "$mode: our color rules override Yaru special cases"
   done
+}
+
+# check_chunk_colors CHUNKS SELECTOR...: in dark and light, every element whose
+# color a row of CHUNKS decides shows that row's 24.04 value (decision 22),
+# its labels stay legible (contrast 4.5), and the SELECTORS are on screen.
+check_chunk_colors() {
+  local chunks="$1" mode out yaru
+  shift
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    yaru=$("yaru_${mode}_css")
+    "$REPO/tests/headless/colors.py" expect "$out/snapshots.json" "$yaru" \
+      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" || fail "$mode: chunk $chunks colors aren't 24.04's"
+    "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$yaru" \
+      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" || fail "$mode: chunk $chunks text isn't legible"
+    "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "$@" || fail "$mode: chunk $chunks surfaces not on screen"
+  done
+}
+
+# Chunk 1: menus and quick settings, and the controls drawn on them.
+test_headless_popup_colors_follow_2404() {
+  check_chunk_colors 1 .popup-menu-content .popup-menu-item .quick-settings .quick-toggle-menu .button
+}
+
+# The accent still follows the Settings picker: a checked quick toggle with
+# the blue accent isn't the color it has with the default (slate) one.
+test_headless_colors_follow_accent() {
+  python3 - "$(probe_dir dark)/snapshots.json" "$(probe_dir dark accent)/snapshots.json" <<'EOF' || fail "the accent doesn't follow the picker"
+import json, sys
+def checked(path):
+    for rec in json.load(open(path))["quick-settings"]:
+        if "quick-toggle" in rec["classes"] and "checked" in rec["pseudo"] and rec.get("colors"):
+            return rec["colors"][0]
+slate, blue = checked(sys.argv[1]), checked(sys.argv[2])
+assert slate and blue, ("no checked quick toggle", slate, blue)
+assert slate != blue, ("same color with both accents", slate)
+EOF
 }

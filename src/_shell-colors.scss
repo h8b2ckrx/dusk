@@ -3497,8 +3497,69 @@
 
 // Out-of-scope rules one of these would override, kept at their stock value.
 @if shell-colors-on(0) {
-  .login-dialog .login-dialog-prompt-entry StLabel.hint-text {
-    color: shell-color-value("login-dialog-login-dialog-prompt-entry-stlabel-hint-text-color");
+  .app-folder-dialog .folder-name-container .folder-name-entry {
+    @if $mode == dark { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-background-color"); }
+    @if $mode == light { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-background-color"); }
+  }
+  .search-entry {
+    @if $mode == dark { background-color: shell-color-value("search-entry-background-color"); }
+    @if $mode == light { background-color: shell-color-value("search-entry-background-color"); }
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry {
+    color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-color");
+  }
+  .search-entry {
+    color: shell-color-value("search-entry-color");
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:hover {
+    @if $mode == dark { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-hover-background-color"); }
+  }
+  .search-entry:hover {
+    @if $mode == dark { background-color: shell-color-value("search-entry-hover-background-color"); }
+    @if $mode == light { background-color: shell-color-value("search-entry-hover-background-color"); }
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:hover {
+    color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-hover-color");
+  }
+  .search-entry:hover {
+    color: shell-color-value("search-entry-hover-color");
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:focus {
+    @if $mode == dark { box-shadow: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-focus-box-shadow") !important; }
+    @if $mode == light { box-shadow: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-focus-box-shadow") !important; }
+  }
+  .search-entry:focus {
+    @if $mode == dark { box-shadow: shell-color-value("search-entry-focus-box-shadow") !important; }
+    @if $mode == light { box-shadow: shell-color-value("search-entry-focus-box-shadow") !important; }
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:focus {
+    @if $mode == dark { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-focus-background-color"); }
+  }
+  .search-entry:focus {
+    @if $mode == dark { background-color: shell-color-value("search-entry-focus-background-color"); }
+    @if $mode == light { background-color: shell-color-value("search-entry-focus-background-color"); }
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:focus {
+    color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-focus-color");
+  }
+  .search-entry:focus {
+    color: shell-color-value("search-entry-focus-color");
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:insensitive {
+    @if $mode == dark { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-insensitive-background-color"); }
+    @if $mode == light { background-color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-insensitive-background-color"); }
+  }
+  .search-entry:insensitive {
+    @if $mode == dark { background-color: shell-color-value("search-entry-insensitive-background-color"); }
+    @if $mode == light { background-color: shell-color-value("search-entry-insensitive-background-color"); }
+  }
+  .app-folder-dialog .folder-name-container .folder-name-entry:insensitive {
+    color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-insensitive-color");
+  }
+  .search-entry:insensitive {
+    color: shell-color-value("search-entry-insensitive-color");
   }
   .app-folder-dialog .folder-name-container .folder-name-entry StLabel.hint-text {
     color: shell-color-value("app-folder-dialog-folder-name-container-folder-name-entry-stlabel-hint-text-color");
@@ -4198,6 +4259,22 @@
   .unlock-dialog .screenshot-ui-show-pointer-button:insensitive {
     @if $mode == dark { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-insensitive-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlock-dialog-screenshot-ui-show-pointer-button-insensitive-background-color"); }
+  }
+  .unlock-dialog .login-dialog-prompt-entry {
+    background-color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-background-color");
+    color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-color");
+  }
+  .unlock-dialog .login-dialog-prompt-entry:hover {
+    background-color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-hover-background-color");
+    color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-hover-color");
+  }
+  .unlock-dialog .login-dialog-prompt-entry:focus {
+    color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-focus-color");
+    background-color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-focus-background-color");
+  }
+  .unlock-dialog .login-dialog-prompt-entry:insensitive {
+    background-color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-insensitive-background-color");
+    color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-insensitive-color");
   }
   .unlock-dialog .login-dialog-prompt-entry StLabel.hint-text {
     color: shell-color-value("unlock-dialog-login-dialog-prompt-entry-stlabel-hint-text-color");
@@ -5628,9 +5705,6 @@
     background-color: shell-color-value("lookingglassdebugflags-lg-debug-flag-button-toggle-switch-checked-hover-background-color");
     color: shell-color-value("lookingglassdebugflags-lg-debug-flag-button-toggle-switch-checked-hover-color");
   }
-  .login-dialog-user-list-view .login-dialog-user-list .login-dialog-user-list-item:logged-in .user-icon StIcon {
-    background-color: shell-color-value("login-dialog-user-list-view-login-dialog-user-list-login-dialog-user-list-item-logged-in-user-icon-sticon-background-color");
-  }
   #unlockDialogNotifications > .vhandle {
     @if $mode == dark { background-color: shell-color-value("unlockdialognotifications-vhandle-background-color"); }
     @if $mode == light { background-color: shell-color-value("unlockdialognotifications-vhandle-background-color"); }
@@ -5682,8 +5756,8 @@
     color: shell-color-value("lookingglassdialog-stentry-color") !important;
     background-color: shell-color-value("lookingglassdialog-stentry-background-color") !important;
   }
-  .login-dialog .user-widget.vertical .user-icon StIcon {
-    color: shell-color-value("login-dialog-user-widget-vertical-user-icon-sticon-color");
+  .unlock-dialog .login-dialog-prompt-entry:focus {
+    box-shadow: shell-color-value("unlock-dialog-login-dialog-prompt-entry-focus-box-shadow") !important;
   }
   .unlock-dialog .user-widget.vertical .user-icon StIcon {
     color: shell-color-value("unlock-dialog-user-widget-vertical-user-icon-sticon-color");

@@ -263,6 +263,7 @@ export default class DuskProbe extends Extension {
         const toggle = new QuickSettings.QuickMenuToggle({title: 'Probe', iconName: 'emblem-system-symbolic'});
         toggle.menu.setHeader('emblem-system-symbolic', 'Probe menu');
         toggle.menu.addMenuItem(new PopupMenu.PopupMenuItem('Menu item'));
+        toggle.checked = true; // a checked toggle shows the accent
         indicator.quickSettingsItems.push(toggle);
         Main.panel.statusArea.quickSettings.addExternalIndicator(indicator);
 

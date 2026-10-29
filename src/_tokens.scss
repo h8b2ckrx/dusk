@@ -107,7 +107,7 @@ $app-grid-icon-size: 96px;
 // the screenshot panel. The colors themselves are Yaru 24.04's, per mode, from
 // docs/inventory-shell-colors.tsv (generated into src/_shell-color-values.scss).
 // ---------------------------------------------------------------------------
-$shell-color-chunks: (1: false, 2: false, 3: false);
+$shell-color-chunks: (1: true, 2: false, 3: false);
 @import 'shell-color-values';
 
 // Dialog buttons: separate buttons in Yaru 26.04's layout (decision 23), on

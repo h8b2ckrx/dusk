@@ -4,7 +4,7 @@ an older stylesheet gives the same rule (design decision 22).
 
 Usage: color-inventory.py STOCK.css OLD.css --scope REGEX [--exclude REGEX]
                           [--palette PALETTE.tsv] [--renames RENAMES.tsv]
-                          [--include-media]
+                          [--keep REGEX] [--no-keep REGEX] [--include-media]
 
 Prints one tab-separated line per selector and color property, in STOCK's
 order (each selector's last declaration counts, as in the cascade):
@@ -36,6 +36,11 @@ source:
                  "rgba(255, 255, 255,")
 --renames FILE   two tab-separated columns: a regex for the stock selector,
                  its replacement in OLD (re.sub)
+--keep REGEX     also keep out-of-scope stock rules matching REGEX: ones the
+                 static check can't tie to an in-scope rule (a class on an
+                 element that an in-scope type rule styles)
+--no-keep REGEX  never keep stock rules matching REGEX (selectors dusk never
+                 meets, e.g. the login screen)
 """
 import argparse
 import os
@@ -120,6 +125,8 @@ def main():
     ap.add_argument("--exclude")
     ap.add_argument("--palette")
     ap.add_argument("--renames")
+    ap.add_argument("--keep")
+    ap.add_argument("--no-keep")
     ap.add_argument("--include-media", action="store_true")
     ap.add_argument("-h", "--help", action="store_true")
     args = ap.parse_args()
@@ -141,7 +148,20 @@ def main():
     theirs = colors.parse_color_rules("".join(f"{sel} {{ {prop}: {value}; }}\n"
                                               for (sel, prop), value in stock.items()
                                               if (sel, prop) not in in_scope), origin=0)
-    keep = {y for _, y in colors.shadowed(theirs, ours)}
+    # Kept rules join ours, so whatever they'd override is kept too, until
+    # nothing changes.
+    never = re.compile(args.no_keep) if args.no_keep else None
+    keep = {sel for sel, prop in stock if (sel, prop) not in in_scope
+            and args.keep and re.search(args.keep, sel)}
+    while True:
+        kept = colors.parse_color_rules("".join(f"{sel} {{ {prop}: {value}; }}\n"
+                                                for (sel, prop), value in stock.items() if sel in keep), origin=1)
+        more = keep | {y for _, y in colors.shadowed(theirs, ours + kept)}
+        if never:
+            more = {sel for sel in more if not never.search(sel)}
+        if more == keep:
+            break
+        keep = more
 
     old_selectors = all_selectors(open(args.old).read())
     initial = {"background-color": "transparent", "background": "transparent",

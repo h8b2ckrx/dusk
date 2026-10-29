@@ -236,3 +236,18 @@ PY
 )
   assert_eq "$out" "[1] [] [('.c', '.a .c')] []"
 }
+
+# WCAG contrast ratio between two opaque colors.
+test_colors_contrast_ratio() {
+  local out
+  out=$(python3 - "$REPO/tests/headless" <<'PY'
+import sys
+sys.path.insert(0, sys.argv[1])
+import colors
+print(round(colors.contrast((255, 255, 255, 255), (0, 0, 0, 255)), 1),
+      round(colors.contrast((247, 247, 247, 255), (29, 29, 29, 255)), 1),
+      colors.over((247, 247, 247, 128), (29, 29, 29, 255)))
+PY
+)
+  assert_eq "$out" "21.0 15.7 (138, 138, 138, 255)"
+}
