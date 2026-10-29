@@ -54,7 +54,7 @@ button {
   border-radius: #{$radius-button};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child,
 row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child:dir(ltr):last-child,
 row.spin spinbutton > button.image-button.up:not(.flat):not(.raised):not(.suggested-action):not(.destructive-action):not(.opaque):last-child:dir(rtl):first-child,
@@ -85,7 +85,7 @@ menubutton.opaque {
   border-radius: #{$radius-button};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 menubutton.suggested-action.circular {
   border-radius: #{$radius-icon-button};
 }
@@ -95,7 +95,7 @@ menubutton.suggested-action.pill {
   border-radius: #{$radius-pill-button};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 menubutton.opaque.circular {
   border-radius: #{$radius-icon-button};
 }
@@ -313,7 +313,7 @@ window.assistant .sidebar > label {
   border-radius: #{$radius-row};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 infobar .close {
   border-radius: #{$radius-icon-button};
 }
@@ -368,7 +368,7 @@ expander-widget > box > title {
   border-radius: #{$radius-small};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 button.sidebar-button {
   border-radius: #{$radius-icon-button};
 }
@@ -378,9 +378,9 @@ filechooser gridview > child {
   border-radius: #{$radius-card};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Window buttons (close, minimize, maximize).
 windowcontrols > button > image {
-  border-radius: #{$radius-icon-button};
+  border-radius: #{$radius-titlebutton};
 }
 
 // Truly round things, kept round: avatars, dots, knobs, accent circles.
@@ -1230,7 +1230,7 @@ dnd tab {
   border-radius: #{$radius-tab};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 tabbar tab button.image-button,
 dnd tab button.image-button {
   border-radius: #{$radius-icon-button};
@@ -1257,7 +1257,7 @@ tabthumbnail .card picture {
   border-radius: #{$radius-card};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 tabthumbnail button,
 tabthumbnail button > image {
   border-radius: #{$radius-icon-button};
@@ -1304,7 +1304,7 @@ toggle-group.round toggle {
   border-radius: #{$radius-osd-toolbar};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 searchbar > revealer > box .close {
   border-radius: #{$radius-icon-button};
 }

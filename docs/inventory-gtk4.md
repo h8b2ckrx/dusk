@@ -47,7 +47,8 @@ the numbers change.
 | `window` | lg 5 | 15 | windows (through `--window-radius`), floating and bottom sheets |
 | `dialog` | xl 6 | 18 | alert dialogs, GTK message dialogs (same as Shell dialogs) |
 | `notification` | lg 5 | 15 | in-app notification bars (bottom corners) |
-| `icon-button` | sm 3 | pill/circle | circular buttons, tab close buttons, window control icons, round spin buttons |
+| `icon-button` | sm 3 | pill/circle | circular buttons, tab close buttons, round spin buttons |
+| `titlebutton` | circle | circle | window buttons (close, minimize, maximize), kept round (decision 19, after Task 12) |
 | `pill-button` | sm 3 | pill | pill buttons, round toggle groups, the About dialog's version label |
 | `round` | circle | circle | truly round, kept round: avatars, indicator dots, slider and switch knobs, accent color circles, the video play button |
 | `small` | xs 2 | 2–6 | tab underline indicators, keyboard shortcut keycaps, expander titles, color button swatches |

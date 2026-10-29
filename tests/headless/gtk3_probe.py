@@ -5,7 +5,8 @@ Builds sample GTK3 widgets (never shown) and reads the corner radius GTK3
 computes for each from its style context, plus a few CSS nodes (switch knob,
 check, trough, window frame) through style paths. GTK3 only reports the
 `border-radius` shorthand, i.e. the top-left corner. Also records the title
-bar close button's background (image or tint). Writes OUTDIR/gtk3.json.
+bar close button's background (image or tint), and the shape GTK3 draws for
+it in an offscreen window. Writes OUTDIR/gtk3.json.
 
 Usage: gtk3_probe.py OUTDIR
 """
@@ -110,6 +111,57 @@ ctx = close.get_style_context()
 for label, state in (("", Gtk.StateFlags.NORMAL), ("-backdrop", Gtk.StateFlags.BACKDROP)):
     result[f"titlebutton{label}-image"] = ctx.get_property("background-image", state) is not None
     result[f"titlebutton{label}-alpha"] = round(ctx.get_property("background-color", state).alpha, 3)
+
+# Title bar buttons as GTK3 draws them: a real header bar in an offscreen
+# window (never on screen), read back pixel by pixel. The shape is found from
+# the pixels that differ from the header bar, along the button's middle row
+# and column (Yaru's buttons have a margin, and Yaru draws its circle as a
+# gradient, so neither the allocation nor the radius tells the shape). A
+# circle has equal width and height and an empty corner.
+def pump():
+    while Gtk.events_pending():
+        Gtk.main_iteration()
+
+
+def find_close(widget):
+    if isinstance(widget, Gtk.Button) and widget.get_style_context().has_class("close"):
+        return widget
+    found = []
+    if isinstance(widget, Gtk.Container):
+        widget.forall(lambda child: found.append(find_close(child)))
+    return next((f for f in found if f), None)
+
+
+offscreen = Gtk.OffscreenWindow()
+bar = Gtk.HeaderBar(show_close_button=True, decoration_layout=":close", title="dusk")
+bar.get_style_context().add_class("titlebar")
+offscreen.add(bar)
+offscreen.show_all()
+pump()
+a = find_close(offscreen).get_allocation()
+pixbuf = offscreen.get_pixbuf()
+n, stride, pixels = pixbuf.get_n_channels(), pixbuf.get_rowstride(), pixbuf.get_pixels()
+
+
+def pixel(x, y):
+    i = y * stride + x * n
+    return pixels[i:i + 3]
+
+
+above = pixel(a.x + a.width // 2, a.y - 2)  # the header bar, just above the button
+
+
+def drawn(x, y):
+    return max(abs(c - b) for c, b in zip(pixel(x, y), above)) > 6
+
+
+xs = [x for x in range(a.x, a.x + a.width) if drawn(x, a.y + a.height // 2)]
+ys = [y for y in range(a.y, a.y + a.height) if drawn(a.x + a.width // 2, y)]
+result["titlebutton-shape"] = {
+    "width": xs[-1] - xs[0] + 1 if xs else 0,
+    "height": ys[-1] - ys[0] + 1 if ys else 0,
+    "corner": bool(xs and ys and drawn(xs[0] + 2, ys[0] + 2)),
+}
 
 with open(f"{OUT}/gtk3.json", "w") as f:
     json.dump(result, f, indent=1)

@@ -133,7 +133,7 @@ entry > progress > trough > progress	border-radius	0	0
 expander-widget > box > title	border-radius	6px	small
 button.sidebar-button	border-radius	100%	icon-button
 filechooser gridview > child	border-radius	12px	card
-windowcontrols > button > image	border-radius	100%	icon-button
+windowcontrols > button > image	border-radius	100%	titlebutton
 .accent-color-row color	border-radius	16px	round
 levelbar.horizontal trough > block	border-radius	99px	bar
 levelbar.horizontal trough > block.empty	border-radius	99px	bar

@@ -11,88 +11,93 @@
 // frames keep Yaru's top-only rounding (decision 13).
 @import 'gtk3-radius';
 
-// Title bar buttons: Yaru draws their circle as a radial gradient on the
-// background (no radius rule can square that). Replace it with a flat tint of
-// the same strength, in the button's own color, so the button's icon-button
-// shape shows. Yaru's own selectors, in Yaru's order: normal, hover, pressed,
-// unfocused window.
+// Title bar buttons (close, minimize, maximize) follow $radius-titlebutton.
+// Yaru draws them as circles with a radial gradient on the background, 24px
+// like GTK4's; a radius on Yaru's 30px button box can't reproduce that, and
+// can't square it either. So: round keeps Yaru's own circles (no rules here);
+// any other value replaces the gradient with a flat tint of the same
+// strength, in the button's own color, with that radius (the mirrored
+// titlebutton rule). Yaru's own selectors, in Yaru's order: normal, hover,
+// pressed, unfocused window.
+@if $radius-titlebutton != $r-circle {
 
-// Title bar buttons (close, minimize, maximize).
-headerbar button.titlebutton:not(.appmenu).maximize,
-headerbar button.titlebutton:not(.appmenu).minimize,
-headerbar button.titlebutton:not(.appmenu).close,
-.titlebar button.titlebutton:not(.appmenu).maximize,
-.titlebar button.titlebutton:not(.appmenu).minimize,
-.titlebar button.titlebutton:not(.appmenu).close,
-headerbar.selection-mode button.titlebutton:not(.appmenu).maximize,
-headerbar.selection-mode button.titlebutton:not(.appmenu).minimize,
-headerbar.selection-mode button.titlebutton:not(.appmenu).close,
-button.titlebutton:not(.appmenu).maximize,
-button.titlebutton:not(.appmenu).minimize,
-button.titlebutton:not(.appmenu).close {
-  background-image: none;
-  background-color: $titlebutton-bg;
-}
+  // Title bar buttons (close, minimize, maximize).
+  headerbar button.titlebutton:not(.appmenu).maximize,
+  headerbar button.titlebutton:not(.appmenu).minimize,
+  headerbar button.titlebutton:not(.appmenu).close,
+  .titlebar button.titlebutton:not(.appmenu).maximize,
+  .titlebar button.titlebutton:not(.appmenu).minimize,
+  .titlebar button.titlebutton:not(.appmenu).close,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).maximize,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).minimize,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).close,
+  button.titlebutton:not(.appmenu).maximize,
+  button.titlebutton:not(.appmenu).minimize,
+  button.titlebutton:not(.appmenu).close {
+    background-image: none;
+    background-color: $titlebutton-bg;
+  }
 
-// …hovered.
-headerbar button.titlebutton:not(.appmenu).maximize:hover,
-headerbar button.titlebutton:not(.appmenu).minimize:hover,
-headerbar button.titlebutton:not(.appmenu).close:hover,
-.titlebar button.titlebutton:not(.appmenu).maximize:hover,
-.titlebar button.titlebutton:not(.appmenu).minimize:hover,
-.titlebar button.titlebutton:not(.appmenu).close:hover,
-headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:hover,
-headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:hover,
-headerbar.selection-mode button.titlebutton:not(.appmenu).close:hover,
-button.titlebutton:not(.appmenu).maximize:hover,
-button.titlebutton:not(.appmenu).minimize:hover,
-button.titlebutton:not(.appmenu).close:hover,
-window.toolbox headerbar button.titlebutton:not(.appmenu).close:hover,
-window.toolbox .titlebar button.titlebutton:not(.appmenu).close:hover,
-window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:hover,
-window.toolbox button.titlebutton:not(.appmenu).close:hover {
-  background-image: none;
-  background-color: $titlebutton-hover-bg;
-}
+  // …hovered.
+  headerbar button.titlebutton:not(.appmenu).maximize:hover,
+  headerbar button.titlebutton:not(.appmenu).minimize:hover,
+  headerbar button.titlebutton:not(.appmenu).close:hover,
+  .titlebar button.titlebutton:not(.appmenu).maximize:hover,
+  .titlebar button.titlebutton:not(.appmenu).minimize:hover,
+  .titlebar button.titlebutton:not(.appmenu).close:hover,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:hover,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:hover,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).close:hover,
+  button.titlebutton:not(.appmenu).maximize:hover,
+  button.titlebutton:not(.appmenu).minimize:hover,
+  button.titlebutton:not(.appmenu).close:hover,
+  window.toolbox headerbar button.titlebutton:not(.appmenu).close:hover,
+  window.toolbox .titlebar button.titlebutton:not(.appmenu).close:hover,
+  window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:hover,
+  window.toolbox button.titlebutton:not(.appmenu).close:hover {
+    background-image: none;
+    background-color: $titlebutton-hover-bg;
+  }
 
-// …pressed.
-headerbar button.titlebutton:not(.appmenu).maximize:active,
-headerbar button.titlebutton:not(.appmenu).minimize:active,
-headerbar button.titlebutton:not(.appmenu).close:active,
-.titlebar button.titlebutton:not(.appmenu).maximize:active,
-.titlebar button.titlebutton:not(.appmenu).minimize:active,
-.titlebar button.titlebutton:not(.appmenu).close:active,
-headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:active,
-headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:active,
-headerbar.selection-mode button.titlebutton:not(.appmenu).close:active,
-button.titlebutton:not(.appmenu).maximize:active,
-button.titlebutton:not(.appmenu).minimize:active,
-button.titlebutton:not(.appmenu).close:active,
-window.toolbox headerbar button.titlebutton:not(.appmenu).close:active,
-window.toolbox .titlebar button.titlebutton:not(.appmenu).close:active,
-window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:active,
-window.toolbox button.titlebutton:not(.appmenu).close:active {
-  background-image: none;
-  background-color: $titlebutton-active-bg;
-}
+  // …pressed.
+  headerbar button.titlebutton:not(.appmenu).maximize:active,
+  headerbar button.titlebutton:not(.appmenu).minimize:active,
+  headerbar button.titlebutton:not(.appmenu).close:active,
+  .titlebar button.titlebutton:not(.appmenu).maximize:active,
+  .titlebar button.titlebutton:not(.appmenu).minimize:active,
+  .titlebar button.titlebutton:not(.appmenu).close:active,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:active,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:active,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).close:active,
+  button.titlebutton:not(.appmenu).maximize:active,
+  button.titlebutton:not(.appmenu).minimize:active,
+  button.titlebutton:not(.appmenu).close:active,
+  window.toolbox headerbar button.titlebutton:not(.appmenu).close:active,
+  window.toolbox .titlebar button.titlebutton:not(.appmenu).close:active,
+  window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:active,
+  window.toolbox button.titlebutton:not(.appmenu).close:active {
+    background-image: none;
+    background-color: $titlebutton-active-bg;
+  }
 
-// …in an unfocused window: no background, as in Yaru.
-headerbar button.titlebutton:not(.appmenu).maximize:backdrop,
-headerbar button.titlebutton:not(.appmenu).minimize:backdrop,
-headerbar button.titlebutton:not(.appmenu).close:backdrop,
-.titlebar button.titlebutton:not(.appmenu).maximize:backdrop,
-.titlebar button.titlebutton:not(.appmenu).minimize:backdrop,
-.titlebar button.titlebutton:not(.appmenu).close:backdrop,
-headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:backdrop,
-headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:backdrop,
-headerbar.selection-mode button.titlebutton:not(.appmenu).close:backdrop,
-button.titlebutton:not(.appmenu).maximize:backdrop,
-button.titlebutton:not(.appmenu).minimize:backdrop,
-button.titlebutton:not(.appmenu).close:backdrop,
-window.toolbox headerbar button.titlebutton:not(.appmenu).close:backdrop,
-window.toolbox .titlebar button.titlebutton:not(.appmenu).close:backdrop,
-window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:backdrop,
-window.toolbox button.titlebutton:not(.appmenu).close:backdrop {
-  background-image: none;
-  background-color: $titlebutton-backdrop-bg;
+  // …in an unfocused window: no background, as in Yaru.
+  headerbar button.titlebutton:not(.appmenu).maximize:backdrop,
+  headerbar button.titlebutton:not(.appmenu).minimize:backdrop,
+  headerbar button.titlebutton:not(.appmenu).close:backdrop,
+  .titlebar button.titlebutton:not(.appmenu).maximize:backdrop,
+  .titlebar button.titlebutton:not(.appmenu).minimize:backdrop,
+  .titlebar button.titlebutton:not(.appmenu).close:backdrop,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).maximize:backdrop,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).minimize:backdrop,
+  headerbar.selection-mode button.titlebutton:not(.appmenu).close:backdrop,
+  button.titlebutton:not(.appmenu).maximize:backdrop,
+  button.titlebutton:not(.appmenu).minimize:backdrop,
+  button.titlebutton:not(.appmenu).close:backdrop,
+  window.toolbox headerbar button.titlebutton:not(.appmenu).close:backdrop,
+  window.toolbox .titlebar button.titlebutton:not(.appmenu).close:backdrop,
+  window.toolbox headerbar.selection-mode button.titlebutton:not(.appmenu).close:backdrop,
+  window.toolbox button.titlebutton:not(.appmenu).close:backdrop {
+    background-image: none;
+    background-color: $titlebutton-backdrop-bg;
+  }
 }

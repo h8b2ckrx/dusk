@@ -79,7 +79,8 @@ Then run `./install.sh` again to enable it.
 
    It should end with `clean`.
 3. **Shell** changes show at once. **Apps** read `gtk.css` when they start, so reopen them.
-   A change to `extension/extension.js` needs a log-out.
+   Title bars of X11 apps (e.g. VLC) come from a Mutter helper that starts at login, and a
+   change to `extension/extension.js` needs one too: log out and back in.
 
 Check that dusk is running at any time:
 
@@ -162,14 +163,21 @@ extension.
 ## Known limits
 
 - **Not GTK, so not themed:** Electron/Chromium apps (Claude, VS Code, Signal, browsers) style
-  their own contents. Signal borrows its window buttons from GTK3, so those follow. Qt apps (VLC)
-  and Flutter apps (LocalSend) draw their own UI.
+  their own contents. Qt apps (VLC) and Flutter apps (LocalSend) draw their own UI.
+- **Window buttons are round everywhere** (`$radius-titlebutton`), because some apps draw their
+  own. Claude hides the system title bar, and Chromium draws its round buttons in code, out of
+  any theme's reach. Signal borrows its buttons from GTK3, so those follow. X11 apps (VLC) get
+  their title bar from Mutter's helper, a plain GTK4 program. Set the token to a scale step to
+  square them all again (except Claude's).
 - **Snap apps** keep their own config folders and aren't covered. Flatpak apps are, if Flatpak is
   installed (`install.sh` adds the overrides).
 - **The volume and brightness slider tracks** have round ends drawn in Shell's code (`barLevel.js`).
   Left as they are.
 - **Ubuntu Dock's right-click menus** follow the menu token (they share Shell's menu style).
 - **Switch tracks** stay pills, by choice; every other pill is squared.
+- **Plain GTK4 apps** (GTK4 without libadwaita, like Mutter's title bars for X11 apps) use
+  Yaru's separate `gtk-4.0` stylesheet. dusk's GTK4 rules are mirrored from libadwaita's, which
+  match the same widgets in most cases, but only the window buttons are measured there.
 - **GTK3 color overrides are deferred:** GTK3 CSS can't tell light from dark mode. Radius works
   in both.
 - **App-specific widgets:** an app that styles its own widgets with its own CSS classes can keep

@@ -31,7 +31,8 @@ Yaru's GTK3 uses its own steps (mostly 6, 8 and 5), so the mapping is by element
 | Token | Proposed | Yaru now | For (examples) |
 |---|---|---|---|
 | `button` | sm 3 | 6 | buttons, combo boxes, path bar buttons, inline-toolbar end buttons, OSD buttons |
-| `icon-button` | sm 3 | 6 / pill / circle | **title bar buttons (close, minimize, maximize)**, circular buttons, tab close buttons, sidebar buttons |
+| `icon-button` | sm 3 | 6 / pill / circle | title bar app-menu buttons, circular buttons, tab close buttons, sidebar buttons |
+| `titlebutton` | circle | circle | title bar buttons (close, minimize, maximize), kept round (decision 19, after Task 12) |
 | `entry` | sm 3 | 6 | entries, spin buttons (and their end buttons' outer corners) |
 | `checkbox` | xs 2 | 3–5 | check boxes, selection checks in Files' grid |
 | `radio` | circle | circle | radio buttons |
@@ -66,9 +67,10 @@ Yaru's GTK3 uses its own steps (mostly 6, 8 and 5), so the mapping is by element
 
 ## Your Terminal and Signal close buttons
 
-They're Yaru's GTK3 title bar buttons (`button.titlebutton`), round today. They map to
-`icon-button`, so they become 3px squares, matching your other apps. Signal borrows those
-buttons from GTK3, so it follows too.
+They're Yaru's GTK3 title bar buttons (`button.titlebutton`). They first mapped to
+`icon-button` (3px squares). **After Task 12 the owner made window buttons round everywhere**
+(decision 19, `titlebutton`), to match Electron apps that draw their own. GTK3 keeps Yaru's
+own 24px circles. Signal borrows those buttons from GTK3, so it follows too.
 
 ## Notes
 

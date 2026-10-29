@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# Runs tests/headless/gtk4_probe.py in a throwaway session isolated from your
-# desktop (its own settings, session bus and data folders), with a headless
-# GNOME Shell as the display. The probe builds sample libadwaita widgets and
-# records the corner radii GTK draws for them.
+# Runs the GTK4 probes (tests/headless/gtk4_probe.py, gtk4_plain_probe.py) in
+# a throwaway session isolated from your desktop (its own settings, session
+# bus and data folders), with a headless GNOME Shell as the display. The
+# probes build sample libadwaita widgets, and a plain-GTK4 header bar (as in
+# Mutter's title bars for X11 apps), and record the corner radii GTK draws.
 #
 # Usage: tools/headless-gtk.sh OUTDIR [dark|light] [stock]
 #   stock: without our gtk.css, to see libadwaita's own values.
 # Uses your current GTK theme name (it picks libadwaita's Yaru accent).
-# Writes OUTDIR/gtk4.json, OUTDIR/gtk4.png and OUTDIR/shell.log.
+# Writes OUTDIR/gtk4.json, OUTDIR/gtk4-plain.json, OUTDIR/gtk4.png and
+# OUTDIR/shell.log.
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -24,7 +26,7 @@ export XDG_CONFIG_HOME="$ROOT/config" XDG_DATA_HOME="$ROOT/data"
 export XDG_CACHE_HOME="$ROOT/cache" XDG_STATE_HOME="$ROOT/state"
 mkdir -p "$XDG_CONFIG_HOME/gtk-4.0"
 [ "$STOCK" = stock ] || ln -s "$REPO/build/gtk4.css" "$XDG_CONFIG_HOME/gtk-4.0/gtk.css"
-rm -f "$OUT/gtk4.json"
+rm -f "$OUT/gtk4.json" "$OUT/gtk4-plain.json"
 
 export DUSK_OUT="$OUT" DUSK_SCHEME="$SCHEME" DUSK_THEME="$THEME" DUSK_REPO="$REPO"
 export DUSK_DISPLAY="dusk-gtk-$$"
@@ -43,8 +45,11 @@ dbus-run-session -- bash -c '
   WAYLAND_DISPLAY="$DUSK_DISPLAY" GDK_BACKEND=wayland timeout 60 \
     python3 "$DUSK_REPO/tests/headless/gtk4_probe.py" "$DUSK_OUT" \
     > "$DUSK_OUT/probe.log" 2>&1 || true
+  WAYLAND_DISPLAY="$DUSK_DISPLAY" GDK_BACKEND=wayland timeout 30 \
+    python3 "$DUSK_REPO/tests/headless/gtk4_plain_probe.py" "$DUSK_OUT" \
+    > "$DUSK_OUT/probe-plain.log" 2>&1 || true
   kill "$pid" 2> /dev/null
   wait "$pid" 2> /dev/null
 ' > /dev/null 2>&1 || true
 
-[ -s "$OUT/gtk4.json" ]
+[ -s "$OUT/gtk4.json" ] && [ -s "$OUT/gtk4-plain.json" ]

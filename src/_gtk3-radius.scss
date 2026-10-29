@@ -40,7 +40,7 @@ treeview entry {
   border-radius: 0;
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 button.titlebutton {
   border-radius: #{$radius-icon-button};
 }
@@ -51,7 +51,7 @@ button.osd {
   border-radius: #{$radius-button};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 button.circular {
   border-radius: #{$radius-icon-button};
 }
@@ -896,7 +896,7 @@ messagedialog.csd .dialog-action-area button:last-child {
   border-bottom-right-radius: #{$radius-dialog};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 button.sidebar-button {
   border-radius: #{$radius-icon-button};
 }
@@ -1053,9 +1053,9 @@ messagedialog.csd decoration {
   border-radius: 0;
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Window buttons (close, minimize, maximize).
 button.titlebutton:not(.appmenu) {
-  border-radius: #{$radius-icon-button};
+  border-radius: #{$radius-titlebutton};
 }
 
 // Tiny boxes: tab indicators, keycaps, expander titles, color button swatches.
@@ -1432,7 +1432,7 @@ tabbar .end-action button {
   border-radius: 0;
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 tabbar tab .tab-close-button {
   border-radius: #{$radius-icon-button};
 }
@@ -1442,7 +1442,7 @@ tabbar tab .tab-indicator {
   border-radius: #{$radius-round};
 }
 
-// Circular and icon-only buttons, tab and window control buttons.
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 .tab-drag-icon tab .tab-close-button {
   border-radius: #{$radius-icon-button};
 }

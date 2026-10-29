@@ -51,7 +51,7 @@ names = ["icon-button", "button", "entry", "switch", "round", "checkbox", "slide
 t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, names).items()}
 got = json.load(open(sys.argv[3]))
 want = {
-    "titlebutton": t["icon-button"], "button": t["button"], "linked-first": t["button"],
+    "button": t["button"], "linked-first": t["button"],
     "linked-middle": 0, "linked-last": 0, "entry": t["entry"], "spinbutton": t["entry"],
     "switch": t["switch"], "switch-knob": t["round"], "check": t["checkbox"],
     "scale-trough": t["slider"], "progress-trough": t["bar"], "popover": t["popover"],
@@ -65,24 +65,53 @@ sys.exit(1 if bad else 0)
 PY
 }
 
-# Yaru draws the title bar buttons' circle as a radial gradient, which no
-# radius rule can square. dusk replaces it with a flat tint of the same
-# strength (0.1 when focused, none in unfocused windows, as in Yaru), so the
-# button's own icon-button shape shows.
-test_gtk3_title_buttons_have_no_round_gradient() {
+# Title bar buttons (close, minimize, maximize) follow $radius-titlebutton,
+# as GTK3 draws them (tests/headless/gtk3_probe.py reads the pixels). Round:
+# Yaru's own circles, 24px like GTK4's (a radius on Yaru's 30px button box
+# would draw a bigger one). Otherwise dusk swaps Yaru's round gradient for a
+# flat tint (0.1, as in Yaru; none in unfocused windows) with that radius.
+test_gtk3_title_buttons_follow_token() {
   local out; out=$(mktemp -d)
   "$REPO/tools/probe-gtk3.sh" "$out" || fail "GTK3 probe failed: $(tail -3 "$out/probe.log")"
-  python3 - "$out/gtk3.json" <<'PY'
+  python3 - "$REPO" "${SASSC:-sassc}" "$out/gtk3.json" <<'PY'
 import json, sys
-got = json.load(open(sys.argv[1]))
+repo, sassc = sys.argv[1], sys.argv[2]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+token = token_values(repo, sassc, ["titlebutton"])["titlebutton"]
+got = json.load(open(sys.argv[3]))
+shape = got["titlebutton-shape"]
 bad = []
-if got["titlebutton-image"]:
-    bad.append("focused close button still has a background image (the round gradient)")
-if abs(got["titlebutton-alpha"] - 0.1) > 0.01:
-    bad.append(f"focused close button tint alpha {got['titlebutton-alpha']}, want 0.1")
-if got["titlebutton-backdrop-image"] or got["titlebutton-backdrop-alpha"] > 0.01:
-    bad.append(f"unfocused close button has a background: {got['titlebutton-backdrop-image']}, {got['titlebutton-backdrop-alpha']}")
+if token.endswith("%"):
+    if not (shape["width"] > 0 and abs(shape["width"] - shape["height"]) <= 1 and not shape["corner"]):
+        bad.append(f"close button drawn {shape}, want a circle (token {token})")
+else:
+    if got["titlebutton-image"]:
+        bad.append("focused close button still has Yaru's round gradient")
+    if abs(got["titlebutton-alpha"] - 0.1) > 0.01:
+        bad.append(f"focused close button tint alpha {got['titlebutton-alpha']}, want 0.1")
+    if got["titlebutton-backdrop-image"] or got["titlebutton-backdrop-alpha"] > 0.01:
+        bad.append(f"unfocused close button has a background: {got['titlebutton-backdrop-image']}, "
+                   f"{got['titlebutton-backdrop-alpha']}")
+    if abs(got["titlebutton"] - float(token.rstrip("px"))) > 0.5:
+        bad.append(f"close button radius {got['titlebutton']}, want {token}")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 PY
+}
+
+# Both ways of the token, built from a copy of src/: round keeps Yaru's own
+# circles (dusk adds no tint), anything else adds the flat tints.
+test_gtk3_titlebutton_token_switches_tint() {
+  local tmp; tmp=$(mktemp -d)
+  cp -r "$REPO/src" "$tmp/src"
+  build_with() {
+    sed -i "s/^\$radius-titlebutton: [^;]*;/\$radius-titlebutton: $1;/" "$tmp/src/_tokens.scss"
+    grep -q "^\$radius-titlebutton: $1;" "$tmp/src/_tokens.scss" || fail "no \$radius-titlebutton token"
+    "${SASSC:-sassc}" -I "$tmp/src" "$tmp/src/gtk3.scss" > "$tmp/$2.css"
+  }
+  build_with '$r-circle' round
+  assert_not_contains "$tmp/round.css" "alpha(currentColor, 0.1)"
+  build_with '$r-sm' square
+  assert_contains "$tmp/square.css" "alpha(currentColor, 0.1)"
 }

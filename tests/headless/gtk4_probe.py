@@ -17,69 +17,13 @@ import sys
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-gi.require_version("Gsk", "4.0")
-from gi.repository import Adw, GLib, Gsk, Gtk  # noqa: E402
+from gi.repository import Adw, GLib, Gtk  # noqa: E402
+
+from gtk4_shapes import dump, first_shape, iter_descendants, radii, window_button_image  # noqa: E402
 
 OUT = sys.argv[1]
 # DUSK_GTK_DEBUG="button entry": print those samples' render trees.
 DEBUG = (GLib.getenv("DUSK_GTK_DEBUG") or "").split()
-SHAPES = (Gsk.RoundedClipNode, Gsk.BorderNode, Gsk.OutsetShadowNode, Gsk.InsetShadowNode)
-
-
-def children(node):
-    if isinstance(node, Gsk.ContainerNode):
-        return [node.get_child(i) for i in range(node.get_n_children())]
-    for getter in ("get_child",):
-        if hasattr(node, getter):
-            try:
-                child = getattr(node, getter)()
-                return [child] if child else []
-            except TypeError:
-                pass
-    return []
-
-
-def rounded_rect(node):
-    if isinstance(node, Gsk.RoundedClipNode):
-        return node.get_clip()
-    if isinstance(node, Gsk.BorderNode):
-        return node.get_outline()
-    if isinstance(node, (Gsk.OutsetShadowNode, Gsk.InsetShadowNode)):
-        return node.get_outline()
-    return None
-
-
-def dump(node, depth=0, out=None):
-    """Debug: the render tree as text."""
-    out = [] if out is None else out
-    b = node.get_bounds()
-    rect = rounded_rect(node)
-    extra = f" corners={[round(c.width, 1) for c in rect.corner]}" if rect else ""
-    out.append(f"{'  ' * depth}{type(node).__name__} {b.get_width():.0f}x{b.get_height():.0f}"
-               f"@{b.get_x():.0f},{b.get_y():.0f}{extra}")
-    for c in children(node):
-        dump(c, depth + 1, out)
-    return out
-
-
-def radii(widget):
-    """Corner radii [tl, tr, br, bl] of the widget's own background or border:
-    the first shape in its render tree (GTK draws a widget's own background
-    and border before its children). A plain color means square corners.
-    None if GTK drew no shape at all."""
-    snapshot = Gtk.Snapshot()
-    Gtk.WidgetPaintable.new(widget).snapshot(snapshot, widget.get_width(), widget.get_height())
-    node = snapshot.to_node()
-    stack = [node] if node else []
-    while stack:
-        n = stack.pop(0)
-        rect = rounded_rect(n)
-        if rect is not None:
-            return [round(c.width, 2) for c in rect.corner]
-        if isinstance(n, Gsk.ColorNode):
-            return [0.0] * 4
-        stack[0:0] = children(n)
-    return None
 
 
 def build(app):
@@ -139,7 +83,10 @@ def build(app):
     menu_button = Gtk.MenuButton(label="Menu", popover=popover)
     box.append(menu_button)
 
-    win.set_content(box)
+    # A header bar, for its window controls (close, minimize, maximize).
+    view = Adw.ToolbarView(content=box)
+    view.add_top_bar(Adw.HeaderBar())
+    win.set_content(view)
 
     def internal(widget, css_name):
         """The first descendant whose CSS node name is css_name."""
@@ -173,12 +120,15 @@ def build(app):
         parts["toggle"] = checked[0] if checked else None
         parts["popover-contents"] = internal(popover, "contents")
         parts["window"] = win
+        parts["titlebutton-image"] = window_button_image(win)
         result = {}
         for name, widget in parts.items():
             if widget is None:
                 result[name] = {"error": "not found"}
                 continue
             result[name] = {"radii": radii(widget), "size": [widget.get_width(), widget.get_height()]}
+            if name == "titlebutton-image":
+                result[name]["shape"] = first_shape(widget)
             if name in DEBUG:
                 snap = Gtk.Snapshot()
                 Gtk.WidgetPaintable.new(widget).snapshot(snap, widget.get_width(), widget.get_height())
@@ -197,19 +147,6 @@ def build(app):
 
     win.present()
     GLib.timeout_add(1500, measure)
-
-
-def iter_children(widget):
-    child = widget.get_first_child()
-    while child:
-        yield child
-        child = child.get_next_sibling()
-
-
-def iter_descendants(widget):
-    for child in iter_children(widget):
-        yield child
-        yield from iter_descendants(child)
 
 
 app = Adw.Application(application_id="org.dusk.GtkProbe")

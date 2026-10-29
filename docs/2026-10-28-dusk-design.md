@@ -142,6 +142,15 @@ Success looks like:
     avatars, dots, badges, round icon backgrounds, switch and slider knobs,
     handles, radio buttons. **Exception (owner, Task 12): switch tracks are
     back to their original pill shape**, in Shell and apps alike.
+19. Window buttons round (owner, after Task 12): close, minimize and maximize
+    are circles in every app, `$radius-titlebutton: $r-circle`. Electron apps
+    that hide the system title bar (Claude) draw their own round buttons in
+    Chromium code, which no theme can reach, so everything else matches them.
+    GTK3 keeps Yaru's own 24px circles (a radial gradient; a radius on Yaru's
+    30px button box would draw a bigger one). GTK4 and libadwaita get 50% on
+    the button's 24px icon box, which is also what draws the title bars of
+    X11 apps (Mutter's frames helper, plain GTK4). Any other token value
+    squares them again: GTK3 then swaps the gradient for a flat tint.
 
 ## 5. Architecture
 

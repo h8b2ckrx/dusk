@@ -93,6 +93,36 @@ sys.exit(1 if problems else 0)
 EOF
 }
 
+# Window buttons (close, minimize, maximize) follow $radius-titlebutton, in
+# libadwaita apps and in plain GTK4, which draws X11 apps' title bars (Mutter's
+# frames helper). Both draw the round tint on the button's icon. Round: a
+# circle (the shape drawn is square, its corners at least half its size).
+test_headless_gtk4_window_buttons_follow_token() {
+  local out; out=$(gtk_probe_dir)
+  python3 - "$REPO" "${SASSC:-sassc}" "$out" <<'EOF'
+import json, sys
+repo, sassc, out = sys.argv[1], sys.argv[2], sys.argv[3]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+token = token_values(repo, sassc, ["titlebutton"])["titlebutton"]
+bad = []
+for name in ("gtk4.json", "gtk4-plain.json"):
+    got = json.load(open(f"{out}/{name}")).get("titlebutton-image", {})
+    shape = got.get("shape")
+    if not shape:
+        bad.append(f"{name}: close button icon not measured ({got})")
+        continue
+    r, (w, h) = shape["radii"], shape["bounds"]
+    if token.endswith("%"):
+        if abs(w - h) > 0.5 or min(r) < w / 2 - 0.5:
+            bad.append(f"{name}: close button icon drawn {w}x{h} with corners {r}, want a circle")
+    elif any(abs(c - float(token.rstrip("px"))) > 0.5 for c in r):
+        bad.append(f"{name}: close button icon drawn {r}, want {token}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+}
+
 # The committed partial is exactly what the generator makes from the inventory
 # (never hand-edited, never stale).
 test_gtk4_generated_rules_up_to_date() {

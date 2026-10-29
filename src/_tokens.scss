@@ -78,10 +78,13 @@ $radius-app-tooltip: $r-sm;     // app tooltips
 $radius-osd-toolbar: $r-lg;     // OSD toolbars, e.g. video player controls
 $radius-bar: $r-sm;             // progress bars and level bars
 $radius-toast: $r-lg;           // toasts
+$radius-titlebutton: $r-circle;  // window buttons (close, minimize, maximize), round by the
+                                 // owner's choice (they match Electron apps' own buttons)
 
-// GTK3 title bar buttons (close, minimize, maximize): flat tints replacing
-// Yaru's round radial gradient, at Yaru's own strengths, in the button's own
-// color (so they work in light and dark alike). GTK's alpha(), not Sass's.
+// GTK3 title bar buttons when $radius-titlebutton isn't round: flat tints
+// replacing Yaru's round radial gradient, at Yaru's own strengths, in the
+// button's own color (so they work in light and dark alike). GTK's alpha(),
+// not Sass's.
 $titlebutton-bg: unquote("alpha(currentColor, 0.1)");
 $titlebutton-hover-bg: unquote("alpha(currentColor, 0.15)");
 $titlebutton-active-bg: unquote("alpha(currentColor, 0.25)");
