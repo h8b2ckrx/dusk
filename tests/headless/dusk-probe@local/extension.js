@@ -481,6 +481,21 @@ export default class DuskProbe extends Extension {
         Main.overview.hide();
         await sleep(800);
 
+        // Shell keeps search results for the whole session: enabling dusk
+        // again (an update's reload) has to resize the ones it already has.
+        await Main.extensionManager.enableExtension('dusk@local');
+        await sleep(500);
+        results['search-reenabled'] = await searchIcons('set', 'lock');
+
+        // Ubuntu Dock (when loaded) takes its own search patch off and puts it
+        // back when Do Not Disturb changes. This session's settings only.
+        const notifications = new Gio.Settings({schema_id: 'org.gnome.desktop.notifications'});
+        notifications.set_boolean('show-banners', false);
+        await sleep(500);
+        notifications.set_boolean('show-banners', true);
+        await sleep(500);
+        results['search-after-dnd'] = await searchIcons('set', 'lock');
+
         write('result.json', JSON.stringify(results, null, 1));
         write('done', 'ok');
     }

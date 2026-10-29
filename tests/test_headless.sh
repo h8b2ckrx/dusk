@@ -18,7 +18,7 @@ from tokens import token_values
 t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dialog", "dialog-button"]).items()}
 results = json.load(open(sys.argv[3]))
 for key in ("workspace", "workspace-disabled", "app-grid", "app-grid-disabled", "lock",
-            "search", "search-disabled", "search-on-screen-disabled"):
+            "search", "search-disabled", "search-on-screen-disabled", "search-reenabled", "search-after-dnd"):
     results.pop(key, None)  # checked by their own tests
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 assert results.pop("logout-disabled")["spacing"] == 12, "Shell's gap changed with dusk disabled"
@@ -220,7 +220,8 @@ EOF
 # app grid icons, which Shell sizes in code, and extension.js gives them the
 # stylesheet's -dusk-app-icon-size; other results (system actions) read CSS
 # icon-size. Disabling dusk gives app results Shell's own size back, also
-# those on screen at the time.
+# those on screen at the time; enabling it again resizes the results Shell
+# kept.
 test_headless_search_icons_follow_stylesheet() {
   local out; out=$(probe_dir dark)
   python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
@@ -241,6 +242,28 @@ if not off or not off["apps"] or any(s == want or s > 64 for s in off["apps"]):
 kept = results.get("search-on-screen-disabled")
 if not kept or not kept["apps"] or any(s == want or s > 64 for s in kept["apps"]):
     bad.append(f"results on screen while dusk was disabled kept {kept and kept['apps']}, want Shell's own")
+again = results.get("search-reenabled")
+if not again or not again["apps"] or any(s != want for s in again["apps"]):
+    bad.append(f"after enabling dusk again, app results at {again and again['apps']}, want {want}px")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+EOF
+}
+
+# Search's app results keep the app grid's size alongside Ubuntu Dock, which
+# takes its own search patch off and puts it back whenever Do Not Disturb
+# changes (seen live: back at 64px after a Do Not Disturb toggle).
+test_headless_search_icons_survive_ubuntu_dock() {
+  local out; out=$(probe_dir dark dock)
+  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+import json, re, sys
+results = json.load(open(sys.argv[1]))
+want = int(re.search(r"-dusk-app-icon-size: (\d+)px", open(sys.argv[2]).read()).group(1))
+bad = []
+for key in ("search", "search-after-dnd"):
+    got = results.get(key)
+    if not got or not got["apps"] or any(s != want for s in got["apps"]):
+        bad.append(f"{key}: app results at {got and got['apps']}, want {want}px")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF

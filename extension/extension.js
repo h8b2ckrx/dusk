@@ -29,6 +29,7 @@ export default class DuskExtension extends Extension {
         this._injections = new InjectionManager();
         this._backgrounds = new Map();
         this._appGrid = null;
+        this._searchGrid = null;
         this._searchIcons = new Map();
         try {
             this._patchWorkspaceBackgrounds();
@@ -57,6 +58,11 @@ export default class DuskExtension extends Extension {
             this._appGrid.grid.disconnect(this._appGrid.handlerId);
             this._setAppGridIconSize(this._appGrid.original);
             this._appGrid = null;
+        }
+
+        if (this._searchGrid) {
+            this._searchGrid.grid.disconnect(this._searchGrid.handlerId);
+            this._searchGrid = null;
         }
 
         // Search's app results back to the size Shell makes them at.
@@ -150,19 +156,24 @@ export default class DuskExtension extends Extension {
     }
 
     // Exception 2, search: app results are app grid icons, which Shell makes
-    // at its default size; give each the app grid's size as it's made. Only
-    // when the app grid's own size applied (it holds the stylesheet's value).
+    // at its default size; give each the app grid's size as search shows it.
+    // Only when the app grid's own size applied (it holds the stylesheet's
+    // value). A signal, not a method patch: Ubuntu Dock takes its own patch of
+    // the method that makes them off and back on whenever Do Not Disturb
+    // changes, and that takes any patch made after its own with it.
     _patchSearchIcons() {
-        const proto = AppDisplay.AppSearchProvider?.prototype;
-        if (typeof proto?.createResultObject !== 'function' || !this._appGrid)
+        const results = Main.overview._overview?._controls?._searchController?._searchResults;
+        const provider = results?._providers?.find(p => p instanceof AppDisplay.AppSearchProvider);
+        const grid = provider?.display?._grid;
+        if (!(grid instanceof St.Widget) || !this._appGrid)
             return;
 
-        const adopt = result => this._adoptSearchIcon(result);
-        this._injections.overrideMethod(proto, 'createResultObject', original => function (...args) {
-            const result = original.call(this, ...args);
-            adopt(result);
-            return result;
-        });
+        this._searchGrid = {
+            grid,
+            handlerId: grid.connect('child-added', (_grid, result) => this._adoptSearchIcon(result)),
+        };
+        // Results on screen already.
+        grid.get_children().forEach(result => this._adoptSearchIcon(result));
     }
 
     // Size a search result like the app grid, if it's an app icon; remember

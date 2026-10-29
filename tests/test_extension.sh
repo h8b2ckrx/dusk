@@ -21,7 +21,7 @@ test_extension_js_patches_only_the_two_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
-  assert_eq "$(grep -c 'overrideMethod(' "$js")" 2 "number of overrides"
+  assert_eq "$(grep -c 'overrideMethod(' "$js")" 1 "number of overrides"
   assert_not_contains "$js" "dialog.js"
   assert_not_contains "$js" "_createDialog"
   assert_contains "$js" "this._injections.clear();"
@@ -36,8 +36,11 @@ test_extension_js_patches_only_the_two_exceptions() {
   assert_contains "$js" "const grid = Main.overview._overview?._controls?._appDisplay?._grid;"
   assert_contains "$js" "lookup_length('-dusk-app-icon-size', false)"
   assert_contains "$js" "this._setAppGridIconSize(this._appGrid.original);"
-  # Search's app results take the same size, and get Shell's back on disable.
-  assert_contains "$js" "overrideMethod(proto, 'createResultObject'"
+  # Search's app results take the same size as search shows them, and get
+  # Shell's back on disable. Not through createResultObject, which Ubuntu
+  # Dock patches and unpatches on its own (taking a later patch with it).
+  assert_contains "$js" "grid.connect('child-added'"
+  assert_not_contains "$js" "createResultObject"
   assert_contains "$js" "result.icon.setIconSize(Main.defaultIconSize);"
 }
 

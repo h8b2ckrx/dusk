@@ -176,9 +176,13 @@ Success looks like:
     (96px), read from `-dusk-app-icon-size` on `.icon-grid`. The grid then
     fits fewer icons per page. Search results match it (owner, same day):
     app results are app grid icons, which `extension.js` sizes the same way
-    as they're made; other results (system actions) read CSS `icon-size`.
-    Folder grids and the dock keep Shell's sizes; `disable()` gives Shell
-    its own size back, also to results on screen at the time.
+    as search adds them to its grid; other results (system actions) read
+    CSS `icon-size`. Folder grids and the dock keep Shell's sizes;
+    `disable()` gives Shell its own size back, also to results on screen at
+    the time. It watches the grid rather than patching the method that makes
+    the results: Ubuntu Dock patches that method too, and whenever Do Not
+    Disturb changes it takes its patch off and back on, removing ours (found
+    live, 2026-10-29).
 
 ## 5. Architecture
 
