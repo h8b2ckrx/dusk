@@ -15,7 +15,7 @@ One file, [src/_tokens.scss](src/_tokens.scss), holds every value. Change a toke
 
 | Layer | Hook | dusk's file |
 |---|---|---|
-| GNOME Shell | the `dusk@local` extension's stylesheet, loaded by Shell | `extension/stylesheet-dark.css` / `-light.css` |
+| GNOME Shell | the `dusk@local` extension's stylesheet, loaded by Shell | `extension/stylesheet-dark.css` / `-light.css` (linked file by file into `~/.local/share/gnome-shell/extensions/dusk@local/`) |
 | GTK4 / libadwaita apps | `~/.config/gtk-4.0/gtk.css` | `build/gtk4.css` |
 | GTK3 apps | `~/.config/gtk-3.0/gtk.css` | `build/gtk3.css` |
 
@@ -55,7 +55,8 @@ Both just make Shell honour the stylesheet's value, and `disable()` gives Shell 
 | `tools/shell-reload.sh` | reloads the Shell stylesheet, checks Shell's log and that dusk is ACTIVE |
 | `tools/check_gtk_css.py` | loads a CSS file in GTK 3 or 4 and fails on parse errors |
 | `tools/headless-probe.sh` | throwaway headless Shell (isolated from your desktop) that measures and screenshots the Shell |
-| `tools/headless-gtk.sh`, `tools/probe-gtk3.sh` | the same for real GTK4 / GTK3 widgets |
+| `tools/headless-gtk.sh` | the same for real GTK4 widgets (libadwaita, and plain GTK4) |
+| `tools/probe-gtk3.sh` | real GTK3 widgets with their own config folder, on your display but never shown |
 | `tests/` | `tests/run.sh` runs everything; `tests/run.sh <name>` runs a subset. The headless runs take a few minutes and are cached in `/tmp` until `src/` or the tests change |
 
 ## Install
@@ -105,6 +106,9 @@ It should show `State: ACTIVE`.
      ```
 
      (Likewise for `gtk3`.)
+   - **An app's own selector** (one no stock rule has): add it by hand at the end of
+     `src/gtk4.scss` or `src/gtk3.scss`, after the generated import, with a `//` comment naming
+     the app.
 4. Run `tests/run.sh`.
 
 Rule files may only contain tokens (and `0`): the lint test enforces it.
@@ -122,9 +126,13 @@ Rule files may only contain tokens (and `0`): the lint test enforces it.
 cd ~/dusk && ./uninstall.sh
 ```
 
-It disables the extension, removes only dusk's links, restores anything it backed up, and removes
-folders it created. Log out and back in (or reopen apps) to see stock Ubuntu. `./install.sh` brings
-dusk back.
+It disables the extension (and takes it out of Shell's extension lists), removes only dusk's links,
+restores anything it backed up, and removes folders it created. If a step fails, the rest still
+runs and it tells you; run it again once that's fixed. Log out and back in (or reopen apps) to see
+stock Ubuntu. `./install.sh` brings dusk back.
+
+Use `./uninstall.sh` rather than **Remove** in the Extensions app. Remove only deletes the Shell
+part (the links in `dusk@local`, never the repo's files) and leaves the GTK links in place.
 
 ## Moving the repo
 
@@ -135,7 +143,8 @@ recognises its own old links and replaces them.
 
 Most updates change nothing. After an Ubuntu upgrade (e.g. 26.10):
 
-1. Run `tests/run.sh`. The live checks show what moved.
+1. Run `tests/run.sh`. The `inventory_matches_installed` tests list every GTK rule that changed
+   in the installed stylesheets, and the live checks show what moved in Shell and apps.
 2. **Shell:** for a new GNOME version, add it to `shell-version` in `extension/metadata.json`.
    Re-run the inventory on the new Yaru stylesheet and compare it with `docs/inventory-shell.md`:
 
@@ -182,3 +191,7 @@ extension.
   in both.
 - **App-specific widgets:** an app that styles its own widgets with its own CSS classes can keep
   some rounding. Find the selector (above) and add a rule.
+- **Mixed corners in apps with their own CSS:** `gtk.css` also beats an app's own stylesheet on
+  standard widgets. So an app's custom container can keep its own radius while the buttons inside
+  it take dusk's (e.g. Files' path bar: 9px around 3px buttons). Add a rule for the container.
+- **Flatpak installed later:** run `./install.sh` again so Flatpak apps can read dusk's files.

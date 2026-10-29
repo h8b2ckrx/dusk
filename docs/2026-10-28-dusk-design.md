@@ -1,7 +1,8 @@
 # dusk — design
 
 Theme name: **dusk** (owner's choice).
-Status: draft, waiting for approval. Nothing is built yet.
+Status: built (branch `dusk-v1`, Tasks 1–12 done and approved, 2026-10-29). §4
+lists every owner decision, including the ones made while building.
 Date: 2026-10-28. Owner: the user (Ubuntu user `ubuntu`, home `/home/ubuntu`).
 
 ## 1. Intent
@@ -259,7 +260,8 @@ approximation. `extension.js` uses Shell's `InjectionManager` to wrap
 button row's layout honour the stylesheet's `spacing` on
 `.modal-dialog-button-box`, but only when a stylesheet sets one. `disable()`
 restores the original method. The value itself stays a token. If a future
-Shell renames the method, the wrapper is skipped and dialogs stay stock.
+Shell renames the method, the wrapper is skipped: the stylesheet still
+applies, but the buttons keep Shell's 12px gaps.
 
 **What 24.04 actually does (from the Yaru source):** the dividers are 1px
 gaps between buttons tinted with the foreground color, not drawn lines. With
@@ -354,7 +356,7 @@ padding). Nothing else.
   src/gtk4.scss        # libadwaita overrides
   src/gtk3.scss        # Yaru GTK3 overrides
   src/shell.scss       # Shell overrides incl. modal dialogs
-  extension/           # metadata.json, extension.js (one approved exception, §6), compiled stylesheet-dark.css / stylesheet-light.css
+  extension/           # metadata.json, extension.js (two approved exceptions, §4.15–16), compiled stylesheet-dark.css / stylesheet-light.css
   build/               # compiled gtk4.css / gtk3.css (gitignored)
   docs/                # this design doc
   install.sh

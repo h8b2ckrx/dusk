@@ -1,2 +1,3 @@
 build/
 extension/stylesheet-*.css
+__pycache__/

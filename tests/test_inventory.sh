@@ -53,3 +53,12 @@ test_inventory_source_order() {
   inventory --source-order > "$out"
   assert_eq "$(cut -f3 "$out" | tr '\n' ' ')" ".r .a .q .d .e .f:not(.x, .y) " "selector order"
 }
+
+# GTK3 focus rings have their own radius (-gtk-outline-radius and its four
+# longhands), listed like border radii.
+test_inventory_lists_gtk3_focus_ring_radii() {
+  local css; css=$(mktemp --suffix=.css)
+  printf 'button { -gtk-outline-radius: 6px; outline-offset: -2px; }\n.x { -gtk-outline-top-left-radius: 7px; }\n' > "$css"
+  assert_eq "$("$REPO/tools/radius-inventory.py" "$css" --source-order)" \
+    $'6px\t-gtk-outline-radius\tbutton\n7px\t-gtk-outline-top-left-radius\t.x' "focus ring rows"
+}

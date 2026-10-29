@@ -5,8 +5,9 @@ Builds sample GTK3 widgets (never shown) and reads the corner radius GTK3
 computes for each from its style context, plus a few CSS nodes (switch knob,
 check, trough, window frame) through style paths. GTK3 only reports the
 `border-radius` shorthand, i.e. the top-left corner. Also records the title
-bar close button's background (image or tint), and the shape GTK3 draws for
-it in an offscreen window. Writes OUTDIR/gtk3.json.
+bar close button's background (image or tint), the shape GTK3 draws for it,
+and the corner of a button's keyboard focus ring, both drawn in offscreen
+windows. Writes OUTDIR/gtk3.json.
 
 Usage: gtk3_probe.py OUTDIR
 """
@@ -15,7 +16,8 @@ import sys
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk  # noqa: E402
+gi.require_version("Gdk", "3.0")
+from gi.repository import Gdk, Gtk  # noqa: E402
 
 OUT = sys.argv[1]
 
@@ -162,6 +164,63 @@ result["titlebutton-shape"] = {
     "height": ys[-1] - ys[0] + 1 if ys else 0,
     "corner": bool(xs and ys and drawn(xs[0] + 2, ys[0] + 2)),
 }
+
+# Keyboard focus rings: GTK3 can't report their radius (asking for
+# -gtk-outline-radius returns the border's), so draw one. A button in an
+# offscreen window is drawn without and with keyboard focus; the pixels that
+# change in its top-left corner are the ring's corner, as a mask. Rings are
+# also drawn with each radius from 0 to 10px forced at a priority above
+# gtk.css, so the test can tell which radius GTK drew. Each ring gets a new
+# window: GTK3 doesn't restyle an offscreen one that's already drawn.
+def snapshot(window):
+    window.queue_draw()
+    pump()
+    window.get_window().process_updates(True)
+    pump()
+    pb = window.get_pixbuf()
+    return pb.get_pixels(), pb.get_rowstride(), pb.get_n_channels()
+
+
+def ring_corner(forced_css=None):
+    screen = Gdk.Screen.get_default()
+    forced = None
+    if forced_css:
+        forced = Gtk.CssProvider()
+        forced.load_from_data(forced_css.encode())
+        Gtk.StyleContext.add_provider_for_screen(screen, forced, Gtk.STYLE_PROVIDER_PRIORITY_USER + 100)
+    window = Gtk.OffscreenWindow()
+    button = Gtk.Button(label="dusk")
+    box = Gtk.Box(margin=10)
+    box.pack_start(button, False, False, 0)
+    window.add(box)
+    window.show_all()
+    pump()
+    unfocused, stride, n = snapshot(window)
+    button.grab_focus()
+    focus_in = Gdk.Event.new(Gdk.EventType.FOCUS_CHANGE)
+    focus_in.focus_change.in_ = 1
+    focus_in.focus_change.window = window.get_window()
+    window.event(focus_in)
+    window.set_focus_visible(True)
+    button.set_state_flags(Gtk.StateFlags.FOCUSED, False)
+    focused, _, _ = snapshot(window)
+    a = button.get_allocation()
+
+    def changed(x, y):
+        i = y * stride + x * n
+        return max(abs(p - q) for p, q in zip(focused[i:i + 3], unfocused[i:i + 3])) > 8
+
+    mask = "/".join("".join("#" if changed(x, y) else "." for x in range(a.x, a.x + 8))
+                    for y in range(a.y, a.y + 8))
+    window.destroy()
+    if forced:
+        Gtk.StyleContext.remove_provider_for_screen(screen, forced)
+    return mask
+
+
+result["focus-ring"] = ring_corner()
+result["focus-ring-for"] = {str(px): ring_corner(f"button {{ -gtk-outline-radius: {px}px; }}")
+                            for px in range(11)}
 
 with open(f"{OUT}/gtk3.json", "w") as f:
     json.dump(result, f, indent=1)

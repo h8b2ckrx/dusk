@@ -65,6 +65,33 @@ sys.exit(1 if bad else 0)
 PY
 }
 
+# A button's keyboard focus ring follows the button token, as GTK3 draws it
+# (tests/headless/gtk3_probe.py compares the ring's corner with rings drawn
+# at known radii). Yaru's own is 6px; it must look different from that.
+test_gtk3_focus_ring_follows_token() {
+  local out; out=$(mktemp -d)
+  "$REPO/tools/probe-gtk3.sh" "$out" || fail "GTK3 probe failed: $(tail -3 "$out/probe.log")"
+  python3 - "$REPO" "${SASSC:-sassc}" "$out/gtk3.json" <<'PY'
+import json, sys
+repo, sassc = sys.argv[1], sys.argv[2]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+want = token_values(repo, sassc, ["button"])["button"].removesuffix("px")
+got = json.load(open(sys.argv[3]))
+ring, at = got["focus-ring"], got["focus-ring-for"]
+bad = []
+if "#" not in ring:
+    bad.append("no focus ring drawn")
+if at[want] == at["6"]:
+    bad.append(f"a {want}px ring looks like Yaru's 6px one here; this check can't tell them apart")
+if ring != at[want]:
+    match = [px for px, m in at.items() if m == ring]
+    bad.append(f"focus ring drawn like {match or 'no known'} px, want {want}px")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
+}
+
 # Title bar buttons (close, minimize, maximize) follow $radius-titlebutton,
 # as GTK3 draws them (tests/headless/gtk3_probe.py reads the pixels). Round:
 # Yaru's own circles, 24px like GTK4's (a radius on Yaru's 30px button box
@@ -114,4 +141,15 @@ test_gtk3_titlebutton_token_switches_tint() {
   assert_not_contains "$tmp/round.css" "alpha(currentColor, 0.1)"
   build_with '$r-sm' square
   assert_contains "$tmp/square.css" "alpha(currentColor, 0.1)"
+}
+
+# The inventory still matches the installed Yaru GTK3 stylesheet (your theme's,
+# found with gresource list).
+test_gtk3_inventory_matches_installed_yaru() {
+  local file res css
+  file="/usr/share/themes/$(gtk_theme)/gtk-3.0/gtk.gresource"
+  res=$(gresource list "$file" | grep -E '/3\.0/gtk\.css$') || fail "no GTK3 stylesheet in $file"
+  css=$(mktemp)
+  gresource extract "$file" "$res" > "$css"
+  assert_inventory_current "$REPO/docs/inventory-gtk3.tsv" "$css"
 }

@@ -12,8 +12,10 @@
 // 2. Shell clips the overview's workspace wallpaper at 30px. It follows the
 //    stylesheet's border-radius on .workspace-background instead.
 //
-// disable() gives everything back to Shell. If a future Shell renames what
-// this relies on, nothing is patched and Shell's own look stays.
+// disable() gives everything back to Shell. If a future Shell renames what a
+// patch relies on, that patch is skipped: the stylesheet still applies, but
+// that one value stays Shell's (dialog buttons keep Shell's 12px gaps, the
+// workspace wallpaper its 30px corners).
 import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -28,8 +30,15 @@ export default class DuskExtension extends Extension {
         this._injections = new InjectionManager();
         this._rows = new Map();
         this._backgrounds = new Map();
-        this._patchDialogs();
-        this._patchWorkspaceBackgrounds();
+        try {
+            this._patchDialogs();
+            this._patchWorkspaceBackgrounds();
+        } catch (e) {
+            // Shell never calls disable() after enable() throws: give back
+            // whatever was patched already.
+            this.disable();
+            throw e;
+        }
     }
 
     disable() {

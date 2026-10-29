@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Test stub: logs its arguments, and keeps a tiny settings store in a folder
+# next to DUSK_STUB_LOG: `get SCHEMA KEY` prints what `set SCHEMA KEY VALUE`
+# stored (an empty list if nothing was).
+echo "gsettings $*" >> "${DUSK_STUB_LOG:?}"
+store="$DUSK_STUB_LOG.gsettings"
+mkdir -p "$store"
+case "${1:-}" in
+  get) cat "$store/$2.$3" 2> /dev/null || echo "@as []" ;;
+  set) printf '%s\n' "$4" > "$store/$2.$3" ;;
+esac

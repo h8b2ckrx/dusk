@@ -27,13 +27,15 @@ EOF
 }
 
 # probe_dir SCHEME [dock]: a finished probe run for the current code, reused
-# across tests while src/, extension/ and tests/headless/ are unchanged.
+# across tests while src/, extension/, tests/headless/, the probe tool and the
+# installed system (stock_key) are unchanged.
 # "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
 # extended, shrink).
 probe_dir() {
   local key out variant="${2:-}"
-  key=$(cd "$REPO" && find src extension tests/headless -type f ! -name 'stylesheet-*.css' \
-    -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-16)
+  key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
+    ! -name 'stylesheet-*.css' -print0 | sort -z | xargs -0 sha1sum; stock_key; } \
+    | sha1sum | cut -c1-16)
   out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
   if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
     local extra="" settings=""

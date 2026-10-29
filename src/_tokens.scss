@@ -102,7 +102,7 @@ $dialog-divider-width: 1px;        // gap between buttons, reads as a divider
 $dialog-outline-width: 1px;        // thin outline drawn inside the dialog edge
 $dialog-button-font-weight: normal; // Yaru 24.04 un-bolded dialog buttons
 // Button corners sit just inside the outline, as in 24.04.
-$radius-dialog-button: $radius-dialog - $dialog-outline-width;
+$radius-dialog-button: max(0px, $radius-dialog - $dialog-outline-width);
 
 // ---------------------------------------------------------------------------
 // Colors (§7.2). null = leave the stock Yaru color alone (no rule is emitted).

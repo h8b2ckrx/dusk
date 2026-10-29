@@ -9,6 +9,13 @@ passed=0
 failed=0
 
 for file in tests/test_*.sh; do
+  # A file that doesn't parse would quietly contribute fewer tests.
+  if ! err=$(bash -n "$file" 2>&1); then
+    echo "FAIL $file (does not parse)"
+    echo "$err" | sed 's/^/    /'
+    failed=$((failed + 1))
+    continue
+  fi
   tests=$(bash -c "source tests/lib.sh; source '$file'; declare -F" | awk '{print $3}' | grep '^test_')
   for t in $tests; do
     case "$file $t" in *"$filter"*) ;; *) continue ;; esac

@@ -42,6 +42,13 @@ rm -f "$OUT/done" "$OUT/error.txt"
 
 export DUSK_PROBE_OUT="$OUT" DUSK_SCHEME="$SCHEME" DUSK_EXTRA="${extra[*]:-}"
 export DUSK_GSETTINGS="${DUSK_GSETTINGS:-}"
+# Shell creates this flag at start-up and deletes it after 60s or on a clean
+# shutdown; while it exists, a crash of your desktop's Shell makes systemd
+# turn off all user extensions. It sits in the runtime folder the desktop
+# shares, so a probe Shell stopped early must not leave one behind.
+flag="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/gnome-shell-disable-extensions"
+had_flag=0
+[ -e "$flag" ] && had_flag=1
 dbus-run-session -- bash -c '
   list() { printf "\"%s\", " "$@" | sed "s/, $//"; }
   enabled=(dusk@local dusk-probe@local $DUSK_EXTRA)
@@ -75,5 +82,6 @@ dbus-run-session -- bash -c '
   kill "$pid" 2> /dev/null
   wait "$pid" 2> /dev/null
 ' > /dev/null 2>&1 || true
+[ "$had_flag" = 1 ] || rm -f "$flag"
 
 [ "$(cat "$OUT/done" 2> /dev/null)" = ok ]

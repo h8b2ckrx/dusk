@@ -13,10 +13,12 @@ if ! command -v "$SASSC" > /dev/null; then
 fi
 
 # compile SRC OUT: write OUT only if SRC compiles, so a failed build never
-# leaves a half-written stylesheet behind.
+# leaves a half-written stylesheet behind. The temporary file sits next to OUT
+# (a hidden name, which install.sh never links), so the final rename is
+# atomic: an app starting mid-build reads the old file or the new one.
 compile() {
   local tmp
-  tmp=$(mktemp)
+  tmp=$(mktemp "$(dirname "$2")/.$(basename "$2").XXXXXX")
   if ! "$SASSC" --style expanded -I src "$1" > "$tmp"; then
     rm -f "$tmp"
     echo "build.sh: failed to compile $1" >&2

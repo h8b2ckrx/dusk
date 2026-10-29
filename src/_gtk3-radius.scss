@@ -2,6 +2,11 @@
 // To change a value, edit its token in src/_tokens.scss; to change which
 // token a rule uses, edit the inventory's last column and regenerate.
 
+// Buttons, split buttons, opaque / suggested menu buttons.
+* {
+  -gtk-outline-radius: #{$radius-button};
+}
+
 // Selected rows and items: sidebars, lists, grids, text selection.
 .view:selected:focus,
 iconview:selected:focus,
@@ -56,6 +61,11 @@ button.circular {
   border-radius: #{$radius-icon-button};
 }
 
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
+button.circular {
+  -gtk-outline-radius: #{$radius-icon-button};
+}
+
 // Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
 .linked:not(.vertical) > combobox > box > button.combo,
 filechooser .path-bar.linked > button,
@@ -66,6 +76,18 @@ filechooser .path-bar.linked > button,
 .linked > button,
 toolbar.inline-toolbar toolbutton > button.flat {
   border-radius: 0;
+}
+
+// Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
+.linked:not(.vertical) > combobox > box > button.combo,
+filechooser .path-bar.linked > button,
+.xfce4-panel.background button menu .linked button,
+.linked:not(.vertical) > spinbutton:not(.vertical),
+.linked:not(.vertical) > entry,
+.inline-toolbar button,
+.linked > button,
+toolbar.inline-toolbar toolbutton > button.flat {
+  -gtk-outline-radius: 0;
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
@@ -113,6 +135,50 @@ toolbar.inline-toolbar toolbutton:first-child > button.flat {
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
+.linked:not(.vertical) > combobox:first-child > box > button.combo,
+combobox.linked button:nth-child(2):dir(rtl),
+filechooser .path-bar.linked > button:dir(rtl):last-child,
+filechooser .path-bar.linked > button:dir(ltr):first-child,
+.xfce4-panel.background button menu .linked button:first-child {
+  -gtk-outline-top-left-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked:not(.vertical) > spinbutton:first-child:not(.vertical),
+.linked:not(.vertical) > entry:first-child {
+  -gtk-outline-top-left-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.inline-toolbar button:first-child,
+.linked > button:first-child,
+toolbar.inline-toolbar toolbutton:first-child > button.flat {
+  -gtk-outline-top-left-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked:not(.vertical) > combobox:first-child > box > button.combo,
+combobox.linked button:nth-child(2):dir(rtl),
+filechooser .path-bar.linked > button:dir(rtl):last-child,
+filechooser .path-bar.linked > button:dir(ltr):first-child,
+.xfce4-panel.background button menu .linked button:first-child {
+  -gtk-outline-bottom-left-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked:not(.vertical) > spinbutton:first-child:not(.vertical),
+.linked:not(.vertical) > entry:first-child {
+  -gtk-outline-bottom-left-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.inline-toolbar button:first-child,
+.linked > button:first-child,
+toolbar.inline-toolbar toolbutton:first-child > button.flat {
+  -gtk-outline-bottom-left-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
 .linked:not(.vertical) > combobox:last-child > box > button.combo,
 combobox.linked button:nth-child(2):dir(ltr),
 filechooser .path-bar.linked > button:dir(rtl):first-child,
@@ -154,6 +220,50 @@ filechooser .path-bar.linked > button:dir(ltr):last-child,
 .linked > button:last-child,
 toolbar.inline-toolbar toolbutton:last-child > button.flat {
   border-bottom-right-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked:not(.vertical) > combobox:last-child > box > button.combo,
+combobox.linked button:nth-child(2):dir(ltr),
+filechooser .path-bar.linked > button:dir(rtl):first-child,
+filechooser .path-bar.linked > button:dir(ltr):last-child,
+.xfce4-panel.background button menu .linked button:last-child {
+  -gtk-outline-top-right-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked:not(.vertical) > spinbutton:last-child:not(.vertical),
+.linked:not(.vertical) > entry:last-child {
+  -gtk-outline-top-right-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.inline-toolbar button:last-child,
+.linked > button:last-child,
+toolbar.inline-toolbar toolbutton:last-child > button.flat {
+  -gtk-outline-top-right-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked:not(.vertical) > combobox:last-child > box > button.combo,
+combobox.linked button:nth-child(2):dir(ltr),
+filechooser .path-bar.linked > button:dir(rtl):first-child,
+filechooser .path-bar.linked > button:dir(ltr):last-child,
+.xfce4-panel.background button menu .linked button:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked:not(.vertical) > spinbutton:last-child:not(.vertical),
+.linked:not(.vertical) > entry:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.inline-toolbar button:last-child,
+.linked > button:last-child,
+toolbar.inline-toolbar toolbutton:last-child > button.flat {
+  -gtk-outline-bottom-right-radius: #{$radius-button};
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
@@ -176,12 +286,40 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat {
   border-radius: #{$radius-button};
 }
 
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked:not(.vertical) > combobox:only-child > box > button.combo,
+filechooser .path-bar.linked > button:only-child,
+.xfce4-panel.background button menu .linked button:only-child {
+  -gtk-outline-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked:not(.vertical) > spinbutton:only-child:not(.vertical),
+.linked:not(.vertical) > entry:only-child {
+  -gtk-outline-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.inline-toolbar button:only-child,
+.linked > button:only-child,
+toolbar.inline-toolbar toolbutton:only-child > button.flat {
+  -gtk-outline-radius: #{$radius-button};
+}
+
 // Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
 .linked.vertical > combobox > box > button.combo,
 .linked.vertical > spinbutton:not(.vertical),
 .linked.vertical > entry,
 .linked.vertical > button {
   border-radius: 0;
+}
+
+// Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
+.linked.vertical > combobox > box > button.combo,
+.linked.vertical > spinbutton:not(.vertical),
+.linked.vertical > entry,
+.linked.vertical > button {
+  -gtk-outline-radius: 0;
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
@@ -217,6 +355,38 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat {
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > combobox:first-child > box > button.combo {
+  -gtk-outline-top-left-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked.vertical > spinbutton:first-child:not(.vertical),
+.linked.vertical > entry:first-child {
+  -gtk-outline-top-left-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > button:first-child {
+  -gtk-outline-top-left-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > combobox:first-child > box > button.combo {
+  -gtk-outline-top-right-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked.vertical > spinbutton:first-child:not(.vertical),
+.linked.vertical > entry:first-child {
+  -gtk-outline-top-right-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > button:first-child {
+  -gtk-outline-top-right-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
 .linked.vertical > combobox:last-child > box > button.combo {
   border-bottom-left-radius: #{$radius-button};
 }
@@ -249,6 +419,38 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat {
 }
 
 // Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > combobox:last-child > box > button.combo {
+  -gtk-outline-bottom-left-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked.vertical > spinbutton:last-child:not(.vertical),
+.linked.vertical > entry:last-child {
+  -gtk-outline-bottom-left-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > button:last-child {
+  -gtk-outline-bottom-left-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > combobox:last-child > box > button.combo {
+  -gtk-outline-bottom-right-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked.vertical > spinbutton:last-child:not(.vertical),
+.linked.vertical > entry:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > button:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
 .linked.vertical > combobox:only-child > box > button.combo {
   border-radius: #{$radius-button};
 }
@@ -262,6 +464,22 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat {
 // Buttons, split buttons, opaque / suggested menu buttons.
 .linked.vertical > button:only-child {
   border-radius: #{$radius-button};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > combobox:only-child > box > button.combo {
+  -gtk-outline-radius: #{$radius-button};
+}
+
+// Entries and spin buttons.
+.linked.vertical > spinbutton:only-child:not(.vertical),
+.linked.vertical > entry:only-child {
+  -gtk-outline-radius: #{$radius-entry};
+}
+
+// Buttons, split buttons, opaque / suggested menu buttons.
+.linked.vertical > button:only-child {
+  -gtk-outline-radius: #{$radius-button};
 }
 
 // Menu items, menu bar items, emoji picker items.
@@ -673,6 +891,11 @@ switch slider {
   border-radius: #{$radius-round};
 }
 
+// Truly round things, kept round: avatars, dots, knobs, accent circles.
+switch slider {
+  -gtk-outline-radius: #{$radius-round};
+}
+
 // Check boxes.
 .view.content-view.check:not(list),
 iconview.content-view.check:not(list),
@@ -722,6 +945,14 @@ scale.fine-tune fill,
 scale.fine-tune highlight,
 scale.fine-tune trough {
   border-radius: #{$radius-slider};
+}
+
+// Slider troughs.
+scale.fine-tune fill,
+scale.fine-tune highlight,
+scale.fine-tune trough,
+scale trough {
+  -gtk-outline-radius: #{$radius-slider};
 }
 
 // Truly round things, kept round: avatars, dots, knobs, accent circles.
@@ -886,9 +1117,19 @@ messagedialog.csd .dialog-action-area button {
   border-radius: 0;
 }
 
+// Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
+messagedialog.csd .dialog-action-area button {
+  -gtk-outline-radius: 0;
+}
+
 // Alert dialogs and message dialogs.
 messagedialog.csd .dialog-action-area button:first-child {
   border-bottom-left-radius: #{$radius-dialog};
+}
+
+// Alert dialogs and message dialogs.
+messagedialog.csd .dialog-action-area button:first-child {
+  -gtk-outline-bottom-left-radius: #{$radius-dialog};
 }
 
 // Alert dialogs and message dialogs.
@@ -896,9 +1137,19 @@ messagedialog.csd .dialog-action-area button:last-child {
   border-bottom-right-radius: #{$radius-dialog};
 }
 
+// Alert dialogs and message dialogs.
+messagedialog.csd .dialog-action-area button:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-dialog};
+}
+
 // Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
 button.sidebar-button {
   border-radius: #{$radius-icon-button};
+}
+
+// Circular and icon-only buttons, tab buttons, title bar app-menu buttons.
+button.sidebar-button {
+  -gtk-outline-radius: #{$radius-icon-button};
 }
 
 // Tooltips.
@@ -1136,6 +1387,11 @@ popover.emoji-picker .emoji :hover {
   border-radius: 0;
 }
 
+// Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
+.org-gnome-Todo taskrow.activatable.new-task-row button.popup.toggle {
+  -gtk-outline-radius: 0;
+}
+
 // Progress bars and level bars.
 #live_installer #dot_grid progressbar,
 #live_installer #dot_grid progressbar .empty,
@@ -1231,6 +1487,11 @@ messagedialog.background:not(.csd) .dialog-action-area button {
   border-radius: #{$radius-button};
 }
 
+// Buttons, split buttons, opaque / suggested menu buttons.
+messagedialog.background:not(.csd) .dialog-action-area button {
+  -gtk-outline-radius: #{$radius-button};
+}
+
 // Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
 .caja-pathbar button {
   border-radius: 0;
@@ -1302,9 +1563,25 @@ menu.desktopmenu > arrow.bottom {
   border-radius: #{$radius-popover};
 }
 
+// Buttons, split buttons, opaque / suggested menu buttons.
+*:not(button),
+button {
+  -gtk-outline-radius: #{$radius-button};
+}
+
+// Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
+treeview {
+  -gtk-outline-radius: 0;
+}
+
 // Truly round things, kept round: avatars, dots, knobs, accent circles.
 avatar {
   border-radius: #{$radius-round};
+}
+
+// Truly round things, kept round: avatars, dots, knobs, accent circles.
+avatar {
+  -gtk-outline-radius: #{$radius-round};
 }
 
 // Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
@@ -1319,7 +1596,17 @@ popover.combo list > row:first-child {
 
 // Cards, frames, boxed lists and their first / last rows.
 popover.combo list > row:first-child {
+  -gtk-outline-top-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo list > row:first-child {
   border-top-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo list > row:first-child {
+  -gtk-outline-top-right-radius: #{$radius-card};
 }
 
 // Cards, frames, boxed lists and their first / last rows.
@@ -1329,7 +1616,17 @@ popover.combo list > row:last-child {
 
 // Cards, frames, boxed lists and their first / last rows.
 popover.combo list > row:last-child {
+  -gtk-outline-bottom-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo list > row:last-child {
   border-bottom-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo list > row:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-card};
 }
 
 // Cards, frames, boxed lists and their first / last rows.
@@ -1339,7 +1636,17 @@ popover.combo overshoot.top {
 
 // Cards, frames, boxed lists and their first / last rows.
 popover.combo overshoot.top {
+  -gtk-outline-top-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo overshoot.top {
   border-top-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo overshoot.top {
+  -gtk-outline-top-right-radius: #{$radius-card};
 }
 
 // Cards, frames, boxed lists and their first / last rows.
@@ -1349,7 +1656,17 @@ popover.combo overshoot.bottom {
 
 // Cards, frames, boxed lists and their first / last rows.
 popover.combo overshoot.bottom {
+  -gtk-outline-bottom-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo overshoot.bottom {
   border-bottom-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+popover.combo overshoot.bottom {
+  -gtk-outline-bottom-right-radius: #{$radius-card};
 }
 
 // Scrollbars.
@@ -1359,7 +1676,17 @@ popover.combo scrollbar.vertical:dir(ltr) {
 
 // Scrollbars.
 popover.combo scrollbar.vertical:dir(ltr) {
+  -gtk-outline-top-right-radius: #{$radius-scrollbar};
+}
+
+// Scrollbars.
+popover.combo scrollbar.vertical:dir(ltr) {
   border-bottom-right-radius: #{$radius-scrollbar};
+}
+
+// Scrollbars.
+popover.combo scrollbar.vertical:dir(ltr) {
+  -gtk-outline-bottom-right-radius: #{$radius-scrollbar};
 }
 
 // Scrollbars.
@@ -1369,7 +1696,17 @@ popover.combo scrollbar.vertical:dir(rtl) {
 
 // Scrollbars.
 popover.combo scrollbar.vertical:dir(rtl) {
+  -gtk-outline-top-left-radius: #{$radius-scrollbar};
+}
+
+// Scrollbars.
+popover.combo scrollbar.vertical:dir(rtl) {
   border-bottom-left-radius: #{$radius-scrollbar};
+}
+
+// Scrollbars.
+popover.combo scrollbar.vertical:dir(rtl) {
+  -gtk-outline-bottom-left-radius: #{$radius-scrollbar};
 }
 
 // Square, as in the stock theme (inner corners of linked groups, joined edges, ...).
@@ -1394,7 +1731,27 @@ list.content > row.expander:checked,
 list.content > row.expander:checked row.header,
 list.content > row.expander:checked + row,
 list.content > row.expander:checked + row.expander row.header {
+  -gtk-outline-top-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+list.content > row:first-child,
+list.content > row.expander:first-child row.header,
+list.content > row.expander:checked,
+list.content > row.expander:checked row.header,
+list.content > row.expander:checked + row,
+list.content > row.expander:checked + row.expander row.header {
   border-top-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+list.content > row:first-child,
+list.content > row.expander:first-child row.header,
+list.content > row.expander:checked,
+list.content > row.expander:checked row.header,
+list.content > row.expander:checked + row,
+list.content > row.expander:checked + row.expander row.header {
+  -gtk-outline-top-right-radius: #{$radius-card};
 }
 
 // Cards, frames, boxed lists and their first / last rows.
@@ -1416,7 +1773,29 @@ list.content > row.expander:not(:checked):last-child row.header,
 list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header,
 list.content > row.expander.empty:checked row.header,
 list.content > row.expander list.nested > row:last-child {
+  -gtk-outline-bottom-left-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+list.content > row:last-child,
+list.content > row.checked-expander-row-previous-sibling,
+list.content > row.expander:checked,
+list.content > row.expander:not(:checked):last-child row.header,
+list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header,
+list.content > row.expander.empty:checked row.header,
+list.content > row.expander list.nested > row:last-child {
   border-bottom-right-radius: #{$radius-card};
+}
+
+// Cards, frames, boxed lists and their first / last rows.
+list.content > row:last-child,
+list.content > row.checked-expander-row-previous-sibling,
+list.content > row.expander:checked,
+list.content > row.expander:not(:checked):last-child row.header,
+list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header,
+list.content > row.expander.empty:checked row.header,
+list.content > row.expander list.nested > row:last-child {
+  -gtk-outline-bottom-right-radius: #{$radius-card};
 }
 
 // Windows and sheets.

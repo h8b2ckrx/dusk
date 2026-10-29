@@ -603,7 +603,7 @@ StScrollBar > .hhandle {
 // order (several share a specificity, and the later one wins).
 // ===========================================================================
 
-// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+// Square, as in Yaru: the tiles under the icons.
 #dashtodockContainer.right .dash-item-container .overview-tile,
 #dashtodockContainer.right .dash-item-container .grid-search-result,
 #dashtodockContainer.left .dash-item-container .overview-tile,
@@ -635,7 +635,8 @@ StScrollBar > .hhandle {
   border-radius: $radius-dock;
 }
 
-// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+// Square, as in Yaru: the dock background when extended edge-to-edge or with
+// straight corners.
 #dashtodockContainer.bottom.extended #dash .dash-background,
 #dashtodockContainer.bottom.extended.shrink #dash .dash-background,
 #dashtodockContainer.top.extended #dash .dash-background,
@@ -654,7 +655,7 @@ StScrollBar > .hhandle {
   border-radius: $radius-round;
 }
 
-// Square, as in Yaru: the tiles under the icons, and the dock background when extended edge-to-edge or with straight corners.
+// Square, as in Yaru: the icon highlight in the dock's Metro style.
 #dashtodockContainer .metro .overview-icon {
   border-radius: 0;
 }

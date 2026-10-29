@@ -10,6 +10,10 @@ get written.
   **identical radii**, so this works whatever accent you pick.
 - **Made with:** `tools/radius-inventory.py --include-zero --source-order`: **618** radius rules,
   327 rounded and 291 square.
+- **Added after the final review:** Yaru's **135** keyboard focus-ring rules
+  (`-gtk-outline-radius` and its longhands; 120 rounded, 15 square), which the first pass
+  missed. Each takes its element's token, from the border-radius rule with the same selector.
+  Yaru's two catch-all rings (`*` 4px, `*:not(button)` 6px) take `button`.
 - **Exact mapping:** [inventory-gtk3.tsv](inventory-gtk3.tsv), every rule in Yaru's order:
   selector, property, Yaru value, dusk token (`0` = stays square). Task 11 builds the GTK3 rules
   from it with the same generator as GTK4 (`tools/mirror-radius.py`).

@@ -1,6 +1,7 @@
 # Yaru GTK3 (Yaru-sage-dark, Ubuntu 26.04) radius rules in source order, from
 # tools/radius-inventory.py --include-zero --source-order on /com/ubuntu/themes/<theme>/3.0/gtk.css.
 # selector<TAB>property<TAB>Yaru value<TAB>dusk token (0 = stays square)
+*	-gtk-outline-radius	4px	button
 .view:selected:focus	border-radius	3px	row
 iconview:selected:focus	border-radius	3px	row
 .view:selected	border-radius	3px	row
@@ -27,6 +28,7 @@ button.titlebutton	border-radius	6px	icon-button
 button	border-radius	6px	button
 button.osd	border-radius	5px	button
 button.circular	border-radius	9999px	icon-button
+button.circular	-gtk-outline-radius	9999px	icon-button
 .linked:not(.vertical) > combobox > box > button.combo	border-radius	0	0
 filechooser .path-bar.linked > button	border-radius	0	0
 .xfce4-panel.background button menu .linked button	border-radius	0	0
@@ -35,6 +37,14 @@ filechooser .path-bar.linked > button	border-radius	0	0
 .inline-toolbar button	border-radius	0	0
 .linked > button	border-radius	0	0
 toolbar.inline-toolbar toolbutton > button.flat	border-radius	0	0
+.linked:not(.vertical) > combobox > box > button.combo	-gtk-outline-radius	0	0
+filechooser .path-bar.linked > button	-gtk-outline-radius	0	0
+.xfce4-panel.background button menu .linked button	-gtk-outline-radius	0	0
+.linked:not(.vertical) > spinbutton:not(.vertical)	-gtk-outline-radius	0	0
+.linked:not(.vertical) > entry	-gtk-outline-radius	0	0
+.inline-toolbar button	-gtk-outline-radius	0	0
+.linked > button	-gtk-outline-radius	0	0
+toolbar.inline-toolbar toolbutton > button.flat	-gtk-outline-radius	0	0
 .linked:not(.vertical) > combobox:first-child > box > button.combo	border-top-left-radius	6px	button
 combobox.linked button:nth-child(2):dir(rtl)	border-top-left-radius	6px	button
 filechooser .path-bar.linked > button:dir(rtl):last-child	border-top-left-radius	6px	button
@@ -55,6 +65,26 @@ filechooser .path-bar.linked > button:dir(ltr):first-child	border-bottom-left-ra
 .inline-toolbar button:first-child	border-bottom-left-radius	6px	button
 .linked > button:first-child	border-bottom-left-radius	6px	button
 toolbar.inline-toolbar toolbutton:first-child > button.flat	border-bottom-left-radius	6px	button
+.linked:not(.vertical) > combobox:first-child > box > button.combo	-gtk-outline-top-left-radius	6px	button
+combobox.linked button:nth-child(2):dir(rtl)	-gtk-outline-top-left-radius	6px	button
+filechooser .path-bar.linked > button:dir(rtl):last-child	-gtk-outline-top-left-radius	6px	button
+filechooser .path-bar.linked > button:dir(ltr):first-child	-gtk-outline-top-left-radius	6px	button
+.xfce4-panel.background button menu .linked button:first-child	-gtk-outline-top-left-radius	6px	button
+.linked:not(.vertical) > spinbutton:first-child:not(.vertical)	-gtk-outline-top-left-radius	6px	entry
+.linked:not(.vertical) > entry:first-child	-gtk-outline-top-left-radius	6px	entry
+.inline-toolbar button:first-child	-gtk-outline-top-left-radius	6px	button
+.linked > button:first-child	-gtk-outline-top-left-radius	6px	button
+toolbar.inline-toolbar toolbutton:first-child > button.flat	-gtk-outline-top-left-radius	6px	button
+.linked:not(.vertical) > combobox:first-child > box > button.combo	-gtk-outline-bottom-left-radius	6px	button
+combobox.linked button:nth-child(2):dir(rtl)	-gtk-outline-bottom-left-radius	6px	button
+filechooser .path-bar.linked > button:dir(rtl):last-child	-gtk-outline-bottom-left-radius	6px	button
+filechooser .path-bar.linked > button:dir(ltr):first-child	-gtk-outline-bottom-left-radius	6px	button
+.xfce4-panel.background button menu .linked button:first-child	-gtk-outline-bottom-left-radius	6px	button
+.linked:not(.vertical) > spinbutton:first-child:not(.vertical)	-gtk-outline-bottom-left-radius	6px	entry
+.linked:not(.vertical) > entry:first-child	-gtk-outline-bottom-left-radius	6px	entry
+.inline-toolbar button:first-child	-gtk-outline-bottom-left-radius	6px	button
+.linked > button:first-child	-gtk-outline-bottom-left-radius	6px	button
+toolbar.inline-toolbar toolbutton:first-child > button.flat	-gtk-outline-bottom-left-radius	6px	button
 .linked:not(.vertical) > combobox:last-child > box > button.combo	border-top-right-radius	6px	button
 combobox.linked button:nth-child(2):dir(ltr)	border-top-right-radius	6px	button
 filechooser .path-bar.linked > button:dir(rtl):first-child	border-top-right-radius	6px	button
@@ -75,6 +105,26 @@ filechooser .path-bar.linked > button:dir(ltr):last-child	border-bottom-right-ra
 .inline-toolbar button:last-child	border-bottom-right-radius	6px	button
 .linked > button:last-child	border-bottom-right-radius	6px	button
 toolbar.inline-toolbar toolbutton:last-child > button.flat	border-bottom-right-radius	6px	button
+.linked:not(.vertical) > combobox:last-child > box > button.combo	-gtk-outline-top-right-radius	6px	button
+combobox.linked button:nth-child(2):dir(ltr)	-gtk-outline-top-right-radius	6px	button
+filechooser .path-bar.linked > button:dir(rtl):first-child	-gtk-outline-top-right-radius	6px	button
+filechooser .path-bar.linked > button:dir(ltr):last-child	-gtk-outline-top-right-radius	6px	button
+.xfce4-panel.background button menu .linked button:last-child	-gtk-outline-top-right-radius	6px	button
+.linked:not(.vertical) > spinbutton:last-child:not(.vertical)	-gtk-outline-top-right-radius	6px	entry
+.linked:not(.vertical) > entry:last-child	-gtk-outline-top-right-radius	6px	entry
+.inline-toolbar button:last-child	-gtk-outline-top-right-radius	6px	button
+.linked > button:last-child	-gtk-outline-top-right-radius	6px	button
+toolbar.inline-toolbar toolbutton:last-child > button.flat	-gtk-outline-top-right-radius	6px	button
+.linked:not(.vertical) > combobox:last-child > box > button.combo	-gtk-outline-bottom-right-radius	6px	button
+combobox.linked button:nth-child(2):dir(ltr)	-gtk-outline-bottom-right-radius	6px	button
+filechooser .path-bar.linked > button:dir(rtl):first-child	-gtk-outline-bottom-right-radius	6px	button
+filechooser .path-bar.linked > button:dir(ltr):last-child	-gtk-outline-bottom-right-radius	6px	button
+.xfce4-panel.background button menu .linked button:last-child	-gtk-outline-bottom-right-radius	6px	button
+.linked:not(.vertical) > spinbutton:last-child:not(.vertical)	-gtk-outline-bottom-right-radius	6px	entry
+.linked:not(.vertical) > entry:last-child	-gtk-outline-bottom-right-radius	6px	entry
+.inline-toolbar button:last-child	-gtk-outline-bottom-right-radius	6px	button
+.linked > button:last-child	-gtk-outline-bottom-right-radius	6px	button
+toolbar.inline-toolbar toolbutton:last-child > button.flat	-gtk-outline-bottom-right-radius	6px	button
 .linked:not(.vertical) > combobox:only-child > box > button.combo	border-radius	6px	button
 filechooser .path-bar.linked > button:only-child	border-radius	6px	button
 .xfce4-panel.background button menu .linked button:only-child	border-radius	6px	button
@@ -83,10 +133,22 @@ filechooser .path-bar.linked > button:only-child	border-radius	6px	button
 .inline-toolbar button:only-child	border-radius	6px	button
 .linked > button:only-child	border-radius	6px	button
 toolbar.inline-toolbar toolbutton:only-child > button.flat	border-radius	6px	button
+.linked:not(.vertical) > combobox:only-child > box > button.combo	-gtk-outline-radius	6px	button
+filechooser .path-bar.linked > button:only-child	-gtk-outline-radius	6px	button
+.xfce4-panel.background button menu .linked button:only-child	-gtk-outline-radius	6px	button
+.linked:not(.vertical) > spinbutton:only-child:not(.vertical)	-gtk-outline-radius	6px	entry
+.linked:not(.vertical) > entry:only-child	-gtk-outline-radius	6px	entry
+.inline-toolbar button:only-child	-gtk-outline-radius	6px	button
+.linked > button:only-child	-gtk-outline-radius	6px	button
+toolbar.inline-toolbar toolbutton:only-child > button.flat	-gtk-outline-radius	6px	button
 .linked.vertical > combobox > box > button.combo	border-radius	0	0
 .linked.vertical > spinbutton:not(.vertical)	border-radius	0	0
 .linked.vertical > entry	border-radius	0	0
 .linked.vertical > button	border-radius	0	0
+.linked.vertical > combobox > box > button.combo	-gtk-outline-radius	0	0
+.linked.vertical > spinbutton:not(.vertical)	-gtk-outline-radius	0	0
+.linked.vertical > entry	-gtk-outline-radius	0	0
+.linked.vertical > button	-gtk-outline-radius	0	0
 .linked.vertical > combobox:first-child > box > button.combo	border-top-left-radius	6px	button
 .linked.vertical > spinbutton:first-child:not(.vertical)	border-top-left-radius	6px	entry
 .linked.vertical > entry:first-child	border-top-left-radius	6px	entry
@@ -95,6 +157,14 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat	border-radius	6px	but
 .linked.vertical > spinbutton:first-child:not(.vertical)	border-top-right-radius	6px	entry
 .linked.vertical > entry:first-child	border-top-right-radius	6px	entry
 .linked.vertical > button:first-child	border-top-right-radius	6px	button
+.linked.vertical > combobox:first-child > box > button.combo	-gtk-outline-top-left-radius	6px	button
+.linked.vertical > spinbutton:first-child:not(.vertical)	-gtk-outline-top-left-radius	6px	entry
+.linked.vertical > entry:first-child	-gtk-outline-top-left-radius	6px	entry
+.linked.vertical > button:first-child	-gtk-outline-top-left-radius	6px	button
+.linked.vertical > combobox:first-child > box > button.combo	-gtk-outline-top-right-radius	6px	button
+.linked.vertical > spinbutton:first-child:not(.vertical)	-gtk-outline-top-right-radius	6px	entry
+.linked.vertical > entry:first-child	-gtk-outline-top-right-radius	6px	entry
+.linked.vertical > button:first-child	-gtk-outline-top-right-radius	6px	button
 .linked.vertical > combobox:last-child > box > button.combo	border-bottom-left-radius	6px	button
 .linked.vertical > spinbutton:last-child:not(.vertical)	border-bottom-left-radius	6px	entry
 .linked.vertical > entry:last-child	border-bottom-left-radius	6px	entry
@@ -103,10 +173,22 @@ toolbar.inline-toolbar toolbutton:only-child > button.flat	border-radius	6px	but
 .linked.vertical > spinbutton:last-child:not(.vertical)	border-bottom-right-radius	6px	entry
 .linked.vertical > entry:last-child	border-bottom-right-radius	6px	entry
 .linked.vertical > button:last-child	border-bottom-right-radius	6px	button
+.linked.vertical > combobox:last-child > box > button.combo	-gtk-outline-bottom-left-radius	6px	button
+.linked.vertical > spinbutton:last-child:not(.vertical)	-gtk-outline-bottom-left-radius	6px	entry
+.linked.vertical > entry:last-child	-gtk-outline-bottom-left-radius	6px	entry
+.linked.vertical > button:last-child	-gtk-outline-bottom-left-radius	6px	button
+.linked.vertical > combobox:last-child > box > button.combo	-gtk-outline-bottom-right-radius	6px	button
+.linked.vertical > spinbutton:last-child:not(.vertical)	-gtk-outline-bottom-right-radius	6px	entry
+.linked.vertical > entry:last-child	-gtk-outline-bottom-right-radius	6px	entry
+.linked.vertical > button:last-child	-gtk-outline-bottom-right-radius	6px	button
 .linked.vertical > combobox:only-child > box > button.combo	border-radius	6px	button
 .linked.vertical > spinbutton:only-child:not(.vertical)	border-radius	6px	entry
 .linked.vertical > entry:only-child	border-radius	6px	entry
 .linked.vertical > button:only-child	border-radius	6px	button
+.linked.vertical > combobox:only-child > box > button.combo	-gtk-outline-radius	6px	button
+.linked.vertical > spinbutton:only-child:not(.vertical)	-gtk-outline-radius	6px	entry
+.linked.vertical > entry:only-child	-gtk-outline-radius	6px	entry
+.linked.vertical > button:only-child	-gtk-outline-radius	6px	button
 modelbutton.flat	border-radius	6px	menu-item
 .menuitem.button.flat	border-radius	6px	menu-item
 button.color colorswatch:only-child	border-radius	0	0
@@ -364,6 +446,7 @@ scrollbar.overlay-indicator:not(.dragging):not(.hovering) button	border-radius	1
 scrollbar button	border-radius	0	0
 switch	border-radius	14px	switch
 switch slider	border-radius	50%	round
+switch slider	-gtk-outline-radius	20px	round
 .view.content-view.check:not(list)	border-radius	5px	checkbox
 iconview.content-view.check:not(list)	border-radius	5px	checkbox
 .content-view:not(list) check	border-radius	5px	checkbox
@@ -399,6 +482,10 @@ scale highlight	border-radius	3px	slider
 scale.fine-tune fill	border-radius	5px	slider
 scale.fine-tune highlight	border-radius	5px	slider
 scale.fine-tune trough	border-radius	5px	slider
+scale.fine-tune fill	-gtk-outline-radius	7px	slider
+scale.fine-tune highlight	-gtk-outline-radius	7px	slider
+scale.fine-tune trough	-gtk-outline-radius	7px	slider
+scale trough	-gtk-outline-radius	5px	slider
 scale slider	border-radius	100%	round
 scale.horizontal.marks-before:not(.marks-after) slider	border-radius	0	0
 scale.horizontal.marks-before:not(.marks-after) slider:hover	border-radius	0	0
@@ -453,9 +540,13 @@ messagedialog .titlebar	border-top-right-radius	16px	dialog
 messagedialog.csd.background	border-bottom-left-radius	16px	dialog
 messagedialog.csd.background	border-bottom-right-radius	16px	dialog
 messagedialog.csd .dialog-action-area button	border-radius	0	0
+messagedialog.csd .dialog-action-area button	-gtk-outline-radius	0	0
 messagedialog.csd .dialog-action-area button:first-child	border-bottom-left-radius	16px	dialog
+messagedialog.csd .dialog-action-area button:first-child	-gtk-outline-bottom-left-radius	16px	dialog
 messagedialog.csd .dialog-action-area button:last-child	border-bottom-right-radius	16px	dialog
+messagedialog.csd .dialog-action-area button:last-child	-gtk-outline-bottom-right-radius	16px	dialog
 button.sidebar-button	border-radius	100%	icon-button
+button.sidebar-button	-gtk-outline-radius	100%	icon-button
 tooltip	border-radius	5px	app-tooltip
 colorswatch.top	border-top-left-radius	5.5px	swatch
 colorswatch.top	border-top-right-radius	5.5px	swatch
@@ -519,6 +610,7 @@ popover.emoji-picker .emoji :hover	border-radius	6px	menu-item
 .nemo-window .nemo-window-pane widget.entry	border-radius	3px	entry
 .nemo-window .nemo-window-pane widget.entry:selected	border-radius	3px	row
 .org-gnome-Todo taskrow.activatable.new-task-row button.popup.toggle	border-radius	0px	0
+.org-gnome-Todo taskrow.activatable.new-task-row button.popup.toggle	-gtk-outline-radius	0px	0
 #live_installer #dot_grid progressbar	border-radius	100%	bar
 #live_installer #dot_grid progressbar .empty	border-radius	100%	bar
 #live_installer #dot_grid progressbar .full progress	border-radius	100%	bar
@@ -554,6 +646,7 @@ iconview	border-radius	6px	row
 .mate-panel-menu-bar #PanelApplet button.flat.toggle.brisk-button:hover	border-radius	0	0
 #xkb-layout-chooser > box.dialog-vbox > box.vertical > box.vertical > frame > border	border-radius	0px	0
 messagedialog.background:not(.csd) .dialog-action-area button	border-radius	6px	button
+messagedialog.background:not(.csd) .dialog-action-area button	-gtk-outline-radius	6px	button
 .caja-pathbar button	border-radius	0	0
 .caja-pathbar button.slider-button:nth-child(odd)	border-radius	6px 0px 0px 6px	button
 .caja-pathbar button.slider-button:nth-child(even)	border-radius	0 6px 6px 0	button
@@ -569,20 +662,36 @@ menu.desktopmenu > arrow.top	border-top-left-radius	12px	popover
 menu.desktopmenu > arrow.bottom	border-bottom-right-radius	12px	popover
 menu.desktopmenu > arrow.bottom	border-bottom-left-radius	12px	popover
 .desktopmenu.csd.popup decoration	border-radius	20px	popover
+*:not(button)	-gtk-outline-radius	6px	button
+button	-gtk-outline-radius	6px	button
+treeview	-gtk-outline-radius	0px	0
 avatar	border-radius	9999px	round
+avatar	-gtk-outline-radius	9999px	round
 window.csd.unified:not(.solid-csd) headerbar	border-radius	0	0
 popover.combo list > row:first-child	border-top-left-radius	8px	card
+popover.combo list > row:first-child	-gtk-outline-top-left-radius	7px	card
 popover.combo list > row:first-child	border-top-right-radius	8px	card
+popover.combo list > row:first-child	-gtk-outline-top-right-radius	7px	card
 popover.combo list > row:last-child	border-bottom-left-radius	8px	card
+popover.combo list > row:last-child	-gtk-outline-bottom-left-radius	7px	card
 popover.combo list > row:last-child	border-bottom-right-radius	8px	card
+popover.combo list > row:last-child	-gtk-outline-bottom-right-radius	7px	card
 popover.combo overshoot.top	border-top-left-radius	8px	card
+popover.combo overshoot.top	-gtk-outline-top-left-radius	7px	card
 popover.combo overshoot.top	border-top-right-radius	8px	card
+popover.combo overshoot.top	-gtk-outline-top-right-radius	7px	card
 popover.combo overshoot.bottom	border-bottom-left-radius	8px	card
+popover.combo overshoot.bottom	-gtk-outline-bottom-left-radius	7px	card
 popover.combo overshoot.bottom	border-bottom-right-radius	8px	card
+popover.combo overshoot.bottom	-gtk-outline-bottom-right-radius	7px	card
 popover.combo scrollbar.vertical:dir(ltr)	border-top-right-radius	8px	scrollbar
+popover.combo scrollbar.vertical:dir(ltr)	-gtk-outline-top-right-radius	7px	scrollbar
 popover.combo scrollbar.vertical:dir(ltr)	border-bottom-right-radius	8px	scrollbar
+popover.combo scrollbar.vertical:dir(ltr)	-gtk-outline-bottom-right-radius	7px	scrollbar
 popover.combo scrollbar.vertical:dir(rtl)	border-top-left-radius	8px	scrollbar
+popover.combo scrollbar.vertical:dir(rtl)	-gtk-outline-top-left-radius	7px	scrollbar
 popover.combo scrollbar.vertical:dir(rtl)	border-bottom-left-radius	8px	scrollbar
+popover.combo scrollbar.vertical:dir(rtl)	-gtk-outline-bottom-left-radius	7px	scrollbar
 viewswitcher button	border-radius	0	0
 list.content > row:first-child	border-top-left-radius	8px	card
 list.content > row.expander:first-child row.header	border-top-left-radius	8px	card
@@ -590,12 +699,24 @@ list.content > row.expander:checked	border-top-left-radius	8px	card
 list.content > row.expander:checked row.header	border-top-left-radius	8px	card
 list.content > row.expander:checked + row	border-top-left-radius	8px	card
 list.content > row.expander:checked + row.expander row.header	border-top-left-radius	8px	card
+list.content > row:first-child	-gtk-outline-top-left-radius	7px	card
+list.content > row.expander:first-child row.header	-gtk-outline-top-left-radius	7px	card
+list.content > row.expander:checked	-gtk-outline-top-left-radius	7px	card
+list.content > row.expander:checked row.header	-gtk-outline-top-left-radius	7px	card
+list.content > row.expander:checked + row	-gtk-outline-top-left-radius	7px	card
+list.content > row.expander:checked + row.expander row.header	-gtk-outline-top-left-radius	7px	card
 list.content > row:first-child	border-top-right-radius	8px	card
 list.content > row.expander:first-child row.header	border-top-right-radius	8px	card
 list.content > row.expander:checked	border-top-right-radius	8px	card
 list.content > row.expander:checked row.header	border-top-right-radius	8px	card
 list.content > row.expander:checked + row	border-top-right-radius	8px	card
 list.content > row.expander:checked + row.expander row.header	border-top-right-radius	8px	card
+list.content > row:first-child	-gtk-outline-top-right-radius	7px	card
+list.content > row.expander:first-child row.header	-gtk-outline-top-right-radius	7px	card
+list.content > row.expander:checked	-gtk-outline-top-right-radius	7px	card
+list.content > row.expander:checked row.header	-gtk-outline-top-right-radius	7px	card
+list.content > row.expander:checked + row	-gtk-outline-top-right-radius	7px	card
+list.content > row.expander:checked + row.expander row.header	-gtk-outline-top-right-radius	7px	card
 list.content > row:last-child	border-bottom-left-radius	8px	card
 list.content > row.checked-expander-row-previous-sibling	border-bottom-left-radius	8px	card
 list.content > row.expander:checked	border-bottom-left-radius	8px	card
@@ -603,6 +724,13 @@ list.content > row.expander:not(:checked):last-child row.header	border-bottom-le
 list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header	border-bottom-left-radius	8px	card
 list.content > row.expander.empty:checked row.header	border-bottom-left-radius	8px	card
 list.content > row.expander list.nested > row:last-child	border-bottom-left-radius	8px	card
+list.content > row:last-child	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.checked-expander-row-previous-sibling	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.expander:checked	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.expander:not(:checked):last-child row.header	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.expander.empty:checked row.header	-gtk-outline-bottom-left-radius	7px	card
+list.content > row.expander list.nested > row:last-child	-gtk-outline-bottom-left-radius	7px	card
 list.content > row:last-child	border-bottom-right-radius	8px	card
 list.content > row.checked-expander-row-previous-sibling	border-bottom-right-radius	8px	card
 list.content > row.expander:checked	border-bottom-right-radius	8px	card
@@ -610,6 +738,13 @@ list.content > row.expander:not(:checked):last-child row.header	border-bottom-ri
 list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header	border-bottom-right-radius	8px	card
 list.content > row.expander.empty:checked row.header	border-bottom-right-radius	8px	card
 list.content > row.expander list.nested > row:last-child	border-bottom-right-radius	8px	card
+list.content > row:last-child	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.checked-expander-row-previous-sibling	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.expander:checked	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.expander:not(:checked):last-child row.header	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.expander:not(:checked).checked-expander-row-previous-sibling row.header	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.expander.empty:checked row.header	-gtk-outline-bottom-right-radius	7px	card
+list.content > row.expander list.nested > row:last-child	-gtk-outline-bottom-right-radius	7px	card
 window.csd.unified:not(.solid-csd):not(.fullscreen):not(.tiled):not(.tiled-top):not(.tiled-bottom):not(.tiled-left):not(.tiled-right):not(.maximized)	border-radius	15px	window
 window.csd.unified:not(.solid-csd):not(.fullscreen):not(.tiled):not(.tiled-top):not(.tiled-bottom):not(.tiled-left):not(.tiled-right):not(.maximized) > decoration	border-radius	15px	window
 window.csd.unified:not(.solid-csd):not(.fullscreen):not(.tiled):not(.tiled-top):not(.tiled-bottom):not(.tiled-left):not(.tiled-right):not(.maximized) > decoration-overlay	border-radius	15px	window

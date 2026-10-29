@@ -30,6 +30,13 @@ rm -f "$OUT/gtk4.json" "$OUT/gtk4-plain.json"
 
 export DUSK_OUT="$OUT" DUSK_SCHEME="$SCHEME" DUSK_THEME="$THEME" DUSK_REPO="$REPO"
 export DUSK_DISPLAY="dusk-gtk-$$"
+# Shell creates this flag at start-up and deletes it after 60s or on a clean
+# shutdown; while it exists, a crash of your desktop's Shell makes systemd
+# turn off all user extensions. It sits in the runtime folder the desktop
+# shares, so a probe Shell stopped early must not leave one behind.
+flag="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/gnome-shell-disable-extensions"
+had_flag=0
+[ -e "$flag" ] && had_flag=1
 dbus-run-session -- bash -c '
   gsettings set org.gnome.shell disable-user-extensions true
   gsettings set org.gnome.desktop.interface color-scheme "prefer-$DUSK_SCHEME"
@@ -51,5 +58,6 @@ dbus-run-session -- bash -c '
   kill "$pid" 2> /dev/null
   wait "$pid" 2> /dev/null
 ' > /dev/null 2>&1 || true
+[ "$had_flag" = 1 ] || rm -f "$flag"
 
 [ -s "$OUT/gtk4.json" ] && [ -s "$OUT/gtk4-plain.json" ]

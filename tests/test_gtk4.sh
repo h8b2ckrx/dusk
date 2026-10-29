@@ -17,13 +17,14 @@ EOF
 }
 
 # gtk_probe_dir: a finished tools/headless-gtk.sh run for the current code,
-# reused while src/, docs/inventory-gtk4.tsv and tests/headless/ are unchanged.
+# reused while src/, docs/inventory-gtk4.tsv, tests/headless/ and the
+# installed system (stock_key) are unchanged.
 gtk_probe_dir() {
   local key out
-  key=$(cd "$REPO" && find src docs/inventory-gtk4.tsv tests/headless tools/headless-gtk.sh -type f \
-    -print0 | sort -z | xargs -0 sha1sum | sha1sum | cut -c1-16)
+  key=$({ cd "$REPO" && find src docs/inventory-gtk4.tsv tests/headless tools/headless-gtk.sh -type f \
+    -print0 | sort -z | xargs -0 sha1sum; stock_key; } | sha1sum | cut -c1-16)
   out="${TMPDIR:-/tmp}/dusk-gtk-$key-dark"
-  if [ ! -s "$out/gtk4.json" ]; then
+  if [ ! -s "$out/gtk4.json" ] || [ ! -s "$out/gtk4-plain.json" ]; then
     "$REPO/tools/headless-gtk.sh" "$out" dark > /dev/null 2>&1 \
       || fail "GTK probe failed: $(tail -3 "$out/probe.log" 2> /dev/null)"
   fi
@@ -136,4 +137,20 @@ test_mirror_keeps_id_selectors() {
   "$REPO/tools/mirror-radius.py" "$REPO/tests/fixtures/mirror_ids.tsv" > "$out"
   assert_contains "$out" "#an-id .thing {"
   assert_not_contains "$out" "a comment line"
+}
+
+# The inventory still matches the installed libadwaita (your accent's Yaru
+# stylesheet, found with gresource list; the radii are the same for every
+# accent and in light and dark).
+test_gtk4_inventory_matches_installed_libadwaita() {
+  local lib=/usr/lib/x86_64-linux-gnu/libadwaita-1.so.0 accent res css
+  accent=$(gtk_theme)
+  accent=${accent%-dark}
+  accent=${accent#Yaru}
+  accent=${accent#-}
+  res=$(gresource list "$lib" | grep -xF "/org/gnome/Adwaita/styles/default-dark-yaru-${accent:-default}.css") \
+    || fail "no libadwaita Yaru stylesheet for $(gtk_theme) in $lib"
+  css=$(mktemp)
+  gresource extract "$lib" "$res" > "$css"
+  assert_inventory_current "$REPO/docs/inventory-gtk4.tsv" "$css" --exclude adaptive-preview
 }

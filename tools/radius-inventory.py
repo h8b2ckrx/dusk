@@ -7,7 +7,8 @@ Usage: radius-inventory.py FILE.css [--include-zero] [--include-media]
 Prints one tab-separated line per selector and radius property:
     value<TAB>property<TAB>selector
 Selector lists are split, and only the last value per selector and property
-counts (as in the cascade). Covers border-radius and its four longhands.
+counts (as in the cascade). Covers border-radius and its four longhands,
+and GTK3's focus-ring radius (-gtk-outline-radius) and its four.
 Values that aren't lengths, 0 or percentages show as INVALID:<raw>.
 Sorted by the largest length in the value (em counted as 16px, percentages
 after all lengths, INVALID last), then by selector.
@@ -29,6 +30,12 @@ PROPS = {
     "border-top-right-radius",
     "border-bottom-right-radius",
     "border-bottom-left-radius",
+    # GTK3 focus rings
+    "-gtk-outline-radius",
+    "-gtk-outline-top-left-radius",
+    "-gtk-outline-top-right-radius",
+    "-gtk-outline-bottom-right-radius",
+    "-gtk-outline-bottom-left-radius",
 }
 PART = re.compile(r"^(\d*\.?\d+)(px|em|%)?$")
 

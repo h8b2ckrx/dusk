@@ -14,7 +14,7 @@ EOF
 # extension.js holds exactly two approved exceptions (design §2, §4.15–16):
 # dialog button rows honour CSS `spacing`, and the overview's workspace
 # wallpaper honours .workspace-background's CSS radius. Nothing else.
-test_extension_js_patches_only_dialog_spacing() {
+test_extension_js_patches_only_the_two_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   assert_contains "$js" "import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';"
