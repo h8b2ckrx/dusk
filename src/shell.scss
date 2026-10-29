@@ -13,6 +13,22 @@
 
 $mode: dark !default;
 
+// shell-color-value($token): the 24.04 color for $token in this mode, from
+// src/_shell-color-values.scss (generated from docs/inventory-shell-colors.tsv).
+@function shell-color-value($token) {
+  @return map-get(map-get($shell-color-values, $mode), $token);
+}
+
+// shell-colors-on($chunk): whether that chunk of pop-up colors is switched on
+// in $shell-color-chunks. Chunk 0 (rules kept at their stock value) is on
+// whenever any chunk is.
+@function shell-colors-on($chunk) {
+  @if $chunk == 0 {
+    @return index(map-values($shell-color-chunks), true) != null;
+  }
+  @return map-get($shell-color-chunks, $chunk);
+}
+
 // shell-color($key): this mode's value from $shell-colors (null = stock).
 @function shell-color($key) {
   @return token(map-get($shell-colors, $mode), $key);
@@ -93,8 +109,6 @@ StScrollBar > .hhandle {
   padding: 0;
   spacing: 0;
   border-radius: $radius-dialog;
-  background-color: shell-color(dialog-bg);
-  color: shell-color(dialog-fg);
   @if shell-color(dialog-outline) {
     box-shadow: inset 0 0 0 $dialog-outline-width shell-color(dialog-outline);
   }
@@ -231,8 +245,6 @@ StScrollBar > .hhandle {
 // stay after the menu rule above to win.
 .quick-settings {
   border-radius: $radius-quick-settings;
-  background-color: shell-color(quick-settings-bg);
-  color: shell-color(quick-settings-fg);
 }
 
 // Quick toggles, and the outer shape of toggles with a menu arrow.
@@ -294,8 +306,6 @@ StScrollBar > .hhandle {
 .message,
 .message-view .message {
   border-radius: $radius-notification;
-  background-color: shell-color(notification-bg);
-  color: shell-color(notification-fg);
 }
 
 // Notification action buttons and media player buttons.
@@ -329,8 +339,6 @@ StScrollBar > .hhandle {
 // The calendar.
 .calendar {
   border-radius: $radius-card;
-  background-color: shell-color(calendar-bg);
-  color: shell-color(calendar-fg);
 }
 
 // The date header (today button) and the events, world clocks and weather boxes.
@@ -376,8 +384,6 @@ StScrollBar > .hhandle {
 // Volume, brightness and keyboard-layout popups.
 .osd-window {
   border-radius: $radius-osd;
-  background-color: shell-color(osd-bg);
-  color: shell-color(osd-fg);
 }
 
 // The window size popup shown while resizing.
@@ -821,3 +827,8 @@ StScrollBar > .hhandle {
 .unlock-dialog-notification-count-text {
   border-radius: $radius-round;
 }
+
+// ===========================================================================
+// Shell pop-up colors like Ubuntu 24.04 (design decision 22), generated.
+// ===========================================================================
+@import 'shell-colors';

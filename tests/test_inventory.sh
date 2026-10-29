@@ -168,3 +168,14 @@ both	.message	color	white	#F7F7F7	same	message-color	2
 light	.osd-window	color	black	#3D3D3D	derived	osd-window-color	3
 dark	.away .c	color	red	red	keep	away-c-color	0"
 }
+
+# The color inventory still matches the installed Yaru 26.04 stylesheets: the
+# same rows, selectors, properties and 26.04 values (an update shows here).
+test_color_inventory_matches_installed_yaru() {
+  local d
+  d=$(diff <("$REPO/tools/shell-color-inventory.sh" | grep -v '^# ' | cut -f1-4) \
+    <(grep -v '^# ' "$REPO/docs/inventory-shell-colors.tsv" | cut -f1-4)) \
+    || fail "docs/inventory-shell-colors.tsv no longer matches the installed Yaru (< installed, > inventory):
+$(echo "$d" | head -20)
+Re-run tools/shell-color-inventory.sh and review the changed rows."
+}

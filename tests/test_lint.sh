@@ -1,6 +1,6 @@
 # Rule files: no literal values (spec §7) and a comment above every rule.
 
-RULE_FILES=(src/shell.scss src/shell-dark.scss src/shell-light.scss src/gtk4.scss src/gtk3.scss src/_gtk4-radius.scss src/_gtk3-radius.scss)
+RULE_FILES=(src/shell.scss src/shell-dark.scss src/shell-light.scss src/gtk4.scss src/gtk3.scss src/_gtk4-radius.scss src/_gtk3-radius.scss src/_shell-colors.scss)
 
 # lint_literals FILE...: fails on any hex color, number with a unit, color
 # function or named color in a declaration (`property: value;`). Selectors

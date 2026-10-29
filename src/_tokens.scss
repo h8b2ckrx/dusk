@@ -100,6 +100,17 @@ $titlebutton-backdrop-bg: transparent;
 $app-grid-icon-size: 96px;
 
 // ---------------------------------------------------------------------------
+// Shell pop-up colors like Ubuntu 24.04 (owner, 2026-10-29; decision 22),
+// switched on chunk by chunk: 1 menus and quick settings (with the buttons,
+// switches, entries, check boxes and scroll bars drawn on them), 2
+// notifications and the date menu, 3 dialogs, OSDs, switchers, tooltips and
+// the screenshot panel. The colors themselves are Yaru 24.04's, per mode, from
+// docs/inventory-shell-colors.tsv (generated into src/_shell-color-values.scss).
+// ---------------------------------------------------------------------------
+$shell-color-chunks: (1: false, 2: false, 3: false);
+@import 'shell-color-values';
+
+// ---------------------------------------------------------------------------
 // Shell modal dialogs (§6): Ubuntu 24.04 layout. Values from ubuntu/yaru tag
 // 24.04.3-0ubuntu1, gnome-shell-sass widgets/_dialogs.scss and
 // _common.scss %bubble_button. Colors are in $shell-colors below.
@@ -126,14 +137,6 @@ $radius-dialog-button: max(0px, $radius-dialog - $dialog-outline-width);
 // text follows the accent.
 $shell-colors: (
   dark: (
-    notification-bg: null,
-    notification-fg: null,
-    quick-settings-bg: null,
-    quick-settings-fg: null,
-    calendar-bg: null,
-    calendar-fg: null,
-    dialog-bg: null,
-    dialog-fg: null,
     dialog-outline: rgba(#F7F7F7, 0.15),
     dialog-button-fg: #F7F7F7,
     dialog-button-bg: rgba(#F7F7F7, 0.10),
@@ -143,18 +146,8 @@ $shell-colors: (
     dialog-button-insensitive-fg: rgba(#F7F7F7, 0.5),
     dialog-button-insensitive-bg: rgba(#F7F7F7, 0.17),
     dialog-default-fg: -st-accent-color,
-    osd-bg: null,
-    osd-fg: null,
   ),
   light: (
-    notification-bg: null,
-    notification-fg: null,
-    quick-settings-bg: null,
-    quick-settings-fg: null,
-    calendar-bg: null,
-    calendar-fg: null,
-    dialog-bg: null,
-    dialog-fg: null,
     dialog-outline: rgba(#3D3D3D, 0.15),
     dialog-button-fg: #3D3D3D,
     dialog-button-bg: rgba(#3D3D3D, 0.10),
@@ -164,8 +157,6 @@ $shell-colors: (
     dialog-button-insensitive-fg: rgba(#3D3D3D, 0.4),
     dialog-button-insensitive-bg: rgba(#3D3D3D, 0.17),
     dialog-default-fg: -st-accent-color,
-    osd-bg: null,
-    osd-fg: null,
   ),
 );
 

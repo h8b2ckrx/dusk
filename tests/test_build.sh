@@ -185,3 +185,87 @@ test_shell_chunk_c_rules_present() {
 test_shell_dock_rules_present() {
   every_selector_has_radius_rule "$REPO/tests/headless/dock.selectors"
 }
+
+# Shell pop-up colors (decision 22): src/_shell-colors.scss (rules) and
+# src/_shell-color-values.scss (their 24.04 values) are generated from
+# docs/inventory-shell-colors.tsv by tools/mirror-colors.py.
+
+test_shell_colors_generated_up_to_date() {
+  diff <("$REPO/tools/mirror-colors.py" "$REPO/docs/inventory-shell-colors.tsv" rules) "$REPO/src/_shell-colors.scss" > /dev/null \
+    || fail "src/_shell-colors.scss is stale: run tools/mirror-colors.py docs/inventory-shell-colors.tsv rules > src/_shell-colors.scss"
+  diff <("$REPO/tools/mirror-colors.py" "$REPO/docs/inventory-shell-colors.tsv" values) "$REPO/src/_shell-color-values.scss" > /dev/null \
+    || fail "src/_shell-color-values.scss is stale: run tools/mirror-colors.py docs/inventory-shell-colors.tsv values > src/_shell-color-values.scss"
+}
+
+# shell_colors_on DIR: a copy of src/ in DIR with every color chunk switched
+# on, compiled to DIR/dark.css and DIR/light.css.
+shell_colors_on() {
+  cp -r "$REPO/src" "$1/src"
+  sed -i -E 's/^\$shell-color-chunks: \(1: false, 2: false, 3: false\);/$shell-color-chunks: (1: true, 2: true, 3: true);/' "$1/src/_tokens.scss"
+  grep -q '^\$shell-color-chunks: (1: true, 2: true, 3: true);' "$1/src/_tokens.scss" || fail "no \$shell-color-chunks switches"
+  "${SASSC:-sassc}" --style expanded -I "$1/src" "$1/src/shell-dark.scss" > "$1/dark.css"
+  "${SASSC:-sassc}" --style expanded -I "$1/src" "$1/src/shell-light.scss" > "$1/light.css"
+}
+
+# With every chunk on, each inventory row is in its mode's stylesheet with
+# its 24.04 value (and 26.04's !important), in the inventory's order.
+test_shell_colors_mirror_inventory() {
+  local tmp; tmp=$(mktemp -d)
+  shell_colors_on "$tmp"
+  python3 - "$REPO" "$tmp" <<'PY'
+import importlib.util, re, sys
+repo, tmp = sys.argv[1], sys.argv[2]
+spec = importlib.util.spec_from_file_location("ci", f"{repo}/tools/color-inventory.py")
+ci = importlib.util.module_from_spec(spec); spec.loader.exec_module(ci)
+rows = [l.rstrip("\n").split("\t") for l in open(f"{repo}/docs/inventory-shell-colors.tsv")
+        if l.strip() and not l.startswith("# ")]
+bad = []
+for mode in ("dark", "light"):
+    built = list(ci.declarations(open(f"{tmp}/{mode}.css").read()).items())
+    where = {key: i for i, (key, _) in enumerate(built)}
+    last = -1
+    for m, sel, prop, new, old, *_ in rows:
+        if m not in ("both", mode):
+            continue
+        want = " ".join(old.replace("!important", "").split())
+        if "!important" in new:
+            want += " !important"
+        i = where.get((sel, prop))
+        if i is None:
+            bad.append(f"{mode}: {sel} {prop} missing")
+        elif built[i][1] != want:
+            bad.append(f"{mode}: {sel} {prop} is '{built[i][1]}', want '{want}'")
+        elif i < last:
+            bad.append(f"{mode}: {sel} {prop} out of order")
+        else:
+            last = i
+print("\n".join(bad[:20]) + (f"\n… {len(bad)} problems" if len(bad) > 20 else ""))
+sys.exit(1 if bad else 0)
+PY
+}
+
+# Outside the scope (the top bar, dock, lock and login screens, Blur my
+# Shell's surfaces, the keyboard), every color dusk sets, with every chunk
+# on, is the installed Yaru 26.04 value: only re-asserted, never changed.
+test_no_color_rules_outside_scope() {
+  local tmp; tmp=$(mktemp -d)
+  shell_colors_on "$tmp"
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$tmp/stock-dark.css"
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource /org/gnome/shell/theme/Yaru/gnome-shell.css > "$tmp/stock-light.css"
+  python3 - "$REPO" "$tmp" <<'PY'
+import importlib.util, re, sys
+repo, tmp = sys.argv[1], sys.argv[2]
+spec = importlib.util.spec_from_file_location("ci", f"{repo}/tools/color-inventory.py")
+ci = importlib.util.module_from_spec(spec); spec.loader.exec_module(ci)
+outside = re.compile(r"#panel|#dash|\.search-section-content|\.app-folder-dialog|\.unlock-dialog|\.login-dialog|\.keyboard")
+bad = []
+for mode in ("dark", "light"):
+    stock = ci.declarations(open(f"{tmp}/stock-{mode}.css").read())
+    norm = lambda v: " ".join(v.replace("!important", "").split()).lower()
+    for (sel, prop), value in ci.declarations(open(f"{tmp}/{mode}.css").read()).items():
+        if outside.search(sel) and norm(value) != norm(stock.get((sel, prop), "")):
+            bad.append(f"{mode}: {sel} {prop}: {value} (stock: {stock.get((sel, prop))})")
+print("\n".join(bad[:20]))
+sys.exit(1 if bad else 0)
+PY
+}
