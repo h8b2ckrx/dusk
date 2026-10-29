@@ -453,9 +453,16 @@ StScrollBar > .hhandle {
 }
 
 // The app grid's icon size, a dusk property: extension.js reads it on the
-// main app grid only (exception 3), so folder grids keep Shell's size.
+// main app grid only (exception 3) and gives search's app results the same,
+// so folder grids keep Shell's size.
 .icon-grid {
   -dusk-app-icon-size: $app-grid-icon-size;
+}
+
+// Search results' other icons (system actions such as Lock Screen) read
+// their size from CSS: the same as the app grid's.
+.grid-search-results .overview-icon {
+  icon-size: $app-grid-icon-size;
 }
 
 // Workspace backgrounds in the overview.

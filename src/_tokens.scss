@@ -92,9 +92,10 @@ $titlebutton-active-bg: unquote("alpha(currentColor, 0.25)");
 $titlebutton-backdrop-bg: transparent;
 
 // ---------------------------------------------------------------------------
-// The app grid's icon size (owner, 2026-10-29; decision 20). Shell picks
-// 64px in code; extension.js gives the main grid this size instead. Folder
-// grids, the dock and search keep Shell's own sizes.
+// The app grid's icon size (owner, 2026-10-29; decision 20), also used by
+// search results. Shell picks 64px in code; extension.js gives the main grid
+// and search's app results this size instead. Folder grids and the dock keep
+// Shell's own sizes.
 // ---------------------------------------------------------------------------
 $app-grid-icon-size: 96px;
 

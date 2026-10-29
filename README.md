@@ -34,7 +34,8 @@ the only things CSS can't do in Shell 50:
 
 1. the gap between dialog buttons (Shell sets 12px in code);
 2. the overview's workspace corners (Shell clips them at 30px in code);
-3. the app grid's icon size (Shell picks 64px in code; dusk uses `$app-grid-icon-size`, 96px).
+3. the app icon size in the app grid and in search results (Shell picks 64px in code; dusk uses
+   `$app-grid-icon-size`, 96px).
 
 Each just makes Shell honour the stylesheet's value, and `disable()` gives Shell its own values back.
 

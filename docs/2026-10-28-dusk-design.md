@@ -164,8 +164,11 @@ Success looks like:
     starting at 64px, and its icons ignore CSS `icon-size`. dusk sets the
     main grid's own `fixed-icon-size` property from `$app-grid-icon-size`
     (96px), read from `-dusk-app-icon-size` on `.icon-grid`. The grid then
-    fits fewer icons per page. Folder grids, the dock and search keep
-    Shell's sizes; `disable()` gives Shell its own size back.
+    fits fewer icons per page. Search results match it (owner, same day):
+    app results are app grid icons, which `extension.js` sizes the same way
+    as they're made; other results (system actions) read CSS `icon-size`.
+    Folder grids and the dock keep Shell's sizes; `disable()` gives Shell
+    its own size back, also to results on screen at the time.
 
 ## 5. Architecture
 

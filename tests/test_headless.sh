@@ -14,6 +14,8 @@ for key in ("workspace", "workspace-disabled"):
 for key in ("app-grid", "app-grid-disabled"):
     results.pop(key, None)  # checked by test_headless_app_grid_icons_follow_stylesheet
 results.pop("lock", None)  # checked by test_headless_lock_screen_follows_tokens
+for key in ("search", "search-disabled", "search-on-screen-disabled"):
+    results.pop(key, None)  # checked by test_headless_search_icons_follow_stylesheet
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 # With dusk disabled, Shell's own 12px gap is back (extension.js disable()).
 assert results.pop("logout-disabled")["spacing"] == 12, "disable() did not restore the gap"
@@ -197,4 +199,34 @@ EOF
   mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO/tests/headless/lock.selectors")
   "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
     || fail "lock screen selectors not found on screen"
+}
+
+# Search results' icons match the app grid's (decision 20): app results are
+# app grid icons, which Shell sizes in code, and extension.js gives them the
+# stylesheet's -dusk-app-icon-size; other results (system actions) read CSS
+# icon-size. Disabling dusk gives app results Shell's own size back, also
+# those on screen at the time.
+test_headless_search_icons_follow_stylesheet() {
+  local out; out=$(probe_dir dark)
+  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+import json, re, sys
+results = json.load(open(sys.argv[1]))
+want = int(re.search(r"-dusk-app-icon-size: (\d+)px", open(sys.argv[2]).read()).group(1))
+on, off = results.get("search"), results.get("search-disabled")
+bad = []
+if not on or not on["apps"] or not on["others"]:
+    bad.append(f"search results not measured: {on}")
+else:
+    if any(s != want for s in on["apps"]):
+        bad.append(f"app results drawn at {on['apps']}, want {want}px")
+    if any(s != want for s in on["others"]):
+        bad.append(f"other results drawn at {on['others']}, want {want}px")
+if not off or not off["apps"] or any(s == want or s > 64 for s in off["apps"]):
+    bad.append(f"after disabling dusk, app results at {off and off['apps']}, want Shell's own (64px or less)")
+kept = results.get("search-on-screen-disabled")
+if not kept or not kept["apps"] or any(s == want or s > 64 for s in kept["apps"]):
+    bad.append(f"results on screen while dusk was disabled kept {kept and kept['apps']}, want Shell's own")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+EOF
 }

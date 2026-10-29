@@ -11,17 +11,19 @@
 //    Log Out / Power Off dialog at startup, before extensions load).
 // 2. Shell clips the overview's workspace wallpaper at 30px. It follows the
 //    stylesheet's border-radius on .workspace-background instead.
-// 3. Shell picks the app grid's icon size in code (64px on most screens).
-//    The main app grid uses the stylesheet's -dusk-app-icon-size instead.
+// 3. Shell picks the size of app icons in code (64px on most screens). The
+//    main app grid, and the app results in search, use the stylesheet's
+//    -dusk-app-icon-size instead.
 //
 // disable() gives everything back to Shell. If a future Shell renames what a
 // patch relies on, that patch is skipped: the stylesheet still applies, but
 // that one value stays Shell's (dialog buttons keep Shell's 12px gaps, the
-// workspace wallpaper its 30px corners, the app grid Shell's icon size).
+// workspace wallpaper its 30px corners, app icons Shell's size).
 import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
+import * as AppDisplay from 'resource:///org/gnome/shell/ui/appDisplay.js';
 import * as Dialog from 'resource:///org/gnome/shell/ui/dialog.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Workspace from 'resource:///org/gnome/shell/ui/workspace.js';
@@ -34,10 +36,12 @@ export default class DuskExtension extends Extension {
         this._rows = new Map();
         this._backgrounds = new Map();
         this._appGrid = null;
+        this._searchIcons = new Map();
         try {
             this._patchDialogs();
             this._patchWorkspaceBackgrounds();
             this._patchAppGridIconSize();
+            this._patchSearchIcons();
         } catch (e) {
             // Shell never calls disable() after enable() throws: give back
             // whatever was patched already.
@@ -68,6 +72,13 @@ export default class DuskExtension extends Extension {
             this._setAppGridIconSize(this._appGrid.original);
             this._appGrid = null;
         }
+
+        // Search's app results back to the size Shell makes them at.
+        for (const [result, handlerId] of this._searchIcons) {
+            result.disconnect(handlerId);
+            result.icon.setIconSize(Main.defaultIconSize);
+        }
+        this._searchIcons = null;
     }
 
     // Exception 1: dialog button rows follow the stylesheet's `spacing`.
@@ -176,11 +187,15 @@ export default class DuskExtension extends Extension {
             if (!found)
                 return;
             const {scaleFactor} = St.ThemeContext.get_for_stage(global.stage);
-            this._setAppGridIconSize(Math.round(length / scaleFactor));
+            this._appGrid.size = Math.round(length / scaleFactor);
+            this._setAppGridIconSize(this._appGrid.size);
+            for (const result of this._searchIcons.keys())
+                result.icon.setIconSize(this._appGrid.size);
         };
         this._appGrid = {
             grid,
             original: layout.fixed_icon_size,
+            size: 0,
             handlerId: grid.connect('style-changed', apply),
         };
         if (grid.get_stage())
@@ -196,5 +211,32 @@ export default class DuskExtension extends Extension {
         grid.layout_manager.fixed_icon_size = size;
         grid.layout_manager._pageWidth = 0;
         grid.queue_relayout();
+    }
+
+    // Exception 3, search: app results are app grid icons, which Shell makes
+    // at its default size; give each the app grid's size as it's made. Only
+    // when the app grid's own size applied (it holds the stylesheet's value).
+    _patchSearchIcons() {
+        const proto = AppDisplay.AppSearchProvider?.prototype;
+        if (typeof proto?.createResultObject !== 'function' || !this._appGrid)
+            return;
+
+        const adopt = result => this._adoptSearchIcon(result);
+        this._injections.overrideMethod(proto, 'createResultObject', original => function (...args) {
+            const result = original.call(this, ...args);
+            adopt(result);
+            return result;
+        });
+    }
+
+    // Size a search result like the app grid, if it's an app icon; remember
+    // it so disable() can give it Shell's size back.
+    _adoptSearchIcon(result) {
+        if (!(result instanceof AppDisplay.AppIcon) || this._searchIcons.has(result))
+            return;
+        this._searchIcons.set(result,
+            result.connect('destroy', () => this._searchIcons?.delete(result)));
+        if (this._appGrid.size)
+            result.icon.setIconSize(this._appGrid.size);
     }
 }

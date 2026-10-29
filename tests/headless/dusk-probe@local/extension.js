@@ -31,6 +31,7 @@ import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as QuickSettings from 'resource:///org/gnome/shell/ui/quickSettings.js';
+import * as Search from 'resource:///org/gnome/shell/ui/search.js';
 import * as UnlockDialog from 'resource:///org/gnome/shell/ui/unlockDialog.js';
 
 const OUT = GLib.getenv('DUSK_PROBE_OUT');
@@ -130,6 +131,43 @@ function measureAppGrid() {
         first: first?.icon.iconSize ?? null,
         columns: grid.layout_manager.columns_per_page,
     } : null;
+}
+
+// The icons in the search results' grids, by kind: app results (app grid
+// icons) and the rest (system actions such as Lock Screen), at the size each
+// is drawn.
+function measureSearchIcons() {
+    const sizes = {apps: [], others: []};
+    const walk = actor => {
+        if (actor.has_style_class_name?.('grid-search-results') && actor.mapped) {
+            for (const child of actor.get_children()) {
+                if (child instanceof AppDisplay.AppIcon)
+                    sizes.apps.push(child.icon.iconSize);
+                else if (child instanceof Search.GridSearchResult)
+                    sizes.others.push(child.icon.iconSize);
+            }
+        }
+        actor.get_children().forEach(walk);
+    };
+    walk(global.stage);
+    return sizes;
+}
+
+// Search for `apps` then `others` in the overview, measuring the result
+// icons after each.
+async function searchIcons(apps, others) {
+    Main.overview.show();
+    await sleep(800);
+    Main.overview.searchEntry.set_text(apps);
+    await sleep(1500);
+    const found = {apps: measureSearchIcons().apps};
+    Main.overview.searchEntry.set_text(others);
+    await sleep(1500);
+    found.others = measureSearchIcons().others;
+    Main.overview.searchEntry.set_text('');
+    Main.overview.hide();
+    await sleep(1000);
+    return found;
 }
 
 async function screenshotScreen(name) {
@@ -283,6 +321,7 @@ export default class DuskProbe extends Extension {
         Main.overview.searchEntry.set_text('');
         Main.overview.hide();
         await sleep(1000);
+        this._search = await searchIcons('set', 'lock');
 
         // The screenshot UI.
         await Main.screenshotUI.open();
@@ -373,8 +412,18 @@ export default class DuskProbe extends Extension {
             await sleep(500);
         }
 
+        // Search results still on screen when dusk is disabled: theirs is the
+        // icon size disable() has to give back.
+        Main.overview.show();
+        await sleep(800);
+        Main.overview.searchEntry.set_text('set');
+        await sleep(1500);
         await Main.extensionManager.disableExtension('dusk@local');
         await sleep(500);
+        results['search-on-screen-disabled'] = measureSearchIcons();
+        Main.overview.searchEntry.set_text('');
+        Main.overview.hide();
+        await sleep(1000);
         await Gio.DBus.session.call('org.gnome.Shell',
             '/org/gnome/SessionManager/EndSessionDialog',
             'org.gnome.SessionManager.EndSessionDialog', 'Open',
@@ -394,6 +443,8 @@ export default class DuskProbe extends Extension {
 
         // The app grid's icon size, with dusk on and after disabling it.
         results['lock'] = this._lock;
+        results['search'] = this._search;
+        results['search-disabled'] = await searchIcons('set', 'lock');
         results['app-grid'] = this._appGrid;
         Main.overview.showApps();
         await sleep(1500);
