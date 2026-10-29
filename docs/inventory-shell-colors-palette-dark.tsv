@@ -1,0 +1,17 @@
+# 26.04 color → 24.04 color, dark (tools/color-inventory.py --palette), for rules new in 26.04
+# pop-up surface ($bg_color)
+#36363a	#1d1d1d
+# cards (events, world clocks, quick-toggle menus) and notifications ($card_bg_color)
+#47474c	#2f2f2f
+#54545a	#2f2f2f
+# quick-toggle base: 26.04 mixes buttons from it, as from #36363a; with 24.04's base this gives 24.04's #313131 buttons
+#4a4a4f	#1d1d1d
+# stacked notifications: a quarter and half way from the pop-up to the card, as in 26.04
+#3d3d42	#222222
+#45454a	#262626
+# warning: 24.04's warning text, and no warning background
+#ffbd45	#f99b11
+#4a4137	transparent
+# text and white tints: 24.04's text color #F7F7F7
+white	#F7F7F7
+rgba(255, 255, 255,	rgba(247, 247, 247,

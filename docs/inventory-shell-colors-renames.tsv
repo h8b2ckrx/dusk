@@ -1,0 +1,5 @@
+# 26.04 selector (regex) → the same element's selector in 24.04 (tools/color-inventory.py --renames)
+^StScrollBar > \.vhandle	StScrollBar StButton#vhandle
+^StScrollBar > \.hhandle	StScrollBar StButton#hhandle
+^\.prompt-dialog \.prompt-dialog-error-label	.prompt-dialog-error-label
+^\.prompt-dialog \.prompt-dialog-info-label	.prompt-dialog-info-label
