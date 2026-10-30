@@ -193,6 +193,7 @@ async function measureClockIndicator() {
         return {
             ...geometry(actor),
             radius: node.get_border_radius(St.Corner.TOPLEFT),
+            background: rgba(node.get_background_color()),
             padding: [St.Side.TOP, St.Side.RIGHT, St.Side.BOTTOM, St.Side.LEFT].map(side => node.get_padding(side)),
             content: {w: content.get_width(), h: content.get_height()},
         };
@@ -320,6 +321,12 @@ export default class DuskProbe extends Extension {
         Main.panel.statusArea.quickSettings.addExternalIndicator(indicator);
 
         await take('desktop');
+
+        // Top bar buttons under the pointer (a headless Shell has none).
+        const hovered = [Main.panel.statusArea.quickSettings, Main.panel.statusArea.dateMenu];
+        hovered.forEach(actor => actor.add_style_pseudo_class('hover'));
+        await take('topbar-hover');
+        hovered.forEach(actor => actor.remove_style_pseudo_class('hover'));
 
         Main.overview.show();
         await take('overview');

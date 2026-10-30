@@ -11,7 +11,7 @@ $panel_height: 2.2em;
 $panel_transition_duration: 250ms; // same as the overview transition duration
 
 #panel {
-  background-color: $panel_bg_color;
+  background-color: $topbar-background; // dusk: see-through
   font-weight: bold;
   height: $panel_height;
   @extend %numeric;
@@ -24,7 +24,7 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
 
   // panel menus
   .panel-button {
-    @include panel_button();
+    @include panel_button($style: pill); // dusk: pills
     -natural-hpadding: $base_padding * 2;
     -minimum-hpadding: $base_padding;
 
@@ -83,7 +83,7 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
       // The clock display needs to have the background on .clock because
       // we want to exclude the do-not-disturb indicator from the background
       // see _drawing.scss for override details
-      @include panel_button($highlighted_child: true, $child_class: '.clock');
+      @include panel_button($style: pill, $highlighted_child: true, $child_class: '.clock'); // dusk: pills
 
       .clock {
         // the highlighted child
@@ -94,8 +94,8 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
         // dusk: corner and padding (decision 24): the clock's corners, and
         // its pill's height with the whole icon showing.
         border-radius: $radius-topbar-item;
-        padding-top: $topbar-indicator-padding;
-        padding-bottom: $topbar-indicator-padding;
+        padding: $topbar-indicator-padding $topbar-indicator-side-padding;
+        @include topbar_pill();
       }
     }
   }
@@ -127,6 +127,14 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
       // clock
       &.clock-display {
         @include panel_button($fg:$transparent_panel_fg_color, $highlighted_child: true, $child_class: '.clock');
+
+        // dusk: no pills on the lock screen.
+        .clock,
+        .messages-indicator {
+          color: $transparent_panel_fg_color;
+          background-color: transparent;
+          box-shadow: none;
+        }
       }
     }
   }
@@ -134,7 +142,7 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
   // use system text styles for overview panel
   &:overview {
     .panel-button {
-      @include panel_button($fg:$system_panel_fg_color);
+      @include panel_button($fg:$system_panel_fg_color, $style: pill); // dusk: pills
 
       &#panelActivities .workspace-dot {
         background-color: $system_panel_fg_color;
@@ -142,7 +150,7 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
 
       // clock
       &.clock-display {
-        @include panel_button($fg:$system_panel_fg_color, $highlighted_child: true, $child_class: '.clock');
+        @include panel_button($fg:$system_panel_fg_color, $style: pill, $highlighted_child: true, $child_class: '.clock'); // dusk: pills
       }
     }
   }

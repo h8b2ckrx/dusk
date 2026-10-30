@@ -211,19 +211,13 @@ sys.exit(1 if bad else 0)
 EOF
 }
 
-# The notification indicator (a bell, shown for unseen notifications) next to
-# the top bar clock. Blur my Shell's Contrasted top bar gives it a pill of its
-# own, round and padded so far that its 16px icon shrank to 10px (seen live).
-# Its pill has the clock's corners and height, and room for the whole icon.
+# The bell beside the clock (decision 24) is a pill of its own, with the clock's
+# corners, height and color, and room for its whole 16px icon.
 test_headless_clock_indicator_matches_clock() {
-  local blur
-  for blur in "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx" \
-      /usr/share/gnome-shell/extensions/blur-my-shell@aunetx; do
-    [ -d "$blur" ] && break
-  done
-  [ -d "$blur" ] || fail "Blur my Shell isn't installed; this test checks the bell in its Contrasted top bar"
-  local out; out=$(probe_dir dark blur)
-  python3 - "$out/result.json" <<'EOF'
+  local mode out
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    python3 - "$out/result.json" <<'EOF' || fail "$mode"
 import json, sys
 found = json.load(open(sys.argv[1])).get("clock-indicator")
 if not found or "indicator" not in found:
@@ -234,11 +228,96 @@ if bell["radius"] != clock["radius"]:
     bad.append(f"corners {bell['radius']}px, the clock's are {clock['radius']}px")
 if bell["h"] != clock["h"]:
     bad.append(f"pill {bell['h']}px tall, the clock's is {clock['h']}px")
+if bell["background"] != clock["background"]:
+    bad.append(f"pill {bell['background']}, the clock's is {clock['background']}")
 if min(bell["content"]["w"], bell["content"]["h"]) < round(bell["iconSize"]):
     bad.append(f"room for the icon {bell['content']}, the icon is {round(bell['iconSize'])}px")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF
+  done
+}
+
+# check_topbar MODE: runs the python on stdin with MODE's `snapshots`, `is_panel`
+# (a record is the top bar), PILL (the colors of a top bar pill), ICON (the color
+# of the icons on it) and RADIUS (its corner) defined.
+check_topbar() {
+  local mode="$1" out; out=$(probe_dir "$mode")
+  python3 - "$out/snapshots.json" "$REPO/tests/headless" <<EOF
+import json, sys
+sys.path.insert(0, sys.argv[2])
+import tokens
+snapshots = json.load(open(sys.argv[1]))
+def is_panel(rec):
+    return rec["id"] == "panel"
+PILL = {"dark": [[0, 0, 0, 204], [255, 255, 255, 255], [0, 0, 0, 0], [255, 255, 255, 7]],
+        "light": [[250, 250, 250, 204], [61, 61, 61, 255], [0, 0, 0, 0], [0, 0, 0, 7]]}["$mode"]
+ICON = {"dark": [242, 242, 242, 255], "light": [61, 61, 61, 255]}["$mode"]
+RADIUS = float(tokens.token_values("$REPO", "sassc", ["topbar-item"])["topbar-item"].removesuffix("px"))
+$(cat)
+EOF
+}
+
+# The top bar itself is see-through, on the desktop and in the overview.
+test_headless_topbar_is_see_through() {
+  local mode
+  for mode in dark light; do
+    check_topbar "$mode" <<'PY' || fail "$mode"
+for state in ("desktop", "overview"):
+    panels = [r for r in snapshots[state] if is_panel(r)]
+    assert panels, f"no top bar in {state}"
+    assert all(r["colors"][0][3] == 0 for r in panels), (state, panels[0]["colors"])
+PY
+  done
+}
+
+# Each top bar button has a pill of its own in the mode's colors, the same under
+# the pointer and with its menu open; the clock's pill is on its label, the
+# bell's its own, and the icons on them read in the mode's colors.
+test_headless_topbar_buttons_have_pills() {
+  local mode
+  for mode in dark light; do
+    check_topbar "$mode" <<'PY' || fail "$mode"
+bad = []
+for state in ("desktop", "overview", "topbar-hover", "quick-settings"):
+    records = snapshots[state]
+    buttons = [r for r in records if "panel-button" in r["classes"]]
+    assert len(buttons) > 3, f"{state}: {len(buttons)} top bar buttons"
+    for r in buttons:
+        if "clock-display" in r["classes"]:
+            if r["colors"][0][3] != 0:
+                bad.append(f"{state}: the clock button itself has {r['colors'][0]}")
+        elif r["colors"] != PILL or r["radii"][0] != RADIUS:
+            bad.append(f"{state}: {r['types'][0]} {r['colors']} {r['radii']}")
+    for r in records:
+        if "clock" in r["classes"] and (r["colors"] != PILL or r["radii"][0] != RADIUS):
+            bad.append(f"{state}: clock {r['colors']} {r['radii']}")
+        if "system-status-icon" in r["classes"] and r["colors"][1] != ICON:
+            bad.append(f"{state}: an icon in {r['colors'][1]}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
+  done
+}
+
+# The lock screen's top bar has no pills, and stays light on the wallpaper in
+# both modes.
+test_headless_lock_screen_topbar_has_no_pills() {
+  local mode
+  for mode in dark light; do
+    check_topbar "$mode" <<'PY' || fail "$mode"
+bad = []
+for r in snapshots["lock-screen"]:
+    if {"panel-button", "clock", "messages-indicator"} & set(r["classes"]):
+        shadow = r["colors"][3]
+        if r["colors"][0][3] != 0 or (shadow and shadow[3] != 0):
+            bad.append(f"{r['types'][0]} {r['colors']}")
+    if {"panel-button", "clock", "system-status-icon"} & set(r["classes"]) and min(r["colors"][1][:3]) < 240:
+        bad.append(f"{r['types'][0]} text {r['colors'][1]}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
+  done
 }
 
 # Switches show a track, on and off (final review: an off switch showed only

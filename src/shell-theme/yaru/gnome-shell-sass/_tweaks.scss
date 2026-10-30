@@ -89,7 +89,7 @@
 
 // Panel - dark background in all modes (desktop and overview)
 #panel {
-  background-color: $yaru_panel_bg_color !important;
+  background-color: $topbar-background !important; // dusk: see-through
 
   @if $variant =='light' {
     box-shadow: none !important;
@@ -97,17 +97,17 @@
 
   // Keep panel dark in overview too
   &:overview {
-    background-color: $yaru_panel_bg_color !important;
+    background-color: $topbar-background !important; // dusk: see-through
   }
 
   // Override all panel button styling to use white text and normal font weight
   // This needs to be specific enough to override the panel_button mixin
   .panel-button {
-    @include yaru_panel_button();
+    @include yaru_panel_button($style: pill); // dusk: pills
 
     // Activities button workspace dots should be white
     &#panelActivities .workspace-dot {
-      background-color: $yaru_panel_fg_color !important;
+      background-color: $pill_icon_color !important; // dusk: the pill's
     }
 
     &.screen-recording-indicator {
@@ -119,13 +119,13 @@
     }
 
     &.clock-display {
-      @include yaru_panel_button($highlighted_child: true, $child_class: '.clock');
+      @include yaru_panel_button($style: pill, $highlighted_child: true, $child_class: '.clock'); // dusk: pills
     }
   }
 
   // Ensure system status indicators are white
   .system-status-icon {
-    color: $yaru_panel_fg_color !important;
+    color: $pill_icon_color !important; // dusk: the pill's
   }
 }
 
@@ -134,6 +134,11 @@
 #panel.unlock-screen,
 #panel.login-screen {
   background-color: transparent !important;
+
+  // dusk: light on the wallpaper in both modes: no pills here.
+  .system-status-icon {
+    color: $yaru_panel_fg_color !important;
+  }
 }
 
 // ============================================================================

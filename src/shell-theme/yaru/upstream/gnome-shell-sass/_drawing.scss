@@ -81,6 +81,20 @@
   box-shadow: inset 0 0 0 100px $bg;
 }
 
+// dusk: a top bar pill, from the tokens, in this mode's colors: a background of
+// its own, the same under the pointer and with its menu open.
+$pill_bg_color: if($variant == 'light', $topbar-pill-background-light, $topbar-pill-background);
+$pill_fg_color: if($variant == 'light', $topbar-pill-text-light, $topbar-pill-text);
+$pill_highlight_color: if($variant == 'light', $topbar-pill-highlight-light, $topbar-pill-highlight);
+$pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_fg_color);
+
+@mixin topbar_pill() {
+  color: $pill_fg_color;
+  background-color: $pill_bg_color;
+  border: $topbar-pill-border-width solid transparent;
+  box-shadow: inset 0 0 0 1px $pill_highlight_color;
+}
+
 // Text entries drawing function
 @mixin entry($type, $c:$fg_color, $bc:$bg_color, $style: null, $always_dark: false) {
   //
@@ -408,7 +422,8 @@
   //
   // $bg:                 background color, derived from $panel_fg_color
   // $fg:                 foreground color, also derived from $panel_fg_color
-  // $style:              can be set to 'filled' if button uses a colored background
+  // $style:              can be set to 'filled' if button uses a colored background,
+  //                      or 'pill' for dusk's top bar pill
   //
   // $highlighted_child:  if true, applies some special overrides for to a
   //                      child element, see _panel.scss for details
@@ -436,17 +451,21 @@
     $active_hover_fill: if($variant == 'light', darken($bg, 11%), lighten($bg, 11%));
   }
 
-  @include panel_button_fill($fill);
+  @if $style == 'pill' {
+    @include topbar_pill();
+  } @else {
+    @include panel_button_fill($fill);
 
-  &:focus, &:hover {
-    @include panel_button_fill($hover_fill);
-  }
+    &:focus, &:hover {
+      @include panel_button_fill($hover_fill);
+    }
 
-  &:active, &:checked  {
-    @include panel_button_fill($active_fill);
+    &:active, &:checked  {
+      @include panel_button_fill($active_fill);
 
-    &:hover{
-      @include panel_button_fill($active_hover_fill);
+      &:hover{
+        @include panel_button_fill($active_hover_fill);
+      }
     }
   }
 
@@ -463,20 +482,26 @@
       transition-duration: 150ms;
       border: 3px solid transparent;
       border-radius: $radius-topbar-item; // dusk: corner
-    }
 
-    &:focus, &:hover {
-      #{$child_class} {
-        @include panel_button_fill($hover_fill);
+      @if $style == 'pill' {
+        @include topbar_pill();
       }
     }
 
-    &:active, &:checked {
-      #{$child_class} {
-        @include panel_button_fill($active_fill);
+    @if $style != 'pill' {
+      &:focus, &:hover {
+        #{$child_class} {
+          @include panel_button_fill($hover_fill);
+        }
+      }
 
-        &:hover {
-          @include panel_button_fill($active_hover_fill);
+      &:active, &:checked {
+        #{$child_class} {
+          @include panel_button_fill($active_fill);
+
+          &:hover {
+            @include panel_button_fill($active_hover_fill);
+          }
         }
       }
     }

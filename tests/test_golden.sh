@@ -74,7 +74,7 @@ EOF
   out=$("$REPO/tests/headless/golden.py" check-static "$(theme_css dark)" "$dir/changed.json" \
     "$REPO/tests/golden/exceptions.tsv") || rc=$?
   assert_eq "$rc" 1 "exit code"
-  assert_eq "$out" ".popup-menu-content bg: recorded [1, 2, 3, 255], now [54, 54, 58, 255]" "report"
+  assert_eq "$out" ".popup-menu-content bg: recorded [1, 2, 3, 255], now [29, 29, 29, 255]" "report"
 }
 
 # A color written two ways is the same color: a raw value with the accent in
