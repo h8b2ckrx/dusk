@@ -11,6 +11,15 @@ golden_probe_file() {
   echo "$REPO/tests/golden/probe-${1/:/-}.json"
 }
 
+# golden_exceptions MODE[:VARIANT]: the exceptions file for that record: the
+# Blur my Shell run also lists its own top bar, which sits on top of any theme.
+golden_exceptions() {
+  local file; file=$(mktemp)
+  cat "$REPO/tests/golden/exceptions.tsv" > "$file"
+  [ "$1" != dark:blur ] || cat "$REPO/tests/golden/exceptions-blur.tsv" >> "$file"
+  echo "$file"
+}
+
 # dusk's theme alone gives the recorded look for every selector, apart from
 # the changes tests/golden/exceptions.tsv lists (each with its own test).
 test_golden_static_matches_theme() {
@@ -28,7 +37,7 @@ test_golden_probe_matches_theme() {
   for v in $GOLDEN_VARIANTS; do
     out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
     "$REPO/tests/headless/golden.py" check-probe "$out/snapshots.json" "$(golden_probe_file "$v")" \
-      "$REPO/tests/golden/exceptions.tsv" || fail "$v: the probed look differs from the record"
+      "$(golden_exceptions "$v")" || fail "$v: the probed look differs from the record"
   done
 }
 
@@ -43,7 +52,7 @@ test_golden_radii_match_theme() {
   for v in $GOLDEN_VARIANTS; do
     out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
     "$REPO/tests/headless/golden.py" check-probe "$out/snapshots.json" "$(golden_probe_file "$v")" \
-      "$REPO/tests/golden/exceptions.tsv" --slots radius || fail "$v: measured corners differ from the record"
+      "$(golden_exceptions "$v")" --slots radius || fail "$v: measured corners differ from the record"
   done
 }
 

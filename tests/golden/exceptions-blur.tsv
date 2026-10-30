@@ -1,0 +1,2 @@
+# Exceptions for the probe run with Blur my Shell loaded (key regex, slot, task, reason).
+\.panel-button|StLabel\.clock|\.messages-indicator	*	Task 4	Blur my Shell's Contrasted top bar: its pills sit on top of any Shell theme (the owner turned that style off; dusk draws the pills itself, Task 9)
