@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# Compiles src/ into the four CSS files dusk installs:
+# Compiles src/ into the CSS files dusk installs:
 #   build/gtk4.css, build/gtk3.css,
-#   extension/stylesheet-dark.css, extension/stylesheet-light.css
+#   extension/stylesheet-dark.css, extension/stylesheet-light.css,
+#   extension/theme/dusk-dark.css, extension/theme/dusk-light.css (dusk's
+#   Shell theme, with the images it uses)
 # Set SASSC to use a different sassc binary.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -29,8 +31,42 @@ compile() {
   echo "$2"
 }
 
-mkdir -p build extension
+# compile_shell_theme MODE: dusk's Shell theme (design 2026-10-30) from the
+# Yaru copy in src/shell-theme/yaru, the way Yaru's own build does it: every
+# Sass file with `url(` going through yaru_url_handler( and the upstream
+# default colors swapped for Yaru's, the template filled for MODE (images
+# next to the file, not in Yaru's resource), compiled to
+# extension/theme/dusk-MODE.css with the same atomic write as compile.
+compile_shell_theme() {
+  local mode="$1" yaru=src/shell-theme/yaru out="extension/theme/dusk-$1.css" work tmp
+  work=$(mktemp -d)
+  (cd "$yaru" && find gnome-shell-sass upstream -name '*.scss') | while read -r f; do
+    mkdir -p "$work/$(dirname "$f")"
+    sed "s,[[:space:]]*url[[:space:]]*(, yaru_url_handler(,g" "$yaru/$f" \
+      | sed -E "s,[\'](_default-colors([.]scss)?)[\'],'_yaru-default-colors.scss',g" > "$work/$f"
+  done
+  sed -e "s/@Variant@/$mode/" -e "s/@YaruVariant@/$mode/" -e "s/@UseGResource@/false/" \
+    -e "s/@Contrast@/normal/" -e "s/@Colors@/colors/" "$yaru/gnome-shell.scss.in" > "$work/gnome-shell-$mode.scss"
+  tmp=$(mktemp "$(dirname "$out")/.$(basename "$out").XXXXXX")
+  if ! "$SASSC" --style expanded -I "$work" -I "$yaru/common" -I "$work/gnome-shell-sass" -I "$work/upstream" \
+      "$work/gnome-shell-$mode.scss" > "$tmp" 2> "$work/sassc.log"; then
+    rm -f "$tmp"
+    cat "$work/sassc.log" >&2
+    echo "build.sh: failed to compile the Shell theme ($mode)" >&2
+    exit 1
+  fi
+  rm -rf "$work"
+  mv "$tmp" "$out"
+  chmod 644 "$out"
+  echo "$out"
+}
+
+mkdir -p build extension extension/theme
 compile src/gtk4.scss build/gtk4.css
 compile src/gtk3.scss build/gtk3.css
 compile src/shell-dark.scss extension/stylesheet-dark.css
 compile src/shell-light.scss extension/stylesheet-light.css
+compile_shell_theme dark
+compile_shell_theme light
+# The images the theme uses, next to it.
+cp src/shell-theme/yaru/{calendar-today,calendar-today-light,gnome-shell-start,workspace-placeholder}.svg extension/theme/
