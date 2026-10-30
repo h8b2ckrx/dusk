@@ -10,15 +10,16 @@
   border-radius: $forced_circular_radius;
   icon-size: $base_icon_size * 4;
 
-  background-color: transparentize($fg_color,0.95);
-  color: $fg_color;
+  // dusk: 26.04's own (the lock screen's).
+  background-color: transparentize($yaru_fg_color,0.95);
+  color: $yaru_fg_color;
 
   & StIcon {
     padding: $base_padding * 2;
   }
 
   &.user-avatar {
-    box-shadow:inset 0 0 0 1px transparentize($fg_color, 0.9);
+    box-shadow:inset 0 0 0 1px transparentize($yaru_fg_color, 0.9);
 
     @if $contrast == 'high' {
       @include draw_hc_inset();

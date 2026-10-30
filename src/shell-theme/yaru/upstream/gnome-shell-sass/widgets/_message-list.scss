@@ -12,7 +12,7 @@
 
   .message-list-placeholder {
     @extend %title_3;
-    color: transparentize($fg_color, .55);
+    color: $insensitive_fg_color; // dusk: 24.04's.
     @if $contrast == 'high' {
       color: $fg_color;
     }
@@ -83,17 +83,16 @@
   margin: 0;
   border-radius: $radius-notification; /* dusk: corner */
 
-  background-color: if($variant == 'light', $card_bg_color, lighten($card_bg_color, 5%));
-
+  // dusk: 24.04's card; it has no stacks, so these are dusk's shades of it.
   &:second-in-stack {
-    background-color: if($variant == 'light', darken($card_bg_color, 4%), darken($card_bg_color, 1%));
-    box-shadow: 0 1px 1px 0 $card_shadow_color;
+    background-color: if($variant == 'light', whitesmoke, #262626);
+    box-shadow: 0 1px 1px 0 if($variant == 'light', transparentize($dark_5, .97), transparent);
   }
 
   &:lower-in-stack {
-    background-color: if($variant == 'light', darken($card_bg_color, 7%), darken($card_bg_color, 4%));
+    background-color: if($variant == 'light', #e8e8e8, #222222);
     box-shadow: none;
-    border-color: if($variant == 'light', darken($card_bg_color, 10%), transparent); // a not ideal workaround for light theme
+    border-color: if($variant == 'light', #e1e1e1, transparent); // a not ideal workaround for light theme
   }
 
   // message header
@@ -142,6 +141,12 @@
       @extend %notification_button;
       border-radius: $radius-icon-button; /* dusk: corner */ // make circular
       color: $fg_color;
+      // dusk: 24.04's.
+      background-color: transparentize($fg_color, .9);
+      &:hover { background-color: transparentize($fg_color, .81);}
+      &:active,
+      &:active:hover { background-color: transparentize($fg_color, .76);}
+      &:insensitive { background-color: transparentize($fg_color, .93);}
     }
 
     // increase padding to expand button to make it larger

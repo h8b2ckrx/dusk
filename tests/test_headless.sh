@@ -272,9 +272,9 @@ test_headless_shell_colors_match_stylesheets() {
   done
 }
 
-# check_chunk_colors CHUNKS SELECTOR...: in dark and light, every element whose
-# color a row of CHUNKS decides shows that row's 24.04 value (decision 22),
-# its labels stay legible (contrast 4.5), and the SELECTORS are on screen.
+# check_chunk_colors CHUNKS SELECTOR...: in dark and light, the labels on the
+# surfaces a row of CHUNKS decides stay legible (contrast 4.5), and the
+# SELECTORS are on screen. Their colors are the golden records' to check.
 check_chunk_colors() {
   local chunks="$1" mode out yaru on
   shift
@@ -284,8 +284,6 @@ check_chunk_colors() {
   for mode in dark light; do
     out=$(probe_dir "$mode")
     yaru=$(theme_css "$mode")
-    "$REPO/tests/headless/colors.py" expect "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks colors aren't 24.04's"
     "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$yaru" \
       "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks text isn't legible"
     "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "$@" || fail "$mode: chunk $chunks surfaces not on screen"

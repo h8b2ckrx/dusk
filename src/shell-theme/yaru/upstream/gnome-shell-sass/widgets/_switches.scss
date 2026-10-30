@@ -16,11 +16,8 @@ $switch_handle_size: 20px;
       background: transparentize(if($variant == 'light', black, white), .6);
     }
   } @else {
-    background: transparentize(if($variant == 'light', black, white), .85);
-
-    &:hover {
-      background: transparentize(if($variant == 'light', black, white), .8);
-    }
+    // dusk: 24.04's track, from its switch pictures: unchanged on hover.
+    background: if($variant == 'light', #bababa, #575757);
   }
 
   StIcon {
@@ -32,7 +29,7 @@ $switch_handle_size: 20px;
     width: $switch_handle_size;
     height: $switch_handle_size;
     border-radius: $forced_circular_radius;
-    background: if($variant == 'light', white, mix(white, $bg_color, 80%));
+    background: #f8f7f7; // dusk: 24.04's knob, from its switch pictures.
     box-shadow: 0 2px 4px transparentize(black, .8);
     transition-duration: 100ms;
   }

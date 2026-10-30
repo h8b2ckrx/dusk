@@ -20,15 +20,9 @@
 
     color: transparent;
     border-radius: $radius-checkbox; /* dusk: corner */
-    border: 2px solid transparentize(if($variant == 'light', black, white), .85);
-  }
-
-  &:hover StIcon {
-    border-color: transparentize(if($variant == 'light', black, white), .8);
-  }
-
-  &:active StIcon {
-    border-color: transparentize(if($variant == 'light', black, white), .7);
+    // dusk: 24.04's checkbox-off picture, which doesn't change under the pointer.
+    background-color: $bg_color;
+    border: 2px solid $borders_color;
   }
 
   &:checked StIcon {
@@ -37,13 +31,13 @@
     border-color: transparent;
   }
 
-  &:checked:hover StIcon {
-    background-color: st-lighten(-st-accent-color, 5%);
-    color: st-lighten(-st-accent-fg-color, 5%);
+  // dusk: 24.04's checkbox-focused picture.
+  &:focus StIcon {
+    border-color: st-lighten(-st-accent-color, 17%);
   }
 
-  &:checked:active StIcon {
-    background-color: st-darken(-st-accent-color, 7%);
-    color: st-darken(-st-accent-fg-color, 7%);
+  &:focus:checked StIcon {
+    background-color: st-darken(-st-accent-color, if($variant == 'light', 3%, 7%));
+    border-color: st-lighten(-st-accent-color, 17%);
   }
 }

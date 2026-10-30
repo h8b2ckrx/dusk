@@ -33,6 +33,12 @@
   .date-label {
     @extend %title_2;
   }
+
+  // dusk: 24.04's.
+  &:insensitive .day-label,
+  &:insensitive .date-label {
+    color: $insensitive_fg_color;
+  }
 }
 
 // the mini calendar

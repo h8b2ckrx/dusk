@@ -221,13 +221,19 @@
     $active_hover_button_bg_color: transparentize($tc, .81);
   }
 
+  // dusk: 24.04's, which fixed this for light themes.
+  @if $style == 'dialog' {
+    $insensitive_button_bg_color: transparentize($tc, .83);
+  }
+
   // background color overrides for notification style
+  // dusk: 24.04's bubble buttons.
   @if $style == 'notification' {
-    $button_bg_color: transparentize($tc, .85);
-    $hover_button_bg_color: transparentize($tc, .7);
-    $insensitive_button_bg_color: transparentize($tc, .9);
-    $active_button_bg_color: transparentize($tc, .8);
-    $active_hover_button_bg_color: transparentize($tc, .8);
+    $button_bg_color: transparentize($tc, .9);
+    $hover_button_bg_color: transparentize($tc, .87);
+    $insensitive_button_bg_color: transparentize($tc, .83);
+    $active_button_bg_color: transparentize($tc, .84);
+    $active_hover_button_bg_color: transparentize($tc, .81);
   }
 
   // flat style overrides
@@ -378,15 +384,23 @@
 }
 
 // styling for all menuitems in popovers
+// dusk: 24.04's menu item states.
 @mixin menuitem($bg) {
 
   // extend common styles
   @extend %menuitem;
 
-  @include button(undecorated, $c:$bg, $style: flat);
-  &:active { @include button(active, $c:$bg, $style: flat);}
-  &:hover, &:selected, &:checked { @include button(hover, $c:$bg, $style: flat);}
-  &:insensitive { @include button(insensitive, $c:$bg, $style: flat);}
+  // lighten the background color always
+  $bg: lighten($bg,5%);
+
+  @include button(undecorated);
+  &:hover {
+    @include button(hover, $c:$bg);
+  }
+  &:active {@include button(active, $c:$bg);}
+  &:selected,
+  &:checked {@include button(checked, $c:$bg);}
+  &:insensitive {@include button(insensitive, $c:$bg);}
 }
 
 // Panel menu/button drawing function

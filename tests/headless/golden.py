@@ -21,10 +21,13 @@ Usage:
   golden.py record-probe SNAPSHOTS.json OUT.json
   golden.py check-static THEME.css GOLDEN.json EXCEPTIONS.tsv [--overlay OVERLAY.css] [--only REGEX] [--slots LIST]
   golden.py check-probe SNAPSHOTS.json GOLDEN.json EXCEPTIONS.tsv [--only REGEX] [--slots LIST]
+  golden.py look THEME.css SELECTOR
 The checks print one line per key and slot that differs from the record
-(colors by more than 2 per channel, radii by more than half a pixel) and
+(colors by more than 2 per channel, raw values under three accents, radii by
+more than half a pixel) and
 isn't covered by an exception, and exit 1 if any. EXCEPTIONS.tsv: key regex,
-slot (bg, fg, border, shadow, radius or *), task, reason.
+slot (bg, fg, border, shadow, radius or *), task, reason. `look` prints what
+THEME.css gives SELECTOR's element: [bg, fg, border, shadow], as JSON.
 """
 import argparse
 import json
@@ -35,6 +38,9 @@ import cascade
 import colors
 
 SLOTS = ["bg", "fg", "border", "shadow"]
+# Accent foreground and background a raw value is compared under: the same
+# color written two ways isn't a change.
+ACCENTS = [("#ffffff", "#E95420"), ("#ffffff", "#0073E5"), ("#000000", "#F99B11")]
 
 
 def _rules(css_path, origin):
@@ -123,10 +129,24 @@ def _excepted(key, slot, exceptions):
     return any(pattern.search(key) and (s == "*" or s == slot) for pattern, s, _, _ in exceptions)
 
 
+def _with_accent(value, accent):
+    """A recorded color as [r, g, b, a], a raw value with the accent put in."""
+    if not isinstance(value, str):
+        return value
+    fg, bg = accent
+    return colors.evaluate(value.replace("-st-accent-fg-color", fg).replace("-st-accent-color", bg))
+
+
 def _differs(a, b, tolerance):
-    if a is None or b is None or isinstance(a, str) or isinstance(b, str):
+    if a is None or b is None:
         return a != b
-    return any(abs(x - y) > tolerance for x, y in zip(a, b))
+    for accent in ACCENTS:
+        x, y = _with_accent(a, accent), _with_accent(b, accent)
+        if x is None or y is None:
+            return a != b
+        if any(abs(p - q) > tolerance for p, q in zip(x, y)):
+            return True
+    return False
 
 
 def _compare(key, want, got, exceptions, slots):
@@ -174,7 +194,7 @@ def check_probe(snapshots, golden, exceptions, only=None, slots=None):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["record-static", "record-probe", "check-static", "check-probe"])
+    ap.add_argument("command", choices=["record-static", "record-probe", "check-static", "check-probe", "look"])
     ap.add_argument("paths", nargs="+")
     ap.add_argument("--overlay")
     ap.add_argument("--only")
@@ -188,6 +208,12 @@ def main():
     if args.command == "record-probe":
         snapshots, out = args.paths
         json.dump(record_probe(json.load(open(snapshots))), open(out, "w"), indent=0, sort_keys=True)
+        return 0
+    if args.command == "look":
+        theme, selector = args.paths
+        records = colors.element(selector)
+        color_rules, radius_rules = _rules(theme, 0)
+        print(json.dumps(_predicted_look(records, color_rules, radius_rules, len(records) - 1)["colors"]))
         return 0
     source, golden_path, exceptions_path = args.paths
     golden, exceptions = json.load(open(golden_path)), load_exceptions(exceptions_path)

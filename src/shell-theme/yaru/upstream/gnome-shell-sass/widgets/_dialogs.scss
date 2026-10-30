@@ -6,7 +6,7 @@
   border-radius: $radius-dialog; /* dusk: corner */
   padding: $base_padding * 4;
   spacing: $base_padding * 3;
-  box-shadow: 0 12px 8px 12px rgba(0,0,0,0.03);
+  box-shadow: inset 0 0 0 1px $outer_borders_color; // dusk: 24.04's.
 
   .modal-dialog-content-box {
     padding-top: $base_padding * 2;
@@ -138,7 +138,7 @@
 
   .prompt-dialog-info-label {
     color: $fg_color;
-    background-color: transparentize($fg_color, 0.9);
+    background-color: transparent; // dusk: 24.04's.
   }
 }
 
@@ -154,7 +154,7 @@
   }
 
   .polkit-dialog-user-root-label {
-    color: $warning_color;
+    color: $yellow; // dusk: 24.04's.
   }
 }
 
@@ -169,6 +169,17 @@
     .audio-selection-device {
       @include tile_button($fg:$fg_color, $bg:$bg_color, $system:false);
       border-radius: $radius-dialog-tile; // dusk: corner
+
+      // dusk: 24.04's.
+      &:active,
+      &:active:hover,
+      &:active:focus,
+      &:checked:active,
+      &:highlighted:active,
+      &:selected:active {
+        background-color: -st-accent-color;
+        color: -st-accent-fg-color;
+      }
 
       .audio-selection-device-box {
         padding: $base_padding * 2;

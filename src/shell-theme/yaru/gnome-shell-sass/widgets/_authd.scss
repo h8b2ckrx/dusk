@@ -1,4 +1,5 @@
 // Ubuntu authd styles
+// dusk: 26.04's own colors: 24.04's stop at the pop-ups.
 // These styles support the Ubuntu authentication daemon (authd) patches
 // applied distro-side in gnome-shell.
 // See: https://salsa.debian.org/gnome-team/gnome-shell/-/tree/ubuntu/latest/debian/patches/ubuntu-authd
@@ -45,38 +46,38 @@ $_gdm_fg: $system_fg_color;
 
 // Web login
 .web-login-dialog-content-overlay {
-  background-color: transparentize($bg_color, 0.3);
+  background-color: transparentize($yaru_bg_color, 0.3);
   border-radius: $modal_radius;
   margin-bottom: 3em;
 }
 
 .web-login-spinner {
-  color: $osd_fg_color;
-  background-color: transparentize($osd_bg_color, 0.5);
+  color: $yaru_osd_fg_color;
+  background-color: transparentize($yaru_osd_bg_color, 0.5);
   border: 5px transparent;
   border-radius: 50px;
 }
 
 .web-login-title-label {
   @include fontsize($base_font_size);
-  color: if($variant == 'dark', darken($fg_color, 30%), lighten($fg_color, 20%));
+  color: if($variant == 'dark', darken($yaru_fg_color, 30%), lighten($yaru_fg_color, 20%));
 }
 
 .web-login-url-label {
   @include fontsize($base_font_size);
   @extend %monospace;
-  color: $fg_color;
+  color: $yaru_fg_color;
   text-align: center;
 }
 
 .web-login-code-title-label {
   @include fontsize($base_font_size);
-  color: $fg_color;
+  color: $yaru_fg_color;
 }
 
 .web-login-code-label {
   @include fontsize($base_font_size);
-  color: $fg_color;
+  color: $yaru_fg_color;
   font-weight: bold;
 }
 
@@ -91,7 +92,7 @@ $_gdm_fg: $system_fg_color;
 
 .web-login-intro-button-label {
   @include fontsize($base_font_size + 5);
-  color: $fg_color;
+  color: $yaru_fg_color;
   height: 3em;
   text-align: center;
   font-weight: bold;
@@ -99,7 +100,7 @@ $_gdm_fg: $system_fg_color;
 
 .web-login-intro-button {
   @include fontsize($base_font_size);
-  color: $fg_color;
+  color: $yaru_fg_color;
   height: 3em;
   text-align: center;
   border-radius: $base_border_radius * 4;

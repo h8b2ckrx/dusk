@@ -27,3 +27,13 @@ StScrollBar {
     &:active {background-color: mix($fg_color, $bg_color, 40%);}
   }
 }
+
+// dusk: the overview keeps its own scroll bars: 24.04's colors stop at the pop-ups.
+.apps-scroll-view StScrollBar,
+.search-display StScrollBar {
+  > .vhandle, > .hhandle {
+    background-color: mix($yaru_fg_color, $yaru_bg_color, 30%);
+    &:hover {background-color: mix($yaru_fg_color, $yaru_bg_color, 50%);}
+    &:active {background-color: mix($yaru_fg_color, $yaru_bg_color, 40%);}
+  }
+}

@@ -10,9 +10,27 @@ $notification_banner_width: 34em;
   box-shadow: 0 2px 4px 2px $shadow_color;
   border-radius: $radius-notification; /* dusk: corner */
   margin: $base_margin;
+  background-color: $bg_color; // dusk: 24.04's.
 
   @if $contrast == 'high' {
     @include draw_hc_inset();
+  }
+
+  // dusk: 24.04's.
+  &:hover {
+    background-color: if($variant =='light', darken($bg_color, 2%), lighten($bg_color, 2%));
+  }
+
+  &:active {
+    background-color: if($variant =='light', darken($bg_color, 4%), lighten($bg_color, 4%));
+  }
+
+  &,
+  &:hover,
+  &:focus,
+  &:active {
+    box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid $borders_color;
   }
 }
 

@@ -523,7 +523,7 @@ $dock_color: $yaru_panel_bg_color;
             }
 
             .dash-separator {
-                background: transparentize($osd_fg_color, 0.7);
+                background: transparentize($yaru_osd_fg_color, 0.7); // dusk: 26.04's own.
             }
         }
 
@@ -577,7 +577,7 @@ $dock_color: $yaru_panel_bg_color;
                 border-radius: $radius-dock-item; // dusk: corner (Yaru: sync with pop-over)
                 &:active, &:checked {
                     .overview-icon {
-                        background-color: $active_bg_color; box-shadow: none;
+                        background-color: $yaru_active_bg_color; box-shadow: none;
                     }
                 }
             }

@@ -191,7 +191,7 @@
   login-dialog {
     StEntry {
       background-color: darken($system_bg_color, 3%) !important;
-      color: $fg_color !important;
+      color: $yaru_fg_color !important;
       border-color: $system_borders_color !important;
     }
   }
@@ -246,15 +246,8 @@
 // ============================================================================
 // Override upstream's accent-colored and calculated hovers with Yaru's neutral grey
 
-.popup-menu-item {
-  &:hover, &:selected {
-    background-color: transparentize($fg_color, 0.9) !important;
-  }
-}
-
-.button.default:hover {
-  background-color: transparentize($fg_color, 0.85) !important;
-}
+// dusk: Yaru's flat menu item and default button hovers are gone: 24.04's
+// states are in the menuitem and button mixins.
 
 /* Dialogs overrides */
 .conflicting-session-dialog-content {
@@ -271,17 +264,17 @@
   // special style for session warnings
   .end-session-dialog-battery-warning,
   .dialog-list-title {
-    // Yaru: use contrast-optimized color.
-    color: $warning_caption_color;
-    background-color: $warning_caption_bg_color;
+    // dusk: 24.04's: the palette's yellow, with no background.
+    color: $yellow;
+    background-color: transparent;
   }
 }
 
 .prompt-dialog {
   .prompt-dialog-error-label {
-    // Yaru: use contrast-optimized color.
-    color: $warning_caption_color;
-    background-color: $warning_caption_bg_color;
+    // dusk: 24.04's: the palette's yellow, with no background.
+    color: $yellow;
+    background-color: transparent;
   }
 }
 

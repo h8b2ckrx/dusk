@@ -286,8 +286,9 @@ $_gdm_dialog_width: 25em;
 // Notifications
 #unlockDialogNotifications {
   > .vhandle, > .hhandle {
-    background-color: transparentize($bg_color,0.7);
-    &:hover, &:focus { background-color: transparentize($bg_color,0.5); }
+    // dusk: 26.04's own surface.
+    background-color: transparentize($yaru_bg_color,0.7);
+    &:hover, &:focus { background-color: transparentize($yaru_bg_color,0.5); }
     &:active { background-color: st-transparentize(-st-accent-color,0.5); }
   }
 }
