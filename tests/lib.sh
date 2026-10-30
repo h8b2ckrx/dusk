@@ -115,3 +115,17 @@ yaru_light_css() {
     /org/gnome/shell/theme/Yaru/gnome-shell.css > "$css"
   echo "$css"
 }
+
+# theme_css MODE: dusk's Shell theme for MODE (built), the only stylesheet in
+# the base slot of Shell's theme while dusk runs (design 2026-10-30).
+theme_css() {
+  (cd "$REPO" && ./build.sh > /dev/null)
+  echo "$REPO/extension/theme/dusk-$1.css"
+}
+
+# empty_css: an empty stylesheet, for checks that take a second one on top.
+empty_css() {
+  local css; css=$(mktemp --suffix=.css)
+  echo "$css"
+}
+

@@ -40,6 +40,18 @@ test_cascade_specificity_beats_order() {
 }
 
 # Within one stylesheet, equal specificity: the later rule wins.
+# St gives a rule the specificity of the last selector in its list that
+# matches the element (st-theme.c add_matched_properties overwrites it per
+# match), not the highest: `.a .c, .c` counts as `.c` for an element both
+# match, so a later `.c` rule wins (seen in Yaru's folder tiles).
+test_cascade_group_takes_last_matching_selector() {
+  local out
+  out=$(predict '.a .c, .c { border-radius: 5px; } .c { border-radius: 9px; }' '')
+  assert_eq "$(line_for leaf "$out")" "leaf: 9px 9px 9px 9px"
+  out=$(predict '.c, .a .c { border-radius: 5px; } .c { border-radius: 9px; }' '')
+  assert_eq "$(line_for leaf "$out")" "leaf: 5px 5px 5px 5px"
+}
+
 test_cascade_later_rule_wins() {
   local out
   out=$(predict '.c { border-radius: 8px; } .c { border-radius: 7px; }' '')

@@ -38,6 +38,7 @@ Usage:
   cascade.py unmatched SNAPSHOTS.json SELECTOR...
       Print the selectors that match no element in any snapshot; exit 1 if any.
 """
+import itertools
 import json
 import re
 import sys
@@ -53,13 +54,18 @@ COMPOUND = re.compile(r"^([A-Za-z][\w-]*)?((?:[#.:][\w-]+)*)$")
 SIMPLE = re.compile(r"([#.:])([\w-]+)")
 
 
+# A fresh id per parsed declaration (Rule.group).
+_GROUPS = itertools.count()
+
+
 class Rule:
-    def __init__(self, selector, compounds, specificity, key, corners):
+    def __init__(self, selector, compounds, specificity, key, corners, group=None):
         self.selector = selector
         self.compounds = compounds    # [(combinator to the left, compound)]
         self.specificity = specificity
         self.key = key                # sort key: later/bigger wins
         self.corners = corners        # {corner index: raw value}
+        self.group = group            # the declaration this selector shares with its list
 
 
 def parse_selector(selector):
@@ -129,6 +135,7 @@ def parse_rules(css, origin, props=PROPS, expand=None):
                     important = "!important" in value
                     value = value.replace("!important", "").strip()
                     order += 1
+                    group = next(_GROUPS)
                     for selector in prelude.split(","):
                         selector = " ".join(selector.split())
                         parsed = parse_selector(selector)
@@ -138,7 +145,7 @@ def parse_rules(css, origin, props=PROPS, expand=None):
                         key = (origin, important, specificity, order)
                         slots = expand(prop, value)
                         if slots:
-                            rules.append(Rule(selector, compounds, specificity, key, slots))
+                            rules.append(Rule(selector, compounds, specificity, key, slots, group))
             buf = ""
         elif ch == ";" and not stack:
             buf = ""
@@ -188,16 +195,22 @@ def matches(records, i, compounds, k=None):
 
 
 def winners(records, rules):
-    """Per record, per corner: the winning Rule (or None)."""
+    """Per record, per corner: the winning Rule (or None). As in St, a rule
+    counts with the specificity of the last selector in its list that matches
+    the element, not the highest (st-theme.c add_matched_properties sets the
+    statement's specificity at every matching selector)."""
     result = []
     for i, record in enumerate(records):
-        best = [None] * 4
+        best, best_key = [None] * 4, [None] * 4
         if "StWidget" in record["types"]:
-            for rule in rules:
-                if matches(records, i, rule.compounds):
-                    for corner in rule.corners:
-                        if best[corner] is None or rule.key >= best[corner].key:
-                            best[corner] = rule
+            matched = [rule for rule in rules if matches(records, i, rule.compounds)]
+            last = {rule.group: rule.specificity for rule in matched}
+            for rule in matched:
+                origin, important, _, order = rule.key
+                key = (origin, important, last[rule.group], order)
+                for corner in rule.corners:
+                    if best[corner] is None or key >= best_key[corner]:
+                        best[corner], best_key[corner] = rule, key
         result.append(best)
     return result
 

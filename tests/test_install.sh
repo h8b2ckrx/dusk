@@ -23,12 +23,14 @@ state_file() { echo "$HOME/.local/state/dusk/install.state"; }
 ext_link() { echo "$HOME/.local/share/gnome-shell/extensions/dusk@local"; }
 
 # assert_ext_linked REPO: Shell's dusk@local is a real folder whose files are
-# links to REPO/extension's files.
+# links to REPO/extension's files, its theme/ a real folder too, of links to
+# REPO/extension/theme's files.
 assert_ext_linked() {
   [ -d "$(ext_link)" ] && [ ! -L "$(ext_link)" ] || fail "$(ext_link) is not a real folder"
+  [ -d "$(ext_link)/theme" ] && [ ! -L "$(ext_link)/theme" ] || fail "$(ext_link)/theme is not a real folder"
   local f
-  for f in "$1"/extension/*; do
-    assert_symlink_to "$(ext_link)/$(basename "$f")" "$f"
+  for f in $(cd "$1/extension" && find . -type f | sed 's|^\./||'); do
+    assert_symlink_to "$(ext_link)/$f" "$1/extension/$f"
   done
 }
 
@@ -69,7 +71,7 @@ test_fresh_install_creates_links_and_state() {
   assert_symlink_to "$HOME/.config/gtk-4.0/gtk.css" "$REPO/build/gtk4.css"
   assert_symlink_to "$HOME/.config/gtk-3.0/gtk.css" "$REPO/build/gtk3.css"
   assert_ext_linked "$REPO"
-  assert_eq "$(grep -c '^link' "$(state_file)")" $((2 + $(ls "$REPO/extension" | wc -l))) "link records"
+  assert_eq "$(grep -c '^link' "$(state_file)")" $((2 + $(find "$REPO/extension" -type f | wc -l))) "link records"
   assert_contains "$DUSK_STUB_LOG" "gnome-extensions enable dusk@local"
 }
 
@@ -81,7 +83,7 @@ test_extensions_app_remove_keeps_repo_files() {
   "$repo/install.sh" > "$HOME.out" 2>&1
   shell_remove "$(ext_link)" || fail "Remove failed"
   local f
-  for f in metadata.json extension.js stylesheet-dark.css; do
+  for f in metadata.json extension.js theme/dusk-dark.css theme/calendar-today.svg; do
     [ -f "$repo/extension/$f" ] && [ ! -L "$repo/extension/$f" ] || fail "Remove deleted the repo's extension/$f"
   done
   assert_missing "$(ext_link)"
@@ -312,4 +314,28 @@ test_out_of_date_extension_gets_its_own_hint() {
   assert_contains "$HOME.out" "OUT OF DATE"
   assert_contains "$HOME.out" "shell-version"
   assert_not_contains "$HOME.out" "Log out"
+}
+
+# An earlier install's links to files the repo no longer has (the override
+# stylesheets, before dusk had its own theme) are removed: Shell would still
+# try to load an extension stylesheet left in the folder.
+test_reinstall_drops_links_to_removed_files() {
+  setup_home
+  local repo; repo=$(copy_repo)
+  "$repo/install.sh" > "$HOME.out" 2>&1
+  # What the earlier install left: its link, recorded, to a file now gone.
+  ln -s "$repo/extension/stylesheet-dark.css" "$(ext_link)/stylesheet-dark.css"
+  printf 'link\t%s\n' "$(ext_link)/stylesheet-dark.css" >> "$(state_file)"
+  "$repo/install.sh" > "$HOME.out" 2>&1
+  assert_missing "$(ext_link)/stylesheet-dark.css"
+  ! grep -q "stylesheet-dark.css" "$(state_file)" || fail "the state file still records it"
+}
+
+# Uninstall removes the theme folder's links and the folder.
+test_uninstall_removes_theme_folder() {
+  setup_home
+  install_dusk
+  uninstall_dusk
+  assert_missing "$(ext_link)/theme"
+  assert_missing "$(ext_link)"
 }

@@ -12,18 +12,18 @@ assert m["session-modes"] == ["user", "unlock-dialog"], m.get("session-modes")
 EOF
 }
 
-# extension.js holds exactly two approved exceptions (design §2, §4.16,
-# §4.20): the overview's workspace wallpaper honours .workspace-background's
-# CSS radius, and app icons (the main app grid, search's app results) honour
-# -dusk-app-icon-size. The dialog button-gap exception (§4.15) is gone with
-# the 24.04 dialogs (decision 23). Nothing else.
-test_extension_js_patches_only_the_two_exceptions() {
+# extension.js holds exactly three approved exceptions (design §2, §4.16,
+# §4.20; the Shell theme design 2026-10-30): the overview's workspace
+# wallpaper honours .workspace-background's CSS radius, app icons (the main
+# app grid, search's app results) honour -dusk-app-icon-size, and dusk's
+# theme takes the base slot of Shell's theme, in Yaru's place, coming back
+# whenever Shell rebuilds its theme. Nothing else.
+test_extension_js_has_three_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
   assert_eq "$(grep -c 'overrideMethod(' "$js")" 1 "number of overrides"
   assert_not_contains "$js" "dialog.js"
-  assert_not_contains "$js" "_createDialog"
   assert_contains "$js" "this._injections.clear();"
   # The workspace wallpaper: Shell's own method still runs first, and
   # disable() re-runs it so Shell's radius comes back.
@@ -42,6 +42,12 @@ test_extension_js_patches_only_the_two_exceptions() {
   assert_contains "$js" "grid.connect('child-added'"
   assert_not_contains "$js" "createResultObject"
   assert_contains "$js" "result.icon.setIconSize(Main.defaultIconSize);"
+  # The theme: dusk's file in the base slot, nothing on top, put back when
+  # Shell rebuilds its theme, and Shell's own theme back on disable.
+  assert_contains "$js" "new St.Theme({default_stylesheet:"
+  assert_contains "$js" ".connect('changed'"
+  assert_contains "$js" "dusk-\${Main.getStyleVariant()}.css"
+  assert_contains "$js" "Main.loadTheme();"
 }
 
 # gjs can't resolve Shell's resource:// imports outside Shell, but it parses

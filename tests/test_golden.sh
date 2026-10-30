@@ -11,19 +11,19 @@ golden_probe_file() {
   echo "$REPO/tests/golden/probe-${1/:/-}.json"
 }
 
-# While today's override layer exists: Yaru plus it still give the recorded
-# look for every selector.
-test_golden_static_matches_today() {
+# dusk's theme alone gives the recorded look for every selector, apart from
+# the changes tests/golden/exceptions.tsv lists (each with its own test).
+test_golden_static_matches_theme() {
   local mode
   for mode in dark light; do
-    "$REPO/tests/headless/golden.py" check-static "$("yaru_${mode}_css")" "$REPO/tests/golden/static-$mode.json" \
-      "$REPO/tests/golden/exceptions.tsv" --overlay "$REPO/extension/stylesheet-$mode.css" \
-      || fail "$mode: the static look differs from the record"
+    "$REPO/tests/headless/golden.py" check-static "$(theme_css "$mode")" "$REPO/tests/golden/static-$mode.json" \
+      "$REPO/tests/golden/exceptions.tsv" || fail "$mode: the static look differs from the record"
   done
 }
 
-# Every recorded probe variant still measures as recorded.
-test_golden_probe_matches_today() {
+# Every recorded probe variant measures as recorded, apart from the listed
+# changes.
+test_golden_probe_matches_theme() {
   local v out
   for v in $GOLDEN_VARIANTS; do
     out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
@@ -32,18 +32,23 @@ test_golden_probe_matches_today() {
   done
 }
 
-# A changed record is reported, naming the selector and the slot.
+# A changed record is reported, naming the selector and the slot: a record
+# of dusk's theme checks clean against it, and with one menu background
+# changed reports exactly that.
 test_golden_check_reports_a_change() {
   local dir out rc=0
   dir=$(mktemp -d)
-  python3 - "$REPO/tests/golden/static-dark.json" "$dir/changed.json" <<'EOF'
+  "$REPO/tests/headless/golden.py" record-static "$(empty_css)" "$(theme_css dark)" "$dir/theme.json"
+  "$REPO/tests/headless/golden.py" check-static "$(theme_css dark)" "$dir/theme.json" \
+    "$REPO/tests/golden/exceptions.tsv" || fail "a record of the theme doesn't check clean against it"
+  python3 - "$dir/theme.json" "$dir/changed.json" <<'EOF'
 import json, sys
 golden = json.load(open(sys.argv[1]))
 golden[".popup-menu-content"]["colors"][0] = [1, 2, 3, 255]
 json.dump(golden, open(sys.argv[2], "w"))
 EOF
-  out=$("$REPO/tests/headless/golden.py" check-static "$(yaru_dark_css)" "$dir/changed.json" \
-    "$REPO/tests/golden/exceptions.tsv" --overlay "$REPO/extension/stylesheet-dark.css") || rc=$?
+  out=$("$REPO/tests/headless/golden.py" check-static "$(theme_css dark)" "$dir/changed.json" \
+    "$REPO/tests/golden/exceptions.tsv") || rc=$?
   assert_eq "$rc" 1 "exit code"
-  [[ "$out" == *".popup-menu-content bg"* ]] || fail "the key and slot aren't named: $out"
+  assert_eq "$out" ".popup-menu-content bg: recorded [1, 2, 3, 255], now [54, 54, 58, 255]" "report"
 }

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # Compiles src/ into the CSS files dusk installs:
 #   build/gtk4.css, build/gtk3.css,
-#   extension/stylesheet-dark.css, extension/stylesheet-light.css,
 #   extension/theme/dusk-dark.css, extension/theme/dusk-light.css (dusk's
 #   Shell theme, with the images it uses)
 # Set SASSC to use a different sassc binary.
@@ -64,8 +63,9 @@ compile_shell_theme() {
 mkdir -p build extension extension/theme
 compile src/gtk4.scss build/gtk4.css
 compile src/gtk3.scss build/gtk3.css
-compile src/shell-dark.scss extension/stylesheet-dark.css
-compile src/shell-light.scss extension/stylesheet-light.css
+# Shell would load an extension stylesheet left from an older build on top
+# of dusk's theme.
+rm -f extension/stylesheet-dark.css extension/stylesheet-light.css
 compile_shell_theme dark
 compile_shell_theme light
 # The images the theme uses, next to it.
