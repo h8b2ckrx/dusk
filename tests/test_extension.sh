@@ -12,12 +12,13 @@ assert m["session-modes"] == ["user", "unlock-dialog"], m.get("session-modes")
 EOF
 }
 
-# extension.js holds exactly three approved exceptions (design §2, §4.16,
+# extension.js holds exactly four approved exceptions (design §2, §4.16,
 # §4.20; the Shell theme design 2026-10-30): the overview's workspace
 # wallpaper honours .workspace-background's CSS radius, app icons (the main
-# app grid, search's app results) honour -dusk-app-icon-size, and dusk's
-# theme takes the base slot of Shell's theme, in Yaru's place, coming back
-# whenever Shell rebuilds its theme. Nothing else.
+# app grid, search's app results) honour -dusk-app-icon-size, dusk's theme
+# takes the base slot of Shell's theme, in Yaru's place, coming back whenever
+# Shell rebuilds its theme, and the power mode's icon leaves the top bar.
+# Nothing else.
 test_extension_js_has_four_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
@@ -46,7 +47,8 @@ test_extension_js_has_four_exceptions() {
   # Shell rebuilds its theme, and Shell's own theme back on disable.
   assert_contains "$js" "new St.Theme({default_stylesheet:"
   assert_contains "$js" ".connect('changed'"
-  assert_contains "$js" "dusk-\${Main.getStyleVariant()}.css"
+  assert_contains "$js" "dusk-\${variant || Main.getStyleVariant()}.css"
+  assert_contains "$js" "Main.sessionMode.isPrimary"
   assert_contains "$js" "Main.loadTheme();"
   # The power mode's icon: off the top bar, and back on disable.
   assert_contains "$js" "indicators.remove_child(icon);"

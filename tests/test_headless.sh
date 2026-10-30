@@ -74,8 +74,8 @@ EOF
 }
 
 # Ubuntu Dock's corners follow the theme (design decision 17). With the dock
-# laid out like the owner's, Shell's computed radii match Yaru plus our
-# stylesheet (in the Ubuntu session the dock's own stylesheet is empty), the
+# laid out like the owner's, Shell's computed radii match dusk's theme (in the
+# Ubuntu session the dock's own stylesheet is empty), the
 # dock selectors expected on screen are there, and the background and the
 # icon highlight carry our dock tokens.
 test_headless_dock_follows_tokens() {
@@ -138,7 +138,7 @@ EOF
 
 # The lock screen follows dusk (decision 21): dusk stays on in Shell's
 # lock-screen session mode, and the unlock dialog, its password prompt and
-# the locked top bar get Yaru plus our stylesheet. The probe shows them
+# the locked top bar get dusk's theme. The probe shows them
 # without locking for real (see tests/headless/dusk-probe@local).
 test_headless_lock_screen_follows_tokens() {
   local out; out=$(probe_dir dark)
@@ -449,8 +449,34 @@ for name, state in switches.items():
     problems = colors.check({name: state["records"]}, rules)
     assert not problems, (name, problems[:5])
 EOF
-    ! grep -n "JS ERROR\|JS WARNING" "$out/shell.log" | grep -q "dusk@local" || fail "$mode: dusk logged an error"
+    assert_eq "$(dusk_errors "$out/shell.log")" "" "$mode: dusk logged an error"
   done
+}
+
+# A Shell log's errors are found from dusk's stack frames, in both of the forms
+# Shell writes them, and other extensions' aren't.
+test_dusk_errors_finds_stack_frames() {
+  local log; log=$(mktemp)
+  cat > "$log" <<'EOF'
+JS ERROR: TypeError: x is null
+_applyTheme@file:///home/u/.local/share/gnome-shell/extensions/dusk@local/extension.js:140:20
+Exception in callback for signal: changed: Error: nope
+_loadTheme@file:///home/u/.local/share/gnome-shell/extensions/dusk@local/extension.js:125:9
+JS ERROR: TypeError: y is null
+_update@file:///usr/share/gnome-shell/extensions/ubuntu-dock@ubuntu.com/docking.js:1:1
+EOF
+  assert_eq "$(dusk_errors "$log" | wc -l)" 2 "stack frames found"
+}
+
+# Light mode from Quick Settings is `color-scheme: default`. The lock screen
+# reports dark for it, but keeps the desktop's light theme, as Shell's own does.
+test_headless_theme_keeps_the_mode_on_the_lock_screen() {
+  python3 - "$(probe_dir light default)/result.json" <<'EOF' || fail "the lock screen changed dusk's theme"
+import json, sys
+result = json.load(open(sys.argv[1]))
+assert result["theme"]["start"]["default"].endswith("/dusk-light.css"), result["theme"]["start"]
+assert result["lock"]["theme"]["default"].endswith("/dusk-light.css"), result["lock"]["theme"]
+EOF
 }
 
 # Other extensions' stylesheets (Ubuntu Dock's) stay loaded through every one of

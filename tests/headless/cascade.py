@@ -2,9 +2,9 @@
 """Predict the corner radii GNOME Shell computes, and compare with reality.
 
 Models St's cascade for border-radius only. St ranks an extension stylesheet
-above the theme outright, so any rule of ours beats any Yaru rule, even a
-more specific or !important one (seen live). Within one stylesheet: !important,
-then specificity, then source order. Selectors use the subset
+above the theme outright, so any rule on top beats any rule of the theme, even
+a more specific or !important one (seen live). Within one stylesheet:
+!important, then specificity, then source order. Selectors use the subset
 Yaru uses for radii: element types (matched against the GType chain), #id,
 .class, :pseudo-class (:ltr always applies, :rtl never), descendant and child
 combinators. Ancestors are St widgets only: St skips plain Clutter actors
@@ -16,7 +16,7 @@ mapped actor, with parent index, id, classes, pseudo, types and the radii
 Shell computed.
 
 Usage:
-  cascade.py check SNAPSHOTS.json YARU.css DUSK.css
+  cascade.py check SNAPSHOTS.json THEME.css ON_TOP.css
       Print every element whose computed radius differs from the prediction;
       exit 1 if any.
   cascade.py unmatched SNAPSHOTS.json SELECTOR...

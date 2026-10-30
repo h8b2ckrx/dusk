@@ -1,7 +1,7 @@
 {
   "uuid": "dusk@local",
   "name": "dusk",
-  "description": "Personal theme overrides (stylesheet only).",
+  "description": "dusk's own GNOME Shell theme.",
   "shell-version": ["50"],
   "session-modes": ["user", "unlock-dialog"]
 }

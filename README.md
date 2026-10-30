@@ -6,7 +6,7 @@ apps. Shell dialogs keep 26.04's own layout, Shell's pop-ups take Ubuntu 24.04's
 bar is see-through with a pill behind each button. GTK apps otherwise stay stock Yaru.
 
 One file, [src/_tokens.scss](src/_tokens.scss), holds every corner and the top bar's values. Change a
-token, run `./install.sh`, and the Shell and every GTK app follow.
+token, run `./install.sh && tools/shell-reload.sh`, and the Shell and every GTK app follow.
 
 - Design: [docs/2026-10-28-dusk-design.md](docs/2026-10-28-dusk-design.md), and for the Shell theme
   [docs/2026-10-30-dusk-shell-theme-design.md](docs/2026-10-30-dusk-shell-theme-design.md)
@@ -44,7 +44,7 @@ the only things CSS can't do in Shell 50:
 3. loading dusk's theme in Yaru's place;
 4. taking the power mode's icon off the top bar (its control stays in Quick Settings' menu).
 
-Each just makes Shell honour the theme's value, and `disable()` gives Shell its own values back.
+`disable()` gives Shell its own behaviour back.
 
 ## Files
 
@@ -179,10 +179,10 @@ the installed Yaru. After an Ubuntu upgrade (e.g. 26.10):
 
 1. Run `tests/run.sh`. The `inventory_matches_installed` tests list every GTK rule that changed
    in the installed stylesheets, and the live checks show what moved in Shell and apps.
-2. **Shell:** for a new GNOME version, add it to `shell-version` in `extension/metadata.json`, take
-   a new copy of Yaru's source with `tools/yaru-shell-source.sh`, and bring dusk's marked edits over
-   (`git log -p src/shell-theme/yaru` shows every one). Run the theme checks: `tests/golden/` shows
-   what moved.
+2. **Shell:** for a new GNOME version, add it to `shell-version` in `extension/metadata.json`, set
+   the new Yaru tag in `tools/yaru-shell-source.sh`, and run it on an empty folder (it clears the
+   one it's given). Bring dusk's marked edits over to that copy (`git log -p src/shell-theme/yaru`
+   shows every one). Run the theme checks: `tests/golden/` shows what moved.
 3. **GTK4:** find the stylesheet with `gresource list /usr/lib/x86_64-linux-gnu/libadwaita-1.so.0`
    and extract `/org/gnome/Adwaita/styles/default-dark-yaru-<accent>.css`. Run
    `tools/radius-inventory.py` on it with the options listed at the top of

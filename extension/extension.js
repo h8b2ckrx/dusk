@@ -127,9 +127,13 @@ export default class DuskExtension extends Extension {
         this._themeChangedId = this._themeContext.connect('changed', () => this._applyTheme());
     }
 
-    // dusk's theme file for the current variant.
-    _themeFile() {
-        return this.dir.get_child('theme').get_child(`dusk-${Main.getStyleVariant()}.css`);
+    // dusk's theme file for the current variant. Shell only follows dark/light
+    // in the primary session mode: the lock screen can report dark for a light
+    // desktop, and keeps the desktop's stylesheet, so dusk keeps its variant.
+    _themeFile(current) {
+        const variant = !Main.sessionMode.isPrimary &&
+            current.default_stylesheet?.get_basename().match(/-(dark|light)\.css$/)?.[1];
+        return this.dir.get_child('theme').get_child(`dusk-${variant || Main.getStyleVariant()}.css`);
     }
 
     // Puts dusk's theme in the base slot, alone (nothing on top), keeping the
@@ -139,8 +143,8 @@ export default class DuskExtension extends Extension {
     _applyTheme() {
         if (this._applyingTheme)
             return;
-        const file = this._themeFile();
         const current = this._themeContext.get_theme();
+        const file = this._themeFile(current);
         if (current.default_stylesheet?.equal(file) && !current.application_stylesheet)
             return;
         if (!file.query_exists(null)) {

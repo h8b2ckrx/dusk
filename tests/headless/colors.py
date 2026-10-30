@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Predict the colors GNOME Shell computes, and compare with reality.
 
-The same cascade as cascade.py (our stylesheet beats Yaru's outright; within
-one, !important, then specificity, then source order), for four color slots
+The same cascade as cascade.py (a stylesheet on top beats the theme outright;
+within one, !important, then specificity, then source order), for four color slots
 instead of four corners: 0 background, 1 text (inherited from the nearest St
 parent), 2 border (top), 3 box-shadow. Values are evaluated like St does,
 including its st-lighten / st-darken / st-mix / st-transparentize /
@@ -14,7 +14,7 @@ Records come from tests/headless/dusk-probe@local (snapshots.json): `colors`
 is [bg, fg, border, shadow], each [r, g, b, a] (0-255) or null.
 
 Usage:
-  colors.py check SNAPSHOTS.json YARU.css DUSK.css
+  colors.py check SNAPSHOTS.json THEME.css ON_TOP.css
       Print every element whose computed color differs from the prediction
       (more than 2 per channel); exit 1 if any.
   colors.py contrast SNAPSHOTS.json YARU.css YARU2404.css

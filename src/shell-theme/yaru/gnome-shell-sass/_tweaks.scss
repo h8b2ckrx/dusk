@@ -101,11 +101,11 @@
 
     // dusk: the overview is dark in both modes.
     .panel-button#panelActivities .workspace-dot {
-      background-color: $yaru_panel_fg_color !important;
+      background-color: $yaru_panel_fg_color;
     }
 
     .system-status-icon {
-      color: $yaru_panel_fg_color !important;
+      color: $yaru_panel_fg_color;
     }
   }
 
@@ -116,7 +116,7 @@
 
     // Activities button workspace dots should be white
     &#panelActivities .workspace-dot {
-      background-color: $pill_icon_color !important; // dusk: the pill's
+      background-color: $pill_icon_color; // dusk: the pill's
     }
 
     &.screen-recording-indicator {
@@ -134,7 +134,7 @@
 
   // Ensure system status indicators are white
   .system-status-icon {
-    color: $pill_icon_color !important; // dusk: the pill's
+    color: $pill_icon_color; // dusk: the pill's
   }
 }
 
@@ -146,7 +146,7 @@
 
   // dusk: light on the wallpaper in both modes: no pills here.
   .system-status-icon {
-    color: $yaru_panel_fg_color !important;
+    color: $yaru_panel_fg_color;
   }
 }
 
@@ -373,7 +373,7 @@ $yaru_popup_radius: $modal_radius * 1.05;
 .osd-window {
   .level {
     // Yaru: Optimize overdrive color for contrast
-    -barlevel-overdrive-color: optimize-contrast($osd_bg_color, $destructive_color, $target: 5.5);
+    -barlevel-overdrive-color: optimize-contrast($yaru_osd_bg_color, $destructive_color, $target: 5.5); // dusk: 26.04's own surface.
   }
 }
 
