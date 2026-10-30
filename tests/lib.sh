@@ -64,3 +64,74 @@ assert_inventory_current() {
 $(echo "$d" | head -20)
 See README, 'Updating after a GNOME, Yaru or libadwaita update'."
 }
+
+# probe_dir SCHEME [dock]: a finished probe run for the current code, reused
+# across tests while src/, extension/, tests/headless/, the probe tool and the
+# installed system (stock_key) are unchanged.
+# "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
+# extended, shrink); "accent" picks the blue accent instead of slate;
+# "default" also loads Ubuntu Dock and sets color-scheme to `default`, which is
+# what Quick Settings' Dark Style toggle writes for light mode.
+probe_dir() {
+  local key out variant="${2:-}"
+  key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
+    -print0 | sort -z | xargs -0 sha1sum; stock_key; } \
+    | sha1sum | cut -c1-16)
+  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
+  if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
+    local extra="" settings=""
+    if [ "$variant" = accent ]; then
+      settings="org.gnome.desktop.interface accent-color blue"
+    fi
+    if [ "$variant" = default ]; then
+      extra=ubuntu-dock@ubuntu.com
+      settings="org.gnome.desktop.interface color-scheme default"
+    fi
+    if [ "$variant" = dock ]; then
+      extra=ubuntu-dock@ubuntu.com
+      settings="org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM"
+      settings+=";org.gnome.shell.extensions.dash-to-dock extend-height false"
+      settings+=";org.gnome.shell.extensions.dash-to-dock custom-theme-shrink true"
+    fi
+    DUSK_EXTRA_EXTENSIONS="$extra" DUSK_GSETTINGS="$settings" \
+      "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
+      || fail "headless probe failed ($1 $variant): $(cat "$out/error.txt" 2> /dev/null)"
+  fi
+  echo "$out"
+}
+
+# The stylesheet Shell loads for Yaru (dark), extracted for the cascade check.
+yaru_dark_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$css"
+  echo "$css"
+}
+
+# The light one (Shell loads it in light mode).
+yaru_light_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell.css > "$css"
+  echo "$css"
+}
+
+# theme_css MODE: dusk's Shell theme for MODE (built), the only stylesheet in
+# the base slot of Shell's theme while dusk runs (design 2026-10-30).
+theme_css() {
+  (cd "$REPO" && ./build.sh > /dev/null)
+  echo "$REPO/extension/theme/dusk-$1.css"
+}
+
+# dusk_errors LOG: the lines of a Shell log that come from dusk's own files: an
+# exception's stack frames, or a warning about its theme.
+dusk_errors() {
+  grep -n "extensions/dusk@local/" "$1" || true
+}
+
+# empty_css: an empty stylesheet, for checks that take a second one on top.
+empty_css() {
+  local css; css=$(mktemp --suffix=.css)
+  echo "$css"
+}
+

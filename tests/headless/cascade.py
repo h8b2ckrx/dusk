@@ -2,9 +2,9 @@
 """Predict the corner radii GNOME Shell computes, and compare with reality.
 
 Models St's cascade for border-radius only. St ranks an extension stylesheet
-above the theme outright, so any rule of ours beats any Yaru rule, even a
-more specific or !important one (seen live). Within one stylesheet: !important,
-then specificity, then source order. Selectors use the subset
+above the theme outright, so any rule on top beats any rule of the theme, even
+a more specific or !important one (seen live). Within one stylesheet:
+!important, then specificity, then source order. Selectors use the subset
 Yaru uses for radii: element types (matched against the GType chain), #id,
 .class, :pseudo-class (:ltr always applies, :rtl never), descendant and child
 combinators. Ancestors are St widgets only: St skips plain Clutter actors
@@ -16,28 +16,13 @@ mapped actor, with parent index, id, classes, pseudo, types and the radii
 Shell computed.
 
 Usage:
-  cascade.py check SNAPSHOTS.json YARU.css DUSK.css
+  cascade.py check SNAPSHOTS.json THEME.css ON_TOP.css
       Print every element whose computed radius differs from the prediction;
       exit 1 if any.
-  cascade.py clobbered SNAPSHOTS.json YARU.css DUSK.css
-      Print every element where one of our rules overrides a more specific
-      Yaru rule: a deliberate special case (e.g. square items inside a
-      submenu) that a general rule of ours would erase; exit 1 if any.
-  cascade.py shadowed YARU.css DUSK.css [EXCLUDE_REGEX]
-      Static version of `clobbered`, for UI states the probe doesn't show:
-      print every Yaru radius rule that targets a subset of what one of our
-      rules targets, is more specific, and isn't re-asserted in ours; exit 1
-      if any. EXCLUDE_REGEX skips Yaru selectors (e.g. the lock screen, where
-      dusk is off).
-  cascade.py drift SNAPSHOTS.json YARU.css DUSK.css [STOCK=>OURS ...]
-      Print every element whose winning rule changed meaning: in stock Yaru
-      rule STOCK decided its radius, ours has a rule for STOCK too, but a
-      different rule of ours wins and gives a different value (e.g. an element
-      with two classes). STOCK=>OURS pairs are reviewed, intended drifts.
-      Exit 1 if any other.
   cascade.py unmatched SNAPSHOTS.json SELECTOR...
       Print the selectors that match no element in any snapshot; exit 1 if any.
 """
+import itertools
 import json
 import re
 import sys
@@ -53,13 +38,18 @@ COMPOUND = re.compile(r"^([A-Za-z][\w-]*)?((?:[#.:][\w-]+)*)$")
 SIMPLE = re.compile(r"([#.:])([\w-]+)")
 
 
+# A fresh id per parsed declaration (Rule.group).
+_GROUPS = itertools.count()
+
+
 class Rule:
-    def __init__(self, selector, compounds, specificity, key, corners):
+    def __init__(self, selector, compounds, specificity, key, corners, group=None):
         self.selector = selector
         self.compounds = compounds    # [(combinator to the left, compound)]
         self.specificity = specificity
         self.key = key                # sort key: later/bigger wins
         self.corners = corners        # {corner index: raw value}
+        self.group = group            # the declaration this selector shares with its list
 
 
 def parse_selector(selector):
@@ -129,6 +119,7 @@ def parse_rules(css, origin, props=PROPS, expand=None):
                     important = "!important" in value
                     value = value.replace("!important", "").strip()
                     order += 1
+                    group = next(_GROUPS)
                     for selector in prelude.split(","):
                         selector = " ".join(selector.split())
                         parsed = parse_selector(selector)
@@ -138,7 +129,7 @@ def parse_rules(css, origin, props=PROPS, expand=None):
                         key = (origin, important, specificity, order)
                         slots = expand(prop, value)
                         if slots:
-                            rules.append(Rule(selector, compounds, specificity, key, slots))
+                            rules.append(Rule(selector, compounds, specificity, key, slots, group))
             buf = ""
         elif ch == ";" and not stack:
             buf = ""
@@ -188,16 +179,22 @@ def matches(records, i, compounds, k=None):
 
 
 def winners(records, rules):
-    """Per record, per corner: the winning Rule (or None)."""
+    """Per record, per corner: the winning Rule (or None). As in St, a rule
+    counts with the specificity of the last selector in its list that matches
+    the element, not the highest (st-theme.c add_matched_properties sets the
+    statement's specificity at every matching selector)."""
     result = []
     for i, record in enumerate(records):
-        best = [None] * 4
+        best, best_key = [None] * 4, [None] * 4
         if "StWidget" in record["types"]:
-            for rule in rules:
-                if matches(records, i, rule.compounds):
-                    for corner in rule.corners:
-                        if best[corner] is None or rule.key >= best[corner].key:
-                            best[corner] = rule
+            matched = [rule for rule in rules if matches(records, i, rule.compounds)]
+            last = {rule.group: rule.specificity for rule in matched}
+            for rule in matched:
+                origin, important, _, order = rule.key
+                key = (origin, important, last[rule.group], order)
+                for corner in rule.corners:
+                    if best[corner] is None or key >= best_key[corner]:
+                        best[corner], best_key[corner] = rule, key
         result.append(best)
     return result
 
@@ -206,65 +203,6 @@ def predict(records, rules):
     """Per record, per corner: the winning raw value (or None)."""
     return [[r.corners[c] if r else None for c, r in enumerate(best)]
             for best in winners(records, rules)]
-
-
-def clobbered(records, yaru, dusk):
-    """Indices of records where our winning rule is less specific than the
-    rule Yaru alone would apply, on some corner."""
-    stock = winners(records, yaru)
-    ours = winners(records, yaru + dusk)
-    hits = []
-    for i, (before, after) in enumerate(zip(stock, ours)):
-        for b, a in zip(before, after):
-            if b and a and a in dusk and a.specificity < b.specificity:
-                hits.append(i)
-                break
-    return hits
-
-
-def narrows(y, d):
-    """True if Yaru rule y's subject has everything rule d's subject has."""
-    a, b = y.compounds[-1][1], d.compounds[-1][1]
-    return ((not b["type"] or b["type"] == a["type"])
-            and set(b["ids"]) <= set(a["ids"])
-            and set(b["classes"]) <= set(a["classes"])
-            and set(b["pseudo"]) <= set(a["pseudo"] + ["ltr"]))
-
-
-def shadowed(yaru, dusk, exclude=None):
-    """(our selector, Yaru selector) pairs where ours would erase Yaru's."""
-    ours = {r.selector for r in dusk}
-    pairs = set()
-    for d in dusk:
-        for y in yaru:
-            if y.selector in ours or y.specificity <= d.specificity:
-                continue
-            if exclude and re.search(exclude, y.selector):
-                continue
-            if narrows(y, d):
-                pairs.add((d.selector, y.selector))
-    return sorted(pairs)
-
-
-def drifts(records, yaru, dusk):
-    """(index, stock selector, our winning selector) where ours has a rule for
-    the stock winner's selector but another of our rules wins with a different
-    value."""
-    by_selector = {}
-    for d in dusk:
-        by_selector.setdefault(d.selector, []).append(d)
-    found = []
-    stock = winners(records, yaru)
-    now = winners(records, yaru + dusk)
-    for i, (before, after) in enumerate(zip(stock, now)):
-        for corner, (b, a) in enumerate(zip(before, after)):
-            if not (b and a and a in dusk) or b.selector == a.selector:
-                continue
-            mirror = [d for d in by_selector.get(b.selector, []) if corner in d.corners]
-            if mirror and mirror[-1].corners[corner] != a.corners[corner]:
-                found.append((i, b.selector, a.selector))
-                break
-    return found
 
 
 def px(value):
@@ -306,15 +244,9 @@ def check(snapshots, rules):
 
 
 def main():
-    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "clobbered", "drift", "shadowed", "unmatched"):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "unmatched"):
         print(__doc__.strip(), file=sys.stderr)
         return 2
-    if sys.argv[1] == "shadowed":
-        pairs = shadowed(parse_rules(open(sys.argv[2]).read(), origin=0),
-                         parse_rules(open(sys.argv[3]).read(), origin=1),
-                         sys.argv[4] if len(sys.argv) > 4 else None)
-        print("\n".join(f"our '{d}' would erase Yaru's '{y}'" for d, y in pairs))
-        return 1 if pairs else 0
     snapshots = json.load(open(sys.argv[2]))
     if sys.argv[1] == "check":
         rules = (parse_rules(open(sys.argv[3]).read(), origin=0)
@@ -322,30 +254,6 @@ def main():
         problems = check(snapshots, rules)
         print("\n".join(problems))
         return 1 if problems else 0
-    if sys.argv[1] == "drift":
-        yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
-        dusk = parse_rules(open(sys.argv[4]).read(), origin=1)
-        allowed = {tuple(a.split("=>")) for a in sys.argv[5:]}
-        lines = set()
-        for records in snapshots.values():
-            for i, stock_sel, our_sel in drifts(records, yaru, dusk):
-                if (stock_sel, our_sel) not in allowed:
-                    lines.add(f"{describe(records, i)}: stock '{stock_sel}', ours '{our_sel}'")
-        print("\n".join(sorted(lines)))
-        return 1 if lines else 0
-    if sys.argv[1] == "clobbered":
-        yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
-        dusk = parse_rules(open(sys.argv[4]).read(), origin=1)
-        lines = set()
-        for records in snapshots.values():
-            stock = winners(records, yaru)
-            ours = winners(records, yaru + dusk)
-            for i in clobbered(records, yaru, dusk):
-                for b, a in zip(stock[i], ours[i]):
-                    if b and a and a in dusk and a.specificity < b.specificity:
-                        lines.add(f"{describe(records, i)}: our '{a.selector}' overrides Yaru's '{b.selector}'")
-        print("\n".join(sorted(lines)))
-        return 1 if lines else 0
     unmatched = []
     for selector in sys.argv[3:]:
         compounds, _ = parse_selector(selector)

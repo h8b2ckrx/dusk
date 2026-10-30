@@ -1,0 +1,94 @@
+//
+// Main color definitions
+//
+// When color definition differs for dark and light variant, it gets @if-ed depending on $variant
+
+@import '_palette.scss';
+@import '_default-colors.scss';
+
+
+// global colors
+$base_color: if($variant == 'light', $light_1, $_base_color_dark);
+// dusk: 24.04's pop-up surface and text colors (decision 22).
+$bg_color: if($variant == 'light', #FAFAFA, lighten($jet, 2%));
+$fg_color: if($variant == 'light', $inkstone, $porcelain);
+
+// dusk: 26.04's own, for what 24.04's colors don't reach: the lock screen, the
+// on-screen keyboard, Looking Glass.
+$yaru_bg_color: if($variant == 'light', $_base_color_light, #36363a);
+$yaru_fg_color: if($variant == 'light', $_base_color_dark, $light_1);
+$yaru_osd_fg_color: $light_1;
+$yaru_osd_bg_color: lighten($_base_color_dark, 5%);
+$yaru_active_bg_color: if($variant=='light', darken($yaru_bg_color, 11%), lighten($yaru_bg_color, 12%));
+
+// OSD elements
+// dusk: 24.04's.
+$osd_fg_color: #eeeeec;
+$osd_bg_color: transparentize(lighten($jet, 2%), 0.025);
+
+// system elements (e.g. the overview) that are always dark
+$system_base_color: $_base_color_dark;
+$system_fg_color: $_base_color_light;
+
+// panel colors
+$panel_bg_color: if($variant == 'light', $_base_color_light, $dark_5);
+$panel_fg_color: if($variant == 'light', $_base_color_dark, $light_1);
+$panel_border_color: if($variant == 'light', transparentize($_base_color_dark, .9), transparent);
+
+// card elements
+$card_bg_color: if($variant == 'light', $light_1, lighten($bg_color, 7%));
+// dusk: 24.04's.
+$card_shadow_color: if($variant == 'light', transparentize($inkstone, .97), transparent);
+$card_shadow_border_color: if($variant == 'light', transparentize($inkstone, .91), transparent);
+
+//
+// Derived Colors
+//
+// colors based on the global defines above
+
+// borders
+// dusk: 24.04's borders.
+$yaru_borders_color_dark: lighten(desaturate(lighten($jet, 4%), 100%), 14%);
+$borders_color: if($variant == 'light', darken($bg_color, 20%), $yaru_borders_color_dark);
+$outer_borders_color: transparentize($fg_color, 0.85);
+
+// osd colors
+// dusk: 24.04's inner border; the on-screen keyboard keeps 26.04's outer one.
+$osd_borders_color: transparentize(black, 0.3);
+$osd_outer_borders_color: transparentize($yaru_osd_fg_color, 0.98);
+
+// system colors
+$system_bg_color: lighten($system_base_color, 5%);
+$system_borders_color: transparentize($system_fg_color, .9);
+$system_insensitive_fg_color: mix($system_bg_color, $system_fg_color, 37%);
+$system_overlay_bg_color: mix($system_base_color, $system_fg_color, 90%); // for non-transparent items, e.g. dash
+
+// insensitive state
+$insensitive_fg_color: if($variant == 'light', mix($fg_color, $bg_color, 60%),  mix($fg_color, $bg_color, 50%));
+$insensitive_bg_color: mix($bg_color, $base_color, 60%);
+$insensitive_borders_color: mix($borders_color, $base_color, 60%);
+
+// checked state
+// dusk: 24.04's.
+$checked_bg_color: if($variant=='light', darken($bg_color, 7%), lighten($bg_color, 9%));
+$checked_fg_color: if($variant=='light', darken($fg_color, 7%), lighten($fg_color, 9%));
+
+// hover state
+// dusk: 24.04's.
+$hover_bg_color: transparentize($fg_color, 0.9);
+$hover_fg_color: $fg_color;
+
+// active state
+// dusk: 24.04's.
+$active_bg_color: transparentize($fg_color, 0.8);
+$active_fg_color: darken($fg_color, if($variant=='light', 5%, 3%));
+
+// accent colors
+$accent_borders_color: if($variant== 'light', st-darken(-st-accent-color, 20%), st-lighten(-st-accent-color, 30%));
+
+//
+// Special Case Colors
+//
+
+// dusk: 24.04 has no brighter one for cards.
+$card_insensitive_fg_color: $insensitive_fg_color;

@@ -1,21 +1,27 @@
-// dusk is a stylesheet: GNOME Shell loads stylesheet-dark.css or
-// stylesheet-light.css from this folder while the extension is enabled.
+// dusk is a Shell theme: theme/dusk-dark.css and theme/dusk-light.css in this
+// folder, built from dusk's copy of Yaru's source (src/shell-theme).
 //
-// Two owner-approved exceptions (design §2, §4.16, §4.20), each making Shell
-// honour a CSS value it otherwise sets in code, so the values stay in
-// src/_tokens.scss:
+// Four owner-approved exceptions (design §2, §4.16, §4.20, decision 27; the
+// Shell theme design, 2026-10-30), each doing in code what Shell doesn't let
+// a stylesheet do:
 //
 // 1. Shell clips the overview's workspace wallpaper at 30px. It follows the
-//    stylesheet's border-radius on .workspace-background instead.
+//    theme's border-radius on .workspace-background instead.
 // 2. Shell picks the size of app icons in code (64px on most screens). The
-//    main app grid, and the app results in search, use the stylesheet's
+//    main app grid, and the app results in search, use the theme's
 //    -dusk-app-icon-size instead.
+// 3. Shell builds its theme from a base stylesheet (Yaru, which Ubuntu's
+//    session names) and an optional one on top. dusk's theme takes the base
+//    slot, with nothing on top, so Yaru isn't loaded. Shell rebuilds its
+//    theme itself on dark/light, High Contrast and Shell color-scheme
+//    changes, putting Yaru back; dusk puts its own back right away, keeping
+//    the other extensions' stylesheets.
+// 4. Shell shows the power mode's icon in the top bar. dusk takes it off; the
+//    control stays in Quick Settings' menu.
 //
-// (A third, for the 24.04-style dialogs' button gaps, went with them;
-// decision 23.) disable() gives everything back to Shell. If a future Shell
-// renames what a patch relies on, that patch is skipped: the stylesheet
-// still applies, but that one value stays Shell's (the workspace wallpaper
-// its 30px corners, app icons Shell's size).
+// disable() gives everything back to Shell. If a future Shell renames what a
+// patch relies on, that patch is skipped: that one value stays Shell's (the
+// workspace wallpaper its 30px corners, app icons Shell's size).
 import St from 'gi://St';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
@@ -31,10 +37,17 @@ export default class DuskExtension extends Extension {
         this._appGrid = null;
         this._searchGrid = null;
         this._searchIcons = new Map();
+        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+        this._themeChangedId = null;
+        this._applyingTheme = false;
+        this._powerMode = null;
         try {
+            // First: the others read their values from the theme.
+            this._loadTheme();
             this._patchWorkspaceBackgrounds();
             this._patchAppGridIconSize();
             this._patchSearchIcons();
+            this._hidePowerModeIcon();
         } catch (e) {
             // Shell never calls disable() after enable() throws: give back
             // whatever was patched already.
@@ -44,6 +57,13 @@ export default class DuskExtension extends Extension {
     }
 
     disable() {
+        if (this._themeChangedId) {
+            this._themeContext.disconnect(this._themeChangedId);
+            this._themeChangedId = null;
+        }
+        // Shell's own theme again (keeping the extensions' stylesheets).
+        Main.loadTheme();
+
         this._injections.clear();
         this._injections = null;
 
@@ -71,6 +91,75 @@ export default class DuskExtension extends Extension {
             result.icon.setIconSize(Main.defaultIconSize);
         }
         this._searchIcons = null;
+
+        if (this._powerMode) {
+            const {indicators, handlerId, icon, index} = this._powerMode;
+            indicators.disconnect(handlerId);
+            if (icon)
+                indicators.insert_child_at_index(icon, index);
+            this._powerMode = null;
+        }
+    }
+
+    // Exception 4: the power mode's icon off the top bar. Shell adds its
+    // indicators some time after it starts, so this also watches for it.
+    _hidePowerModeIcon() {
+        const quickSettings = Main.panel.statusArea.quickSettings;
+        const indicators = quickSettings?._indicators;
+        if (!indicators)
+            return;
+        const hide = () => {
+            const icon = quickSettings._powerProfiles;
+            if (icon?.get_parent() !== indicators)
+                return;
+            this._powerMode.icon = icon;
+            this._powerMode.index = indicators.get_children().indexOf(icon);
+            indicators.remove_child(icon);
+        };
+        this._powerMode = {indicators, handlerId: indicators.connect('child-added', hide)};
+        hide();
+    }
+
+    // Exception 3: dusk's theme in the base slot of Shell's theme, and back
+    // there whenever Shell rebuilds its theme.
+    _loadTheme() {
+        this._applyTheme();
+        this._themeChangedId = this._themeContext.connect('changed', () => this._applyTheme());
+    }
+
+    // dusk's theme file for the current variant. Shell only follows dark/light
+    // in the primary session mode: the lock screen can report dark for a light
+    // desktop, and keeps the desktop's stylesheet, so dusk keeps its variant.
+    _themeFile(current) {
+        const variant = !Main.sessionMode.isPrimary &&
+            current.default_stylesheet?.get_basename().match(/-(dark|light)\.css$/)?.[1];
+        return this.dir.get_child('theme').get_child(`dusk-${variant || Main.getStyleVariant()}.css`);
+    }
+
+    // Puts dusk's theme in the base slot, alone (nothing on top), keeping the
+    // other extensions' stylesheets, unless it's there already. Setting the
+    // theme emits `changed` again, which finds it there. Without a built
+    // theme file Shell keeps its own (stock Ubuntu, not a blank Shell).
+    _applyTheme() {
+        if (this._applyingTheme)
+            return;
+        const current = this._themeContext.get_theme();
+        const file = this._themeFile(current);
+        if (current.default_stylesheet?.equal(file) && !current.application_stylesheet)
+            return;
+        if (!file.query_exists(null)) {
+            console.warn(`dusk: ${file.get_path()} is missing; run build.sh`);
+            return;
+        }
+        this._applyingTheme = true;
+        try {
+            const theme = new St.Theme({default_stylesheet: file});
+            for (const stylesheet of current.get_custom_stylesheets())
+                theme.load_stylesheet(stylesheet);
+            this._themeContext.set_theme(theme);
+        } finally {
+            this._applyingTheme = false;
+        }
     }
 
     // Exception 1: the overview's workspace wallpaper follows the

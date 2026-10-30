@@ -1,6 +1,6 @@
 # Ubuntu Dock (docs/inventory-shell.md, "Ubuntu Dock"), in Yaru's source order.
-# Same format as chunk-a.selectors. The dock probe run (bottom, not extended,
-# shrink) shows the un-marked ones.
+# One selector per line, exactly as Yaru writes it. The dock probe run (bottom,
+# not extended, shrink) shows the un-marked ones; a leading "~" marks the rest.
 ~#dashtodockContainer.right .dash-item-container .overview-tile
 ~#dashtodockContainer.right .dash-item-container .grid-search-result
 ~#dashtodockContainer.left .dash-item-container .overview-tile

@@ -123,8 +123,25 @@ if [ -L "$ext_dir" ]; then
 fi
 ensure_dir "$ext_dir"
 for f in "$REPO"/extension/*; do
-  link "$ext_dir/$(basename "$f")" "$f"
+  if [ -d "$f" ]; then
+    # theme/ the same way: a real folder of links to its files.
+    ensure_dir "$ext_dir/$(basename "$f")"
+    for g in "$f"/*; do
+      link "$ext_dir/$(basename "$f")/$(basename "$g")" "$g"
+    done
+  else
+    link "$ext_dir/$(basename "$f")" "$f"
+  fi
 done
+# Links an earlier install made to files the repo no longer has (the
+# extension stylesheets, before dusk had its own theme) go: Shell would try
+# to load a stylesheet left in the extension's folder.
+while IFS=$'\t' read -r kind a _; do
+  if [ "$kind" = link ] && [ -L "$a" ] && [ ! -e "$a" ] && ours "$a"; then
+    rm "$a"
+    unrecord link "$a"
+  fi
+done < <(grep '^link' "$STATE" || true)
 
 # Flatpak apps can read our gtk.css only if the config folders and the
 # symlinks' real target (build/) are exposed to them.

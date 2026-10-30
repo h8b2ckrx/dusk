@@ -172,7 +172,7 @@ Each gets checked in LG; any that don't use `.panel-button` get a rule with `top
   is a separate Shell that never loads dusk.
 - ~~Lock screen~~: brought in by the owner after Task 12 (decision 21). dusk mirrors Yaru's
   lock-screen rules (`.unlock-dialog …`, `#panel.unlock-screen …`, the `.login-dialog-button`
-  buttons the password prompt shares, the screen-time shield) at the end of `src/shell.scss`,
+  buttons the password prompt shares, the screen-time shield) in Yaru's own rules, now in `src/shell-theme/yaru`,
   each on the token of its normal counterpart (entry, button, icon button, top bar item,
   notification, menu item, OSD label; the count badge stays round).
 - ~~Ubuntu Dock's own styling~~: brought in by the owner during Task 8, see "Ubuntu Dock" below.

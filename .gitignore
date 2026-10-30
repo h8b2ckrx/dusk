@@ -1,3 +1,4 @@
 build/
 extension/stylesheet-*.css
 __pycache__/
+extension/theme/

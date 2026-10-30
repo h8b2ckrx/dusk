@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# Compiles src/ into the four CSS files dusk installs:
+# Compiles src/ into the CSS files dusk installs:
 #   build/gtk4.css, build/gtk3.css,
-#   extension/stylesheet-dark.css, extension/stylesheet-light.css
+#   extension/theme/dusk-dark.css, extension/theme/dusk-light.css (dusk's
+#   Shell theme, with the images it uses)
 # Set SASSC to use a different sassc binary.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -29,8 +30,21 @@ compile() {
   echo "$2"
 }
 
-mkdir -p build extension
+# compile_shell_theme MODE: dusk's Shell theme (design 2026-10-30) from the
+# Yaru copy in src/shell-theme/yaru, to extension/theme/dusk-MODE.css
+# (tools/build-shell-theme.sh).
+compile_shell_theme() {
+  tools/build-shell-theme.sh src/shell-theme/yaru "$1" "extension/theme/dusk-$1.css"
+  echo "extension/theme/dusk-$1.css"
+}
+
+mkdir -p build extension extension/theme
 compile src/gtk4.scss build/gtk4.css
 compile src/gtk3.scss build/gtk3.css
-compile src/shell-dark.scss extension/stylesheet-dark.css
-compile src/shell-light.scss extension/stylesheet-light.css
+# Shell would load an extension stylesheet left from an older build on top
+# of dusk's theme.
+rm -f extension/stylesheet-dark.css extension/stylesheet-light.css
+compile_shell_theme dark
+compile_shell_theme light
+# The images the theme uses, next to it.
+cp src/shell-theme/yaru/{calendar-today,calendar-today-light,gnome-shell-start,workspace-placeholder}.svg extension/theme/

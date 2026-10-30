@@ -1,13 +1,15 @@
 # dusk
 
-A small personal override layer for Ubuntu 26.04 (GNOME Shell 50, Wayland). It controls corner
-radius everywhere: GNOME Shell, libadwaita (GTK4) apps and GTK3 apps. Shell dialogs keep 26.04's own
-layout, and Shell's pop-ups take Ubuntu 24.04's colors. Everything else stays stock Yaru.
+A small personal GNOME theme for Ubuntu 26.04 (GNOME Shell 50, Wayland). dusk is its own complete
+Shell theme, and it controls corner radius everywhere: GNOME Shell, libadwaita (GTK4) apps and GTK3
+apps. Shell dialogs keep 26.04's own layout, Shell's pop-ups take Ubuntu 24.04's colors, and the top
+bar is see-through with a pill behind each button. GTK apps otherwise stay stock Yaru.
 
-One file, [src/_tokens.scss](src/_tokens.scss), holds every value. Change a token, run
-`./install.sh`, and the Shell and every GTK app follow.
+One file, [src/_tokens.scss](src/_tokens.scss), holds every corner and the top bar's values. Change a
+token, run `./install.sh && tools/shell-reload.sh`, and the Shell and every GTK app follow.
 
-- Design: [docs/2026-10-28-dusk-design.md](docs/2026-10-28-dusk-design.md)
+- Design: [docs/2026-10-28-dusk-design.md](docs/2026-10-28-dusk-design.md), and for the Shell theme
+  [docs/2026-10-30-dusk-shell-theme-design.md](docs/2026-10-30-dusk-shell-theme-design.md)
 - Plan: [docs/2026-10-28-dusk-plan.md](docs/2026-10-28-dusk-plan.md)
 - Inventories: [Shell](docs/inventory-shell.md) · [GTK4](docs/inventory-gtk4.md) · [GTK3](docs/inventory-gtk3.md)
 
@@ -15,47 +17,55 @@ One file, [src/_tokens.scss](src/_tokens.scss), holds every value. Change a toke
 
 | Layer | Hook | dusk's file |
 |---|---|---|
-| GNOME Shell (and the lock screen) | the `dusk@local` extension's stylesheet, loaded by Shell | `extension/stylesheet-dark.css` / `-light.css` (linked file by file into `~/.local/share/gnome-shell/extensions/dusk@local/`) |
+| GNOME Shell (and the lock screen) | the `dusk@local` extension puts dusk's theme in Shell's base slot, in Yaru's place | `extension/theme/dusk-dark.css` / `-light.css` |
 | GTK4 / libadwaita apps | `~/.config/gtk-4.0/gtk.css` | `build/gtk4.css` |
 | GTK3 apps | `~/.config/gtk-3.0/gtk.css` | `build/gtk3.css` |
 
-All three beat the stock theme outright: an extension stylesheet beats Shell's theme, and a user
-`gtk.css` beats the GTK theme, whatever the selectors' specificity. So a general rule of dusk's
-would also erase the theme's deliberate special cases, like square inner corners in linked button
-groups. dusk therefore:
+**Shell:** dusk's theme is built from a copy of Yaru 26.04's Sass source, in
+[src/shell-theme/](src/shell-theme/README.md), and it replaces Yaru: Yaru isn't loaded, so nothing
+overrides anything and no Yaru update can change the look. Every change dusk makes is in the copy,
+where the value is defined, marked `// dusk:`. Ubuntu's session names Yaru as Shell's base theme, so
+the extension swaps dusk's in as it starts, and again whenever Shell rebuilds its theme (dark/light,
+High Contrast). It doesn't need the User Themes extension, and other extensions' stylesheets keep
+working on top.
 
-- **Shell:** repeats Yaru's own selectors, and re-asserts Yaru's special cases next to any rule
-  that would erase them.
-- **GTK4 and GTK3:** mirrors **every** stock radius rule, in the stock order, with values from
-  tokens, square ones included. These rules are generated from the inventories.
+**GTK4 and GTK3:** a user `gtk.css` beats the GTK theme outright, whatever the selectors'
+specificity, so a general rule of dusk's would also erase the theme's deliberate special cases, like
+square inner corners in linked button groups. dusk therefore mirrors **every** stock radius rule, in
+the stock order, with values from tokens, square ones included. These rules are generated from the
+inventories.
 
-**Two small code exceptions** live in [extension/extension.js](extension/extension.js). They're
+**Four small code exceptions** live in [extension/extension.js](extension/extension.js). They're
 the only things CSS can't do in Shell 50:
 
 1. the overview's workspace corners (Shell clips them at 30px in code);
 2. the app icon size in the app grid and in search results (Shell picks 64px in code; dusk uses
-   `$app-grid-icon-size`, 96px).
+   `$app-grid-icon-size`, 96px);
+3. loading dusk's theme in Yaru's place;
+4. taking the power mode's icon off the top bar (its control stays in Quick Settings' menu).
 
-Each just makes Shell honour the stylesheet's value, and `disable()` gives Shell its own values back.
+`disable()` gives Shell its own behaviour back.
 
 ## Files
 
 | Path | What it does |
 |---|---|
-| `src/_tokens.scss` | the radius scale, every element radius, spacing and colors (null = stock) |
+| `src/_tokens.scss` | the radius scale, every element radius, spacing, the top bar's values and app colors (null = stock) |
 | `src/_lib.scss` | `token()` lookup (a typo stops the build), `color-vars()` |
-| `src/shell.scss` | Shell rules; `shell-dark.scss` / `shell-light.scss` compile it per style |
+| `src/shell-theme/` | dusk's Shell theme: the copy of Yaru's source, with dusk's edits marked `// dusk:` ([README](src/shell-theme/README.md)) |
 | `src/gtk4.scss`, `src/gtk3.scss` | app layers: `--window-radius`, color hooks, GTK3 title bar buttons |
 | `src/_gtk4-radius.scss`, `src/_gtk3-radius.scss` | **generated** mirrors of the stock radius rules; don't edit by hand |
-| `build.sh` | compiles `src/` into `build/gtk4.css`, `build/gtk3.css` and the extension's stylesheets |
+| `build.sh` | compiles `src/` into `build/gtk4.css`, `build/gtk3.css` and the extension's `theme/` folder |
 | `install.sh`, `uninstall.sh` | link / unlink the outputs, with backups and a state file |
-| `extension/` | the `dusk@local` extension: metadata, `extension.js` (the two exceptions), compiled stylesheets |
-| `docs/inventory-*.md` / `.tsv` | the approved radius tables; the `.tsv` files map every stock rule to a token |
+| `extension/` | the `dusk@local` extension: metadata, `extension.js` (the four exceptions), the compiled theme |
+| `docs/inventory-*.md` / `.tsv` | the approved radius tables; the GTK `.tsv` files map every stock rule to a token |
 | `tools/radius-inventory.py` | lists the radius of every selector in a stock stylesheet |
 | `tools/mirror-radius.py` | turns an inventory `.tsv` into the generated `src/_*-radius.scss` |
-| `tools/shell-reload.sh` | reloads the Shell stylesheet, checks Shell's log and that dusk is ACTIVE |
-| `tools/shell-color-inventory.sh` and the other `color-*`/`mirror-colors` tools | the Shell pop-up colors: inventory, its doc, the generated rules and values |
+| `tools/build-shell-theme.sh` | compiles the copy into a Shell stylesheet, the way Yaru's own build does |
+| `tools/yaru-shell-source.sh` | fetches Yaru's Shell source, for a new copy |
+| `tools/shell-reload.sh` | reloads the Shell theme, checks Shell's log and that dusk is ACTIVE |
 | `tools/yaru-2404-shell.sh`, `docs/reference/` | Yaru 24.04's Shell stylesheets, compiled from source, that the colors follow |
+| `tests/golden/` | the recorded Shell look the theme has to reproduce, and the deliberate changes from it (`exceptions.tsv`) |
 | `tools/check_gtk_css.py` | loads a CSS file in GTK 3 or 4 and fails on parse errors |
 | `tools/headless-probe.sh` | throwaway headless Shell (isolated from your desktop) that measures and screenshots the Shell |
 | `tools/headless-gtk.sh` | the same for real GTK4 widgets (libadwaita, and plain GTK4) |
@@ -100,29 +110,11 @@ corners install **Rounded Window Corners Reborn** (see below).
    Title bars of X11 apps (e.g. VLC) come from a Mutter helper that starts at login, and a
    change to `extension/extension.js` needs one too: log out and back in.
 
-**Shell pop-up colors** (decision 22) are Yaru 24.04's, generated from the color inventory, not
-hand-set tokens. Switch a chunk off or on with `$shell-color-chunks` in `src/_tokens.scss` (1 menus
-and quick settings, 2 notifications and the date menu, 3 dialogs, OSDs, Alt+Tab, tooltips and the
-screenshot panel). To change which 24.04 color a new-in-26.04 part gets, edit the palette files
-`docs/inventory-shell-colors-palette-{dark,light}.tsv` (the colors 24.04 drew in pictures, like its
-switches: `docs/inventory-shell-colors-images-{dark,light}.tsv`; 24.04 rules brought back, and stock
-rules kept: `ADD` and `KEEP` in `tools/shell-color-inventory.sh`) and regenerate:
-
-```bash
-tools/shell-color-inventory.sh > docs/inventory-shell-colors.tsv
-```
-
-```bash
-tools/color-inventory-doc.py docs/inventory-shell-colors.tsv > docs/inventory-shell-colors.md
-```
-
-```bash
-tools/mirror-colors.py docs/inventory-shell-colors.tsv rules > src/_shell-colors.scss
-```
-
-```bash
-tools/mirror-colors.py docs/inventory-shell-colors.tsv values > src/_shell-color-values.scss
-```
+**Shell colors** aren't tokens: they live where the theme defines them, in
+[src/shell-theme/yaru/](src/shell-theme/yaru). The pop-ups' colors are Yaru 24.04's (decision 22), in
+`upstream/gnome-shell-sass/_colors.scss` and the widget files; the `$yaru_*` colors there are 26.04's
+own, for what stays as stock (the lock screen, the on-screen keyboard, the dock). Search for
+`// dusk:` to see every change. The top bar's pills are tokens (`$topbar-pill-*`, one set per mode).
 
 Check that dusk is running at any time:
 
@@ -137,8 +129,8 @@ It should show `State: ACTIVE`.
 1. Find the element's selector (below).
 2. Add a token to `src/_tokens.scss`.
 3. Add a rule with a `//` comment saying what it targets:
-   - **Shell:** in `src/shell.scss`, using Yaru's exact selector. Run `tests/run.sh keeps_yaru` to
-     catch any Yaru special case your rule would erase.
+   - **Shell:** edit the rule where it's defined in `src/shell-theme/yaru/`, and mark the line
+     `// dusk:`.
    - **Apps:** change the token column for that row in `docs/inventory-gtk4.tsv` or
      `docs/inventory-gtk3.tsv`, then regenerate:
 
@@ -152,7 +144,7 @@ It should show `State: ACTIVE`.
      the app.
 4. Run `tests/run.sh`.
 
-Rule files may only contain tokens (and `0`): the lint test enforces it.
+The GTK rule files may only contain tokens (and `0`): the lint test enforces it.
 
 ## Finding selectors
 
@@ -182,18 +174,15 @@ recognises its own old links and replaces them.
 
 ## Updating after a GNOME, Yaru or libadwaita update
 
-Most updates change nothing. After an Ubuntu upgrade (e.g. 26.10):
+Most updates change nothing, and a Yaru update never changes the Shell: dusk's theme doesn't read
+the installed Yaru. After an Ubuntu upgrade (e.g. 26.10):
 
 1. Run `tests/run.sh`. The `inventory_matches_installed` tests list every GTK rule that changed
    in the installed stylesheets, and the live checks show what moved in Shell and apps.
-2. **Shell:** for a new GNOME version, add it to `shell-version` in `extension/metadata.json`.
-   Re-run the inventory on the new Yaru stylesheet and compare it with `docs/inventory-shell.md`:
-
-   ```bash
-   gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > /tmp/yaru-shell.css
-   tools/radius-inventory.py /tmp/yaru-shell.css
-   ```
-
+2. **Shell:** for a new GNOME version, add it to `shell-version` in `extension/metadata.json`, set
+   the new Yaru tag in `tools/yaru-shell-source.sh`, and run it on an empty folder (it clears the
+   one it's given). Bring dusk's marked edits over to that copy (`git log -p src/shell-theme/yaru`
+   shows every one). Run the theme checks: `tests/golden/` shows what moved.
 3. **GTK4:** find the stylesheet with `gresource list /usr/lib/x86_64-linux-gnu/libadwaita-1.so.0`
    and extract `/org/gnome/Adwaita/styles/default-dark-yaru-<accent>.css`. Run
    `tools/radius-inventory.py` on it with the options listed at the top of
@@ -202,11 +191,7 @@ Most updates change nothing. After an Ubuntu upgrade (e.g. 26.10):
    regenerate `src/_gtk4-radius.scss`.
 4. **GTK3:** the same, with `gresource list /usr/share/themes/<your theme>/gtk-3.0/gtk.gresource`,
    `docs/inventory-gtk3.md` and `docs/inventory-gtk3.tsv`.
-5. **Shell colors:** `test_color_inventory_matches_installed_yaru` lists the color rules that
-   changed. Regenerate the inventory and its outputs (the four commands under "Changing a value"),
-   and look at any new `derived` rows in `docs/inventory-shell-colors.md`. The 24.04 reference
-   (`docs/reference/`) never changes; `tools/yaru-2404-shell.sh` rebuilds it from the source.
-6. Run `tests/run.sh` again, then `./install.sh && tools/shell-reload.sh`.
+5. Run `tests/run.sh` again, then `./install.sh && tools/shell-reload.sh`.
 
 ## Bottom window corners
 
@@ -231,6 +216,12 @@ extension.
 - **The login screen** (after power-on or logging out) stays stock Yaru. It's a separate Shell
   run by the system before anyone logs in, and it never loads dusk. The lock screen does
   follow dusk.
+- **High Contrast** doesn't get a theme of its own: dusk's normal theme stays on.
+- **Blur:** dusk adds none. Blur my Shell isn't needed for the top bar any more, and turning its
+  top bar style on draws its own pills over dusk's.
+- **Colored tray icons:** an app's own picture in the top bar (Telegram's, Claude's) keeps its
+  colors, so a white one has little contrast on a light-mode pill. The theme can't recolor it.
+- **Screen recording and sharing indicators** keep their red and orange, not a pill.
 - **Switch tracks** stay pills, by choice; every other pill is squared.
 - **Plain GTK4 apps** (GTK4 without libadwaita, like Mutter's title bars for X11 apps) use
   Yaru's separate `gtk-4.0` stylesheet. dusk's GTK4 rules are mirrored from libadwaita's, which

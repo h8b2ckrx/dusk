@@ -202,8 +202,28 @@ Success looks like:
     style is on; with it off, the kept stock rules apply (the search entry
     stays readable in light mode). A Blur my Shell update that changes those
     colors fails `test_blur_my_shell_entries_keep_its_look`.
+    (Retired by decision 26: dusk's theme copies nothing of Blur my Shell.)
+26. dusk's own Shell theme (owner, 2026-10-30), replacing the extension
+    stylesheet: dusk's theme is built from a copy of Yaru 26.04's Sass source
+    and loaded in Shell's base slot, in Yaru's place, so nothing overrides
+    anything and Yaru's updates can't reach it. Decisions 22 to 25 are now
+    made in that source. dusk also draws the top bar itself: see-through, a
+    pill behind each button, black in dark mode and the light pop-ups' colors
+    in light mode, the same on hover, none on the lock screen, so Blur my
+    Shell isn't needed. The theme loader is a third JS exception. Design:
+    [2026-10-30-dusk-shell-theme-design.md](2026-10-30-dusk-shell-theme-design.md).
+    In the overview, which is dark in both modes, the pills take the search
+    box's color (owner, same day).
+27. The power mode's icon off the top bar (owner, 2026-10-30): Quick Settings
+    shows it beside Wi-Fi, Bluetooth, sound and battery whenever the mode
+    isn't Balanced. CSS can't remove an actor, so `extension.js` takes it out
+    of Quick Settings' indicator box, a fourth JS exception, and `disable()`
+    puts it back. The power mode control stays in Quick Settings' menu.
 
 ## 5. Architecture
+
+> **Shell row superseded by decision 26 (2026-10-30):** dusk's Shell theme now sits in Shell's base
+> slot, in Yaru's place, and the extension's stylesheets described in this section are gone.
 
 Three layers. Each one overrides stock styling through its official hook.
 
@@ -386,13 +406,11 @@ New tokens join `_tokens.scss` with their layer.
 ### 7.2 Colors
 
 - **Shell pop-ups (decision 22):** Yaru 24.04's colors, in dark and light, for every floating
-  surface except what Blur my Shell styles. They're generated from
-  [inventory-shell-colors.tsv](inventory-shell-colors.tsv), not hand-set tokens; chunks switch on
-  in `src/_tokens.scss` (`$shell-color-chunks`). Design and details:
+  surface, set where dusk's theme defines them (decision 26). Design and details:
   [2026-10-29-dusk-shell-colors-design.md](2026-10-29-dusk-shell-colors-design.md).
 - **Apps:** tokens map one-to-one onto libadwaita's color variables. Every one is unset (an unset
   token emits no rule, so the stock Yaru color shows).
-- Accent and top bar colors have no tokens at all (non-goals).
+- The accent has no token (a non-goal). The top bar's pills do (decision 26).
 
 ### 7.3 Spacing
 
@@ -406,7 +424,7 @@ spacing went with decision 23.
   src/_tokens.scss     # single source of truth: radius scale, element radii, colors, spacing
   src/gtk4.scss        # libadwaita overrides
   src/gtk3.scss        # Yaru GTK3 overrides
-  src/shell.scss       # Shell overrides incl. modal dialogs
+  src/shell-theme/     # dusk's Shell theme: a copy of Yaru's source with dusk's edits (decision 26)
   extension/           # metadata.json, extension.js (three approved exceptions, §4.15–16, §4.20), compiled stylesheet-dark.css / stylesheet-light.css
   build/               # compiled gtk4.css / gtk3.css (gitignored)
   docs/                # this design doc

@@ -18,7 +18,8 @@ from tokens import token_values
 t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dialog", "dialog-button"]).items()}
 results = json.load(open(sys.argv[3]))
 for key in ("workspace", "workspace-disabled", "app-grid", "app-grid-disabled", "lock",
-            "search", "search-disabled", "search-on-screen-disabled", "search-reenabled", "search-after-dnd", "clock-indicator"):
+            "search", "search-disabled", "search-on-screen-disabled", "search-reenabled", "search-after-dnd", "clock-indicator",
+            "theme"):
     results.pop(key, None)  # checked by their own tests
 assert set(results) == {"1", "2", "3", "logout", "poweroff", "logout-disabled"}, results.keys()
 assert results.pop("logout-disabled")["spacing"] == 12, "Shell's gap changed with dusk disabled"
@@ -35,41 +36,6 @@ for n, r in results.items():
 EOF
 }
 
-# probe_dir SCHEME [dock]: a finished probe run for the current code, reused
-# across tests while src/, extension/, tests/headless/, the probe tool and the
-# installed system (stock_key) are unchanged.
-# "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
-# extended, shrink); "accent" picks the blue accent instead of slate; "blur"
-# loads Blur my Shell with its Contrasted top bar (dark pills behind the top
-# bar's items).
-probe_dir() {
-  local key out variant="${2:-}"
-  key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
-    ! -name 'stylesheet-*.css' -print0 | sort -z | xargs -0 sha1sum; stock_key; } \
-    | sha1sum | cut -c1-16)
-  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
-  if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
-    local extra="" settings=""
-    if [ "$variant" = accent ]; then
-      settings="org.gnome.desktop.interface accent-color blue"
-    fi
-    if [ "$variant" = blur ]; then
-      extra=blur-my-shell@aunetx
-      settings="org.gnome.shell.extensions.blur-my-shell.panel style-panel 3"
-    fi
-    if [ "$variant" = dock ]; then
-      extra=ubuntu-dock@ubuntu.com
-      settings="org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM"
-      settings+=";org.gnome.shell.extensions.dash-to-dock extend-height false"
-      settings+=";org.gnome.shell.extensions.dash-to-dock custom-theme-shrink true"
-    fi
-    DUSK_EXTRA_EXTENSIONS="$extra" DUSK_GSETTINGS="$settings" \
-      "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
-      || fail "headless probe failed ($1 $variant): $(cat "$out/error.txt" 2> /dev/null)"
-  fi
-  echo "$out"
-}
-
 test_headless_dark_dialogs_stock_layout() {
   check_stock_dialogs "$(probe_dir dark)" || fail "dark dialogs aren't 26.04's layout"
 }
@@ -78,46 +44,12 @@ test_headless_light_dialogs_stock_layout() {
   check_stock_dialogs "$(probe_dir light)" || fail "light dialogs aren't 26.04's layout"
 }
 
-# The stylesheet Shell loads for Yaru (dark), extracted for the cascade check.
-yaru_dark_css() {
-  local css; css=$(mktemp --suffix=.css)
-  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
-    /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$css"
-  echo "$css"
-}
-
-# The light one (Shell loads it in light mode).
-yaru_light_css() {
-  local css; css=$(mktemp --suffix=.css)
-  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
-    /org/gnome/shell/theme/Yaru/gnome-shell.css > "$css"
-  echo "$css"
-}
-
-# In every probed UI state, each widget's computed radius is what Yaru plus
-# our stylesheet predict (so our rules take effect where they should), and
-# every chunk selector expected on screen matches a real element.
+# In every probed UI state, each widget's computed radius is what dusk's
+# theme alone predicts (it's the only stylesheet in Shell's base slot).
 test_headless_shell_radii_match_stylesheets() {
   local out; out=$(probe_dir dark)
-  local yaru; yaru=$(yaru_dark_css)
-  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$yaru" \
-    "$REPO/extension/stylesheet-dark.css" || fail "computed radii differ from the stylesheets"
-  # Our stylesheet beats Yaru's outright, so a general rule of ours must not
-  # erase one of Yaru's more specific special cases: re-assert those instead.
-  "$REPO/tests/headless/cascade.py" clobbered "$out/snapshots.json" "$yaru" \
-    "$REPO/extension/stylesheet-dark.css" || fail "our rules override Yaru special cases"
-  # An element with several classes keeps the meaning stock gave it, unless
-  # the drift was reviewed (listed here with the reason).
-  "$REPO/tests/headless/cascade.py" drift "$out/snapshots.json" "$yaru" \
-    "$REPO/extension/stylesheet-dark.css" \
-    '.popup-menu-content=>.quick-settings' \
-    || fail "elements changed which rule decides their radius"
-  # Allowed above: the quick settings panel is also a menu; it has its own
-  # approved token (docs/inventory-shell.md, chunk A).
-  local selectors=()
-  mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO"/tests/headless/chunk-*.selectors)
-  "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
-    || fail "selectors not found on screen"
+  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$(theme_css dark)" "$(empty_css)" \
+    || fail "computed radii differ from dusk's theme"
 }
 
 # The overview's workspace wallpaper is clipped at a radius Shell sets in code
@@ -125,7 +57,7 @@ test_headless_shell_radii_match_stylesheets() {
 # stylesheet, and gives Shell's back on disable. Measured on the real clip.
 test_headless_workspace_corners_follow_stylesheet() {
   local out; out=$(probe_dir dark)
-  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF' || fail "workspace corners don't follow the stylesheet"
+  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF' || fail "workspace corners don't follow the stylesheet"
 import json, re, sys
 results = json.load(open(sys.argv[1]))
 css = open(sys.argv[2]).read()
@@ -142,27 +74,26 @@ EOF
 }
 
 # Ubuntu Dock's corners follow the theme (design decision 17). With the dock
-# laid out like the owner's, Shell's computed radii match Yaru plus our
-# stylesheet (in the Ubuntu session the dock's own stylesheet is empty), the
+# laid out like the owner's, Shell's computed radii match dusk's theme (in the
+# Ubuntu session the dock's own stylesheet is empty), the
 # dock selectors expected on screen are there, and the background and the
 # icon highlight carry our dock tokens.
 test_headless_dock_follows_tokens() {
   local out; out=$(probe_dir dark dock)
-  local yaru; yaru=$(yaru_dark_css)
-  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$yaru" \
-    "$REPO/extension/stylesheet-dark.css" || fail "dock radii differ from the stylesheets"
+  "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$(theme_css dark)" "$(empty_css)" \
+    || fail "dock radii differ from dusk's theme"
   local selectors=()
   mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO/tests/headless/dock.selectors")
   "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
     || fail "dock selectors not found on screen"
-  python3 - "$out/snapshots.json" "$REPO/extension/stylesheet-dark.css" <<'EOF' || fail "dock tokens not applied"
-import json, re, sys
-css = open(sys.argv[2]).read()
-def px(selector):
-    return int(re.search(re.escape(selector) + r"[^{]*\{[^}]*?border-radius: (\d+)px", css).group(1))
-dock = px("#dashtodockContainer.bottom.shrink #dash .dash-background")
-item = px("#dashtodockContainer.bottom .dash-item-container .overview-tile .overview-icon")
-recs = json.load(open(sys.argv[1]))["desktop"]
+  python3 - "$REPO" "${SASSC:-sassc}" "$out/snapshots.json" <<'EOF' || fail "dock tokens not applied"
+import json, sys
+repo, sassc = sys.argv[1], sys.argv[2]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dock", "dock-item"]).items()}
+dock, item = t["dock"], t["dock-item"]
+recs = json.load(open(sys.argv[3]))["desktop"]
 def under_dock(i):
     while i >= 0:
         if recs[i]["id"] == "dashtodockContainer":
@@ -183,7 +114,7 @@ EOF
 # own size back.
 test_headless_app_grid_icons_follow_stylesheet() {
   local out; out=$(probe_dir dark)
-  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF'
 import json, re, sys
 results = json.load(open(sys.argv[1]))
 css = open(sys.argv[2]).read()
@@ -207,7 +138,7 @@ EOF
 
 # The lock screen follows dusk (decision 21): dusk stays on in Shell's
 # lock-screen session mode, and the unlock dialog, its password prompt and
-# the locked top bar get Yaru plus our stylesheet. The probe shows them
+# the locked top bar get dusk's theme. The probe shows them
 # without locking for real (see tests/headless/dusk-probe@local).
 test_headless_lock_screen_follows_tokens() {
   local out; out=$(probe_dir dark)
@@ -230,7 +161,7 @@ EOF
 # kept.
 test_headless_search_icons_follow_stylesheet() {
   local out; out=$(probe_dir dark)
-  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF'
 import json, re, sys
 results = json.load(open(sys.argv[1]))
 want = int(re.search(r"-dusk-app-icon-size: (\d+)px", open(sys.argv[2]).read()).group(1))
@@ -261,7 +192,7 @@ EOF
 # changes (seen live: back at 64px after a Do Not Disturb toggle).
 test_headless_search_icons_survive_ubuntu_dock() {
   local out; out=$(probe_dir dark dock)
-  python3 - "$out/result.json" "$REPO/extension/stylesheet-dark.css" <<'EOF'
+  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF'
 import json, re, sys
 results = json.load(open(sys.argv[1]))
 want = int(re.search(r"-dusk-app-icon-size: (\d+)px", open(sys.argv[2]).read()).group(1))
@@ -275,19 +206,13 @@ sys.exit(1 if bad else 0)
 EOF
 }
 
-# The notification indicator (a bell, shown for unseen notifications) next to
-# the top bar clock. Blur my Shell's Contrasted top bar gives it a pill of its
-# own, round and padded so far that its 16px icon shrank to 10px (seen live).
-# Its pill has the clock's corners and height, and room for the whole icon.
+# The bell beside the clock (decision 24) is a pill of its own, with the clock's
+# corners, height and color, and room for its whole 16px icon.
 test_headless_clock_indicator_matches_clock() {
-  local blur
-  for blur in "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx" \
-      /usr/share/gnome-shell/extensions/blur-my-shell@aunetx; do
-    [ -d "$blur" ] && break
-  done
-  [ -d "$blur" ] || fail "Blur my Shell isn't installed; this test checks the bell in its Contrasted top bar"
-  local out; out=$(probe_dir dark blur)
-  python3 - "$out/result.json" <<'EOF'
+  local mode out
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    python3 - "$out/result.json" <<'EOF' || fail "$mode"
 import json, sys
 found = json.load(open(sys.argv[1])).get("clock-indicator")
 if not found or "indicator" not in found:
@@ -298,26 +223,115 @@ if bell["radius"] != clock["radius"]:
     bad.append(f"corners {bell['radius']}px, the clock's are {clock['radius']}px")
 if bell["h"] != clock["h"]:
     bad.append(f"pill {bell['h']}px tall, the clock's is {clock['h']}px")
+if bell["background"] != clock["background"]:
+    bad.append(f"pill {bell['background']}, the clock's is {clock['background']}")
 if min(bell["content"]["w"], bell["content"]["h"]) < round(bell["iconSize"]):
     bad.append(f"room for the icon {bell['content']}, the icon is {round(bell['iconSize'])}px")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 EOF
+  done
 }
 
-# On every probed widget whose background or border one of the inventory's
-# rows with a 24.04 value of its own decides (same, unset, added), in dark
-# and light, Yaru 24.04's own cascade gives that widget the same color
-# (final review: notification banners kept the message list's color, and a
-# menu item under the pointer or pressed didn't get 24.04's).
-test_headless_colors_follow_2404_cascade() {
-  local mode out lines
+# check_topbar MODE: runs the python on stdin with MODE's `snapshots`, `is_panel`
+# (a record is the top bar), PILL and OVERVIEW_PILL (the colors of a top bar pill
+# on the desktop and in the overview), ICON and OVERVIEW_ICON (the color of the
+# icons on them) and RADIUS (its corner) defined.
+check_topbar() {
+  local mode="$1" out; out=$(probe_dir "$mode")
+  python3 - "$out/snapshots.json" "$REPO/tests/headless" <<EOF
+import json, sys
+sys.path.insert(0, sys.argv[2])
+import tokens
+snapshots = json.load(open(sys.argv[1]))
+def is_panel(rec):
+    return rec["id"] == "panel"
+PILL = {"dark": [[0, 0, 0, 204], [255, 255, 255, 255], [0, 0, 0, 0], [255, 255, 255, 7]],
+        "light": [[250, 250, 250, 204], [61, 61, 61, 255], [0, 0, 0, 0], [0, 0, 0, 7]]}["$mode"]
+ICON = {"dark": [242, 242, 242, 255], "light": [61, 61, 61, 255]}["$mode"]
+OVERVIEW_PILL = [[53, 53, 53, 255], [255, 255, 255, 255], [0, 0, 0, 0], [255, 255, 255, 7]]
+OVERVIEW_ICON = [242, 242, 242, 255]
+RADIUS = float(tokens.token_values("$REPO", "sassc", ["topbar-item"])["topbar-item"].removesuffix("px"))
+$(cat)
+EOF
+}
+
+# The top bar itself is see-through, on the desktop and in the overview.
+test_headless_topbar_is_see_through() {
+  local mode
   for mode in dark light; do
-    out=$(probe_dir "$mode")
-    lines=$("$REPO/tests/headless/colors.py" follows "$out/snapshots.json" "$("yaru_${mode}_css")" \
-      "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" "$REPO/docs/inventory-shell-colors.tsv" "$mode") \
-      || fail "$mode: colors that aren't 24.04's:
-$(sed -E 's/^([^:]*): .* (background|border): /\1: \2: /' <<< "$lines" | sort -u | head -12)"
+    check_topbar "$mode" <<'PY' || fail "$mode"
+for state in ("desktop", "overview"):
+    panels = [r for r in snapshots[state] if is_panel(r)]
+    assert panels, f"no top bar in {state}"
+    assert all(r["colors"][0][3] == 0 for r in panels), (state, panels[0]["colors"])
+PY
+  done
+}
+
+# Each top bar button has a pill of its own, the same under the pointer and with
+# its menu open: in the mode's colors on the desktop, and the search box's in
+# the overview, which is dark in both modes. The clock's pill is on its label,
+# the bell's its own, and the icons on them read in the pill's colors.
+test_headless_topbar_buttons_have_pills() {
+  local mode
+  for mode in dark light; do
+    check_topbar "$mode" <<'PY' || fail "$mode"
+bad = []
+for state in ("desktop", "topbar-hover", "quick-settings", "overview", "app-grid", "search"):
+    records = snapshots[state]
+    pill, icon = (OVERVIEW_PILL, OVERVIEW_ICON) if state in ("overview", "app-grid", "search") else (PILL, ICON)
+    buttons = [r for r in records if "panel-button" in r["classes"]]
+    assert len(buttons) > 3, f"{state}: {len(buttons)} top bar buttons"
+    for r in buttons:
+        if "clock-display" in r["classes"]:
+            if r["colors"][0][3] != 0:
+                bad.append(f"{state}: the clock button itself has {r['colors'][0]}")
+        elif r["colors"] != pill or r["radii"][0] != RADIUS:
+            bad.append(f"{state}: {r['types'][0]} {r['colors']} {r['radii']}")
+    for r in records:
+        if "clock" in r["classes"] and (r["colors"] != pill or r["radii"][0] != RADIUS):
+            bad.append(f"{state}: clock {r['colors']} {r['radii']}")
+        if "system-status-icon" in r["classes"] and r["colors"][1] != icon:
+            bad.append(f"{state}: an icon in {r['colors'][1]}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
+  done
+}
+
+# The power mode's icon is off the top bar (owner, 2026-10-30), and comes back
+# when dusk is disabled. Quick Settings' menu keeps the control itself.
+test_headless_topbar_has_no_power_mode_icon() {
+  check_topbar dark <<'PY' || fail "the power mode's icon is in the top bar"
+for state in ("desktop", "overview", "quick-settings"):
+    assert not [r for r in snapshots[state] if "Gjs_status_powerProfiles_Indicator" in r["types"]], state
+PY
+  python3 - "$(probe_dir dark)/result.json" <<'EOF' || fail "disabling dusk doesn't give the icon back"
+import json, sys
+theme = json.load(open(sys.argv[1]))["theme"]
+assert (theme["start"]["powerModeIcon"], theme["disabled"]["powerModeIcon"], theme["reenabled"]["powerModeIcon"]) \
+    == (False, True, False), theme
+EOF
+}
+
+# The lock screen's top bar has no pills, and stays light on the wallpaper in
+# both modes.
+test_headless_lock_screen_topbar_has_no_pills() {
+  local mode
+  for mode in dark light; do
+    check_topbar "$mode" <<'PY' || fail "$mode"
+bad = []
+for r in snapshots["lock-screen"]:
+    if {"panel-button", "clock", "messages-indicator"} & set(r["classes"]):
+        shadow = r["colors"][3]
+        if r["colors"][0][3] != 0 or (shadow and shadow[3] != 0):
+            bad.append(f"{r['types'][0]} {r['colors']}")
+    if {"panel-button", "clock", "system-status-icon"} & set(r["classes"]) and min(r["colors"][1][:3]) < 240:
+        bad.append(f"{r['types'][0]} text {r['colors'][1]}")
+print("\n".join(bad))
+sys.exit(1 if bad else 0)
+PY
   done
 }
 
@@ -340,78 +354,27 @@ EOF
   done
 }
 
-# With Blur my Shell loaded, the overview's search entry shows Blur my
-# Shell's own look (decision 25): Shell's computed colors are what Yaru plus
-# Blur my Shell alone give it, in every probed state it's on screen.
-test_headless_blur_my_shell_search_entry_keeps_its_look() {
-  local out; out=$(probe_dir dark blur)
-  local blur=$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
-  [ -f "$blur/stylesheet.css" ] || blur=/usr/share/gnome-shell/extensions/blur-my-shell@aunetx
-  python3 - "$REPO/tests/headless" "$out/snapshots.json" "$(yaru_dark_css)" "$blur/stylesheet.css" <<'EOF' \
-    || fail "the search entry isn't Blur my Shell's"
-import json, sys
-sys.path.insert(0, sys.argv[1])
-import cascade, colors
-yaru = colors.parse_color_rules(open(sys.argv[3]).read(), origin=0)
-blur = colors.parse_color_rules(open(sys.argv[4]).read(), origin=1)
-names = ["background", "text", "border", "shadow"]
-seen, bad = 0, []
-for state, records in json.load(open(sys.argv[2])).items():
-    want = colors.predict(records, yaru + blur)
-    for i, record in enumerate(records):
-        if "search-entry" not in record["classes"] or not record.get("colors"):
-            continue
-        seen += 1
-        for slot in (0, 1):
-            got = record["colors"][slot]
-            if want[i][slot] is not None and (got is None or any(abs(a - b) > 2 for a, b in zip(got, want[i][slot]))):
-                bad.append(f"{state}: {':'.join(record['pseudo'])} {names[slot]}: Shell {got}, Blur my Shell's {list(want[i][slot])}")
-if not seen:
-    sys.exit("no search entry on screen")
-print("\n".join(bad))
-sys.exit(1 if bad else 0)
-EOF
-}
-
 # In every probed UI state, in dark and light, each widget's computed colors
-# (background, text, border, shadow) are what Yaru plus our stylesheet
-# predict, and no general color rule of ours erases a more specific Yaru one
-# (decision 22; tests/headless/colors.py).
+# (background, text, border, shadow) are what dusk's theme alone predicts
+# (tests/headless/colors.py).
 test_headless_shell_colors_match_stylesheets() {
-  local mode out yaru
+  local mode out
   for mode in dark light; do
     out=$(probe_dir "$mode")
-    yaru=$("yaru_${mode}_css")
-    "$REPO/tests/headless/colors.py" check "$out/snapshots.json" "$yaru" \
-      "$REPO/extension/stylesheet-$mode.css" || fail "$mode: computed colors differ from the stylesheets"
-    "$REPO/tests/headless/colors.py" clobbered "$out/snapshots.json" "$yaru" \
-      "$REPO/extension/stylesheet-$mode.css" || fail "$mode: our color rules override Yaru special cases"
+    "$REPO/tests/headless/colors.py" check "$out/snapshots.json" "$(theme_css "$mode")" "$(empty_css)" \
+      || fail "$mode: computed colors differ from dusk's theme"
   done
 }
 
-# check_chunk_colors CHUNKS SELECTOR...: in dark and light, every element whose
-# color a row of CHUNKS decides shows that row's 24.04 value (decision 22),
-# its labels stay legible (contrast 4.5), and the SELECTORS are on screen.
-check_chunk_colors() {
-  local chunks="$1" mode out yaru on
-  shift
-  # The chunks switched on in src/_tokens.scss (what the stylesheet has).
-  on=$(sed -n 's/^\$shell-color-chunks: (\(.*\));/\1/p' "$REPO/src/_tokens.scss" \
-    | tr ',' '\n' | sed -n 's/ *\([0-9]\): true/\1/p' | paste -sd, -)
+# Labels stay legible on their surfaces, in dark and light: contrast 4.5, or no
+# worse than stock Yaru 26.04 or 24.04 draws them (some text is dim by design).
+test_headless_text_stays_legible() {
+  local mode out
   for mode in dark light; do
     out=$(probe_dir "$mode")
-    yaru=$("yaru_${mode}_css")
-    "$REPO/tests/headless/colors.py" expect "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks colors aren't 24.04's"
-    "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks text isn't legible"
-    "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "$@" || fail "$mode: chunk $chunks surfaces not on screen"
+    "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$(yaru_${mode}_css)" \
+      "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" || fail "$mode: text isn't legible"
   done
-}
-
-# Chunk 1: menus and quick settings, and the controls drawn on them.
-test_headless_popup_colors_follow_2404() {
-  check_chunk_colors 1 .popup-menu-content .popup-menu-item .quick-settings .quick-toggle-menu .button
 }
 
 # The accent still follows the Settings picker: a checked quick toggle with
@@ -427,18 +390,6 @@ slate, blue = checked(sys.argv[1]), checked(sys.argv[2])
 assert slate and blue, ("no checked quick toggle", slate, blue)
 assert slate != blue, ("same color with both accents", slate)
 EOF
-}
-
-# Chunk 2: notifications and the date menu.
-test_headless_notification_colors_follow_2404() {
-  check_chunk_colors 2 .message .calendar .events-button .datemenu-today-button
-}
-
-# Chunk 3: dialogs, OSDs, switchers, tooltips and the screenshot panel. The
-# switchers and tooltips need windows and dash hovers the headless session
-# doesn't have; the mirror and shadowing tests cover their rules.
-test_headless_dialog_osd_colors_follow_2404() {
-  check_chunk_colors 3 .modal-dialog .modal-dialog-button .osd-window .screenshot-ui-panel
 }
 
 # A menu's separator and its items you can't click draw no background of
@@ -457,4 +408,97 @@ bad = [(r["classes"], r["colors"][0]) for r in found if r["colors"][0][3] != 0]
 assert not bad, bad
 PY
   done
+}
+
+# dusk's theme is the only stylesheet in the base slot of Shell's theme, in
+# Yaru's place, with nothing on top (design 2026-10-30): at start and on the
+# lock screen, in dark and light.
+test_headless_theme_is_dusks() {
+  local mode
+  for mode in dark light; do
+    python3 - "$(probe_dir "$mode")/result.json" "$mode" <<'EOF' || fail "$mode: Shell's theme isn't dusk's"
+import json, sys
+results, mode = json.load(open(sys.argv[1])), sys.argv[2]
+for when, theme in (("start", results["theme"]["start"]), ("lock screen", results["lock"]["theme"])):
+    assert theme["default"].endswith(f"/dusk@local/theme/dusk-{mode}.css"), (when, theme["default"])
+    assert theme["application"] is None, (when, theme["application"])
+EOF
+  done
+}
+
+# Shell rebuilds its theme with Yaru on dark/light, High Contrast, and when a
+# stylesheet is put on top (User Themes' way): each time dusk's theme for
+# the current variant is back, alone, the open menu (quick settings) shows
+# what it predicts, and dusk logs no error.
+test_headless_theme_survives_switches() {
+  local mode out
+  for mode in dark light; do
+    out=$(probe_dir "$mode")
+    python3 - "$REPO/tests/headless" "$out/switches.json" "$REPO/extension/theme" <<'EOF' || fail "$mode: dusk's theme doesn't survive Shell's rebuilds"
+import json, sys
+sys.path.insert(0, sys.argv[1])
+import colors
+switches = json.load(open(sys.argv[2]))
+assert set(switches) == {"open", "scheme-switched", "scheme-back", "high-contrast", "high-contrast-off",
+                         "foreign", "foreign-gone"}, switches.keys()
+for name, state in switches.items():
+    theme = state["theme"]
+    assert theme["default"].endswith(f"/dusk@local/theme/dusk-{theme['variant']}.css"), (name, theme)
+    assert theme["application"] is None, (name, theme["application"])
+    rules = colors.parse_color_rules(open(f"{sys.argv[3]}/dusk-{theme['variant']}.css").read(), origin=0)
+    problems = colors.check({name: state["records"]}, rules)
+    assert not problems, (name, problems[:5])
+EOF
+    assert_eq "$(dusk_errors "$out/shell.log")" "" "$mode: dusk logged an error"
+  done
+}
+
+# A Shell log's errors are found from dusk's stack frames, in both of the forms
+# Shell writes them, and other extensions' aren't.
+test_dusk_errors_finds_stack_frames() {
+  local log; log=$(mktemp)
+  cat > "$log" <<'EOF'
+JS ERROR: TypeError: x is null
+_applyTheme@file:///home/u/.local/share/gnome-shell/extensions/dusk@local/extension.js:140:20
+Exception in callback for signal: changed: Error: nope
+_loadTheme@file:///home/u/.local/share/gnome-shell/extensions/dusk@local/extension.js:125:9
+JS ERROR: TypeError: y is null
+_update@file:///usr/share/gnome-shell/extensions/ubuntu-dock@ubuntu.com/docking.js:1:1
+EOF
+  assert_eq "$(dusk_errors "$log" | wc -l)" 2 "stack frames found"
+}
+
+# Light mode from Quick Settings is `color-scheme: default`. The lock screen
+# reports dark for it, but keeps the desktop's light theme, as Shell's own does.
+test_headless_theme_keeps_the_mode_on_the_lock_screen() {
+  python3 - "$(probe_dir light default)/result.json" <<'EOF' || fail "the lock screen changed dusk's theme"
+import json, sys
+result = json.load(open(sys.argv[1]))
+assert result["theme"]["start"]["default"].endswith("/dusk-light.css"), result["theme"]["start"]
+assert result["lock"]["theme"]["default"].endswith("/dusk-light.css"), result["lock"]["theme"]
+EOF
+}
+
+# Other extensions' stylesheets (Ubuntu Dock's) stay loaded through every one of
+# those rebuilds.
+test_headless_theme_keeps_extension_stylesheets() {
+  python3 - "$(probe_dir dark dock)/switches.json" <<'EOF' || fail "Ubuntu Dock's stylesheet was dropped"
+import json, sys
+for name, state in json.load(open(sys.argv[1])).items():
+    assert any("ubuntu-dock@ubuntu.com" in path for path in state["theme"]["custom"]), (name, state["theme"]["custom"])
+EOF
+}
+
+# Disabling dusk gives Shell's own theme back (Yaru, from its resource, with
+# nothing on top) and drops dusk's handler; enabling it again puts dusk's
+# theme back with one handler.
+test_headless_theme_disable_restores_stock() {
+  python3 - "$(probe_dir dark)/result.json" <<'EOF' || fail "disabling dusk doesn't give Shell's theme back"
+import json, sys
+theme = json.load(open(sys.argv[1]))["theme"]
+off, on = theme["disabled"], theme["reenabled"]
+assert off["default"].startswith("resource:///org/gnome/shell/theme/Yaru/"), off
+assert off["application"] is None and off["duskHandler"] is None, off
+assert on["default"].endswith("/dusk@local/theme/dusk-dark.css") and on["duskHandler"], on
+EOF
 }

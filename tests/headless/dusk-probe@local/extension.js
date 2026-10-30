@@ -101,6 +101,22 @@ function snapshotStage() {
     return records;
 }
 
+// Shell's theme now: the stylesheet in its base slot (Yaru's, or dusk's while
+// dusk runs), the one on top (what User Themes sets), the extensions' ones,
+// and dusk's handler for Shell's theme rebuilds (design 2026-10-30).
+function themeState() {
+    const theme = St.ThemeContext.get_for_stage(global.stage).get_theme();
+    const name = file => file ? (file.get_path() ?? file.get_uri()) : null;
+    return {
+        default: name(theme.default_stylesheet),
+        application: name(theme.application_stylesheet),
+        custom: theme.get_custom_stylesheets().map(name),
+        duskHandler: Main.extensionManager.lookup('dusk@local')?.stateObj?._themeChangedId ?? null,
+        variant: Main.getStyleVariant(),
+        powerModeIcon: !!Main.panel.statusArea.quickSettings._powerProfiles?.get_parent(),
+    };
+}
+
 // The first actor under `actor` for which `test` is true, or null.
 function findActor(actor, test) {
     if (test(actor))
@@ -178,6 +194,7 @@ async function measureClockIndicator() {
         return {
             ...geometry(actor),
             radius: node.get_border_radius(St.Corner.TOPLEFT),
+            background: rgba(node.get_background_color()),
             padding: [St.Side.TOP, St.Side.RIGHT, St.Side.BOTTOM, St.Side.LEFT].map(side => node.get_padding(side)),
             content: {w: content.get_width(), h: content.get_height()},
         };
@@ -306,6 +323,12 @@ export default class DuskProbe extends Extension {
 
         await take('desktop');
 
+        // Top bar buttons under the pointer (a headless Shell has none).
+        const hovered = [Main.panel.statusArea.quickSettings, Main.panel.statusArea.dateMenu];
+        hovered.forEach(actor => actor.add_style_pseudo_class('hover'));
+        await take('topbar-hover');
+        hovered.forEach(actor => actor.remove_style_pseudo_class('hover'));
+
         Main.overview.show();
         await take('overview');
         this._workspaces = measureWorkspaces();
@@ -420,6 +443,7 @@ export default class DuskProbe extends Extension {
         await sleep(1000);
         this._lock = {
             duskActive: Main.extensionManager.lookup('dusk@local')?.state === ExtensionState.ACTIVE,
+            theme: themeState(),
         };
         const unlock = new UnlockDialog.UnlockDialog(Main.layoutManager.uiGroup);
         unlock.add_constraint(new Clutter.BindConstraint({
@@ -439,8 +463,9 @@ export default class DuskProbe extends Extension {
     }
 
     async _run() {
+        const themeAtStart = themeState();
         await this._snapshots();
-        const results = {};
+        const results = {theme: {start: themeAtStart}};
         for (const [n, scenario] of Object.entries(SCENARIOS)) {
             const dialog = new ModalDialog.ModalDialog({destroyOnClose: true});
             dialog.contentLayout.add_child(new Dialog.MessageDialogContent({
@@ -493,6 +518,7 @@ export default class DuskProbe extends Extension {
         await sleep(1500);
         await Main.extensionManager.disableExtension('dusk@local');
         await sleep(500);
+        results.theme.disabled = themeState();
         results['search-on-screen-disabled'] = measureSearchIcons();
         Main.overview.searchEntry.set_text('');
         Main.overview.hide();
@@ -529,6 +555,7 @@ export default class DuskProbe extends Extension {
         // again (an update's reload) has to resize the ones it already has.
         await Main.extensionManager.enableExtension('dusk@local');
         await sleep(500);
+        results.theme.reenabled = themeState();
         results['search-reenabled'] = await searchIcons('set', 'lock');
 
         // Ubuntu Dock (when loaded) takes its own search patch off and puts it
@@ -551,6 +578,38 @@ export default class DuskProbe extends Extension {
         MessageTray.getSystemSource().addNotification(unseen);
         await sleep(1500);
         results['clock-indicator'] = await measureClockIndicator();
+
+        // Shell rebuilds its theme on its own: dark/light, High Contrast, and
+        // a stylesheet put on top the way User Themes does, each with a menu
+        // open. dusk's theme has to come back each time.
+        const desktop = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+        const a11y = new Gio.Settings({schema_id: 'org.gnome.desktop.a11y.interface'});
+        const scheme = desktop.get_string('color-scheme');
+        const switches = {};
+        const record = async name => {
+            await sleep(800);
+            switches[name] = {theme: themeState(), records: snapshotStage()};
+        };
+        const menu = Main.panel.statusArea.quickSettings.menu;
+        menu.open();
+        await record('open');
+        desktop.set_string('color-scheme', scheme === 'prefer-dark' ? 'prefer-light' : 'prefer-dark');
+        await record('scheme-switched');
+        desktop.set_string('color-scheme', scheme);
+        await record('scheme-back');
+        a11y.set_boolean('high-contrast', true);
+        await record('high-contrast');
+        a11y.set_boolean('high-contrast', false);
+        await record('high-contrast-off');
+        write('foreign.css', '#panel { background-color: red; }\n');
+        Main.setThemeStylesheet(`${OUT}/foreign.css`);
+        Main.loadTheme();
+        await record('foreign');
+        Main.setThemeStylesheet(null);
+        Main.loadTheme();
+        await record('foreign-gone');
+        menu.close();
+        write('switches.json', JSON.stringify(switches));
 
         write('result.json', JSON.stringify(results, null, 1));
         write('done', 'ok');

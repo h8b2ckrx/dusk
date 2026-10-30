@@ -1,0 +1,24 @@
+# key regex	slot	task	reason
+^\.popup-sub-menu \.popup-menu-item:checked	radius	Task 4	a checked item inside a submenu (Shell doesn't nest submenus) was square only because the old override layer beat Yaru's !important checked corner; Yaru's own corner stands
+^\.popup-sub-menu \.popup-menu-section:last-child \.popup-menu-item:last-child:hover	radius	Task 4	a submenu's last item went square on hover only through the old override layer's rule order (rounded at rest); Yaru keeps it rounded in both
+^\.(calendar|datemenu-today-button|events-button|weather-button|world-clocks-button|quick-toggle-menu|message)(:active)?:focus(:hover)?$	bg	Task 6	a keyboard-focused card mixes the accent into 24.04's white card, not the pop-up surface as the old overlay's derived row did: 5 steps of 255 in light mode, not visible
+(\.flat|\.calendar-day|\.calendar-day-heading|\.calendar-month-label|\.pager-button|\.audio-selection-device)[^ ]*:focus$	bg	Task 5	a keyboard-focused flat button mixes the accent into 24.04's surface at 25%, not 26.04's white: under 2 steps of 255 once drawn, not visible
+(\.notification-button|\.message-close-button|\.message-expand-button)(:active)?:focus(:hover)?$	bg	Task 6	keyboard focus on a notification button now follows 24.04's bubble values, as 24.04 does; the old overlay kept 26.04's stronger ones inside the accent mix
+(\.screenshot-ui-type-button|\.screenshot-ui-show-pointer-button|\.item-box)(:active)?:focus(:hover)?$	bg	Task 7	keyboard focus on a flat OSD button mixes the accent into 24.04's OSD surface, as 24.04 does; the old overlay kept 26.04's surface there
+^\.switcher-list \.item-box$	bg	Task 7	the old overlay painted each switcher item the list's own color on top of the list: transparent looks the same and keeps Yaru's fix for overlapping tiles
+(\.dialog-list-title|\.end-session-dialog-battery-warning|\.prompt-dialog-error-label|\.polkit-dialog-user-root-label)$	fg	Task 7	the palette's yellow, which 24.04's warning color was 5 steps of 255 from in light mode: not visible
+\.audio-selection-device(:[a-z]+)*:active(:[a-z]+)?$	bg	Task 8	a pressed audio device is the accent, as in 24.04 (test_theme_accent_not_baked)
+\.audio-selection-device(:[a-z]+)*:active(:[a-z]+)?$	fg	Task 8	a pressed audio device is the accent, as in 24.04 (test_theme_accent_not_baked)
+^\.button\.default:hover$	bg	Task 8	the old overlay's hover was 24.04's baked orange; now the system accent (test_theme_accent_not_baked)
+^\.check-box(:[a-z]+)* StIcon$	bg	Task 8	24.04's check box pictures (test_theme_check_boxes_from_2404_pictures)
+^\.check-box(:[a-z]+)* StIcon$	fg	Task 8	24.04's check box pictures (test_theme_check_boxes_from_2404_pictures)
+^\.check-box(:[a-z]+)* StIcon$	border	Task 8	24.04's check box pictures (test_theme_check_boxes_from_2404_pictures)
+^\.check-box:focus StBin$	bg	Task 8	St needs this faint background to draw the focus ring; the old overlay's transparent lost it
+\.modal-dialog-button:insensitive$	bg	Task 8	24.04's linked dialog button, which 26.04 renamed (test_theme_renamed_elements_from_2404)
+StScrollBar < StScrollView\.(apps-scroll-view|search-display)	bg	Task 8	the overview keeps its own scroll bars (test_theme_overview_scrollbars_are_stock)
+StLabel\.(date|day)-label < StBoxLayout < Gjs_ui_dateMenu_TodayButton	fg	Task 8	24.04's solid label on a disabled today button: the same color as half-transparent text on that surface (test_theme_renamed_elements_from_2404)
+\.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	bg	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
+\.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	fg	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
+\.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	border	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
+\.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	shadow	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
+Gjs_status_powerProfiles_Indicator	*	decision 27	the power mode's icon is off the top bar (test_headless_topbar_has_no_power_mode_icon)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Predict the colors GNOME Shell computes, and compare with reality.
 
-The same cascade as cascade.py (our stylesheet beats Yaru's outright; within
-one, !important, then specificity, then source order), for four color slots
+The same cascade as cascade.py (a stylesheet on top beats the theme outright;
+within one, !important, then specificity, then source order), for four color slots
 instead of four corners: 0 background, 1 text (inherited from the nearest St
 parent), 2 border (top), 3 box-shadow. Values are evaluated like St does,
 including its st-lighten / st-darken / st-mix / st-transparentize /
@@ -14,35 +14,13 @@ Records come from tests/headless/dusk-probe@local (snapshots.json): `colors`
 is [bg, fg, border, shadow], each [r, g, b, a] (0-255) or null.
 
 Usage:
-  colors.py check SNAPSHOTS.json YARU.css DUSK.css
+  colors.py check SNAPSHOTS.json THEME.css ON_TOP.css
       Print every element whose computed color differs from the prediction
       (more than 2 per channel); exit 1 if any.
-  colors.py clobbered SNAPSHOTS.json YARU.css DUSK.css
-      Print every element where one of our rules overrides a more specific
-      Yaru rule for the same slot; exit 1 if any.
-  colors.py shadowed YARU.css DUSK.css [EXCLUDE_REGEX]
-      Static version of `clobbered`, for states the probe doesn't show
-      (hover, pressed): print every more specific Yaru rule for a slot one of
-      our rules sets, on a subset of what ours targets, not re-asserted in
-      ours; exit 1 if any.
-  colors.py expect SNAPSHOTS.json YARU.css INVENTORY.tsv MODE CHUNKS [ON]
-      Print every element whose color a row of CHUNKS (e.g. 1 or 1,2)
-      decides, by Yaru plus the inventory's rows of the chunks switched ON
-      (default CHUNKS), where Shell's color isn't that row's 24.04 value;
-      exit 1 if any, or if none was compared.
-  colors.py contrast SNAPSHOTS.json YARU.css INVENTORY.tsv MODE CHUNKS [ON]
-      Print every label on such a surface with text contrast below 4.5 and
-      below 80% of stock Yaru's for it (disabled ones aside); exit 1 if any, or if
-      none was checked.
-  colors.py follows SNAPSHOTS.json YARU.css YARU2404.css INVENTORY.tsv MODE
-      Print every element whose background or border one of the inventory's
-      rows with a 24.04 value of its own (same, unset, added) decides, by Yaru
-      plus all rows, where Yaru 24.04's own cascade on that element gives
-      another; exit 1 if any.
-  colors.py follows-rows YARU.css YARU2404.css INVENTORY.tsv MODE
-      The same for each such row's own element, in the state its selector
-      names, and menu items also as Shell shows them under the pointer and
-      pressed (MENU_ITEM_STATES); exit 1 if any.
+  colors.py contrast SNAPSHOTS.json YARU.css YARU2404.css
+      Print every label on an opaque surface with text contrast below 4.5
+      and below 80% of what the stock stylesheets give it (disabled ones
+      aside); exit 1 if any, or if none was checked.
 """
 import colorsys
 import json
@@ -183,22 +161,6 @@ def predict(records, rules):
     return result
 
 
-def shadowed(yaru, dusk, exclude=None):
-    """(our selector, Yaru selector) pairs where ours would erase Yaru's for a slot."""
-    ours = {(r.selector, s) for r in dusk for s in r.corners}
-    pairs = set()
-    for d in dusk:
-        for y in yaru:
-            shared = set(y.corners) & set(d.corners)
-            if not shared or all((y.selector, s) in ours for s in shared):
-                continue
-            if y.specificity <= d.specificity or (exclude and re.search(exclude, y.selector)):
-                continue
-            if cascade.narrows(y, d):
-                pairs.add((d.selector, y.selector))
-    return sorted(pairs)
-
-
 def over(fg, bg):
     """fg composited over an opaque bg, as an opaque color."""
     a = fg[3] / 255
@@ -215,56 +177,10 @@ def contrast(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
-def tsv_rules(tsv, mode, chunks, on=None):
-    """The inventory's rows for `mode` as rules (origin 1) with their 24.04
-    values, for the chunks switched `on` (default: `chunks`) plus chunk 0 —
-    what the mirror emits (`chunks` always counted on); and the rules of
-    `chunks` alone."""
-    on = set(on or ()) | set(chunks)
-    rules, wanted = [], []
-    for line in open(tsv):
-        if not line.strip() or line.startswith("# "):
-            continue
-        m, sel, prop, new, old, source, _, chunk = line.rstrip("\n").split("\t")
-        if m not in ("both", mode) or int(chunk) not in on | {0}:
-            continue
-        flag = " !important" if "!important" in old else ""
-        value = old.replace("!important", "").strip()
-        parsed = parse_color_rules(f"{sel} {{ {prop}: {value}{flag}; }}", origin=1)
-        for rule in parsed:
-            rule.source = source
-        rules += parsed
-        if int(chunk) in chunks:
-            wanted += parsed
-    return rules, wanted
-
-
-# Rows whose value is 24.04's own declaration for that element (or, unset,
-# its lack of one), so 24.04's own cascade can check them.
-OWN_2404 = ("same", "unset", "added")
 # The pseudo-classes Shell gives a menu item under the pointer: it's also
 # selected, and so focused; pressed adds active (popupMenu.js). Other
 # widgets only get the states their own selectors name.
 MENU_ITEM_STATES = [("hover", "selected", "focus"), ("hover", "selected", "focus", "active")]
-
-
-def follows_2404(records, yaru, yaru24, ours):
-    """Elements whose background or border one of `ours` with a 24.04 value
-    of its own (OWN_2404) decides, where Yaru 24.04's own cascade on the
-    element gives another color: [(index, slot, our rule, 24.04's rule)]."""
-    problems = []
-    theirs = cascade.winners(records, yaru24)
-    for i, best in enumerate(cascade.winners(records, yaru + ours)):
-        for slot in (0, 2):
-            rule = best[slot]
-            if rule is None or getattr(rule, "source", None) not in OWN_2404:
-                continue
-            old = theirs[i][slot]
-            want = evaluate(old.corners[slot]) if old else (0, 0, 0, 0)
-            got = evaluate(rule.corners[slot])
-            if want is not None and got is not None and any(abs(x - y) > 2 for x, y in zip(got, want)):
-                problems.append((i, slot, rule, old))
-    return problems
 
 
 def element(selector, extra=()):
@@ -285,74 +201,13 @@ def element(selector, extra=()):
     return records
 
 
-def rows_follow_2404(tsv, mode, yaru, yaru24):
-    """follows_2404 on each OWN_2404 row's own element: problem lines."""
-    ours, _ = tsv_rules(tsv, mode, [1, 2, 3])
-    selectors = []
-    for line in open(tsv):
-        if line.strip() and not line.startswith("# "):
-            m, sel, _, _, _, source, _, _ = line.rstrip("\n").split("\t")
-            if m in ("both", mode) and source in OWN_2404 and sel not in selectors:
-                selectors.append(sel)
-    lines = set()
-    names = ["background", "text", "border", "shadow"]
-    for sel in selectors:
-        records = element(sel)
-        if records is None:
-            continue
-        subject = records[-1]
-        states = [()]
-        if "popup-menu-item" in subject["classes"] and "insensitive" not in subject["pseudo"]:
-            states += MENU_ITEM_STATES
-        for extra in states:
-            records = element(sel, extra)
-            for i, slot, rule, old in follows_2404(records, yaru, yaru24, ours):
-                if i == len(records) - 1:
-                    state = "".join(f":{p}" for p in extra if p not in subject["pseudo"])
-                    lines.add(f"{sel}{state} {names[slot]}: ours "
-                              f"{evaluate(rule.corners[slot])} from '{rule.selector}' ({rule.source}), 24.04's "
-                              f"{evaluate(old.corners[slot]) if old else (0, 0, 0, 0)} from '{old.selector if old else '-'}'")
-    return sorted(lines)
-
-
-def expect(snapshots, yaru, tsv, mode, chunks, on=None):
-    """Elements whose color a row of `chunks` decides, with Shell's computed
-    color differing from that row's 24.04 value: (problems, compared)."""
-    ours, wanted = tsv_rules(tsv, mode, chunks, on)
-    wanted = {id(r) for r in wanted}
-    problems, compared = [], 0
-    names = ["background", "text", "border", "shadow"]
-    for state, records in snapshots.items():
-        for i, best in enumerate(cascade.winners(records, yaru + ours)):
-            computed = records[i].get("colors")
-            if not computed:
-                continue
-            for slot, rule in enumerate(best):
-                if rule is None or id(rule) not in wanted:
-                    continue
-                want = evaluate(rule.corners[slot])
-                got = computed[slot]
-                if want is None or (slot == 3 and got is None):
-                    continue
-                compared += 1
-                if got is None or any(abs(x - y) > 2 for x, y in zip(got, want)):
-                    problems.append(f"{state}: {cascade.describe(records, i)} {names[slot]}: "
-                                    f"Shell {got}, want {list(want)} from '{rule.selector}'")
-    return problems, compared
-
-
-def legibility(snapshots, yaru, tsv, mode, chunks, on=None, minimum=4.5):
-    """Labels on a surface whose background a row of `chunks` decides, with
-    text contrast below `minimum` and below 80% of what stock Yaru gives the
-    same label (some text is dim by design), disabled ones aside. A label
-    whose text and background colors both come straight from 24.04 is
-    24.04's own pairing, and passes: (problems, checked)."""
-    ours, wanted = tsv_rules(tsv, mode, chunks, on)
-    wanted = {id(r) for r in wanted}
+def legibility(snapshots, stock, stock_2404, minimum=4.5):
+    """Labels on an opaque surface with text contrast below `minimum` and
+    below 80% of what either stock stylesheet gives the same label (some text
+    is dim by design), disabled ones aside: (problems, checked)."""
     problems, checked = [], 0
     for state, records in snapshots.items():
-        best = cascade.winners(records, yaru + ours)
-        stock = predict(records, yaru)
+        baselines = [predict(records, stock), predict(records, stock_2404)]
         for i, record in enumerate(records):
             if "StLabel" not in record["types"] or not record.get("colors"):
                 continue
@@ -366,25 +221,15 @@ def legibility(snapshots, yaru, tsv, mode, chunks, on=None, minimum=4.5):
                 if bg and bg[3] >= 250:
                     break
                 j = records[j]["parent"]
-            if j < 0 or disabled or best[j][0] is None or id(best[j][0]) not in wanted:
+            if j < 0 or disabled:
                 continue
             checked += 1
-            # Text and background both straight from 24.04: 24.04's own pairing.
-            k = i
-            while k >= 0 and best[k][1] is None:
-                k = cascade.st_parent(records, k)
-            text = best[k][1] if k >= 0 else None
-            if (getattr(text, "source", None) in ("same", "renamed", "added")
-                    and getattr(best[j][0], "source", None) in ("same", "renamed", "unset", "added", "image")):
-                continue
-            ratio = contrast(over(record["colors"][1], bg), bg)
-            before, behind = stock[i][1], stock[j][0]
             floor = minimum
-            if before and behind and behind[3] >= 250:
-                # 24.04's light text (#3D3D3D) is lighter than 26.04's (#222222),
-                # so its dim labels are a little fainter by design; flag only a
-                # real drop (e.g. a light hint on a light entry).
-                floor = min(minimum, 0.8 * contrast(over(before, behind), behind))
+            for look in baselines:
+                before, behind = look[i][1], look[j][0]
+                if before and behind and behind[3] >= 250:
+                    floor = min(floor, 0.8 * contrast(over(before, behind), behind))
+            ratio = contrast(over(record["colors"][1], bg), bg)
             if ratio < floor:
                 problems.append(f"{state}: {cascade.describe(records, i)}: contrast {ratio:.1f}")
     return problems, checked
@@ -410,61 +255,23 @@ def check(snapshots, rules):
 
 
 def main():
-    if len(sys.argv) >= 7 and sys.argv[1] in ("expect", "contrast"):
+    if len(sys.argv) == 5 and sys.argv[1] == "contrast":
         snapshots = json.load(open(sys.argv[2]))
-        yaru = parse_color_rules(open(sys.argv[3]).read(), origin=0)
-        chunks = [int(c) for c in sys.argv[6].split(",")]
-        on = [int(c) for c in sys.argv[7].split(",")] if len(sys.argv) > 7 else None
-        fn = expect if sys.argv[1] == "expect" else legibility
-        problems, n = fn(snapshots, yaru, sys.argv[4], sys.argv[5], chunks, on)
+        stock = parse_color_rules(open(sys.argv[3]).read(), origin=0)
+        stock_2404 = parse_color_rules(open(sys.argv[4]).read(), origin=0)
+        problems, n = legibility(snapshots, stock, stock_2404)
         print("\n".join(sorted(set(problems))[:40]))
-        print(f"{n} {'colors compared' if fn is expect else 'labels checked'}, {len(problems)} problems")
+        print(f"{n} labels checked, {len(problems)} problems")
         return 1 if problems or not n else 0
-    if len(sys.argv) == 7 and sys.argv[1] == "follows":
-        snapshots = json.load(open(sys.argv[2]))
-        yaru = parse_color_rules(open(sys.argv[3]).read(), origin=0)
-        yaru24 = parse_color_rules(open(sys.argv[4]).read(), origin=0)
-        ours, _ = tsv_rules(sys.argv[5], sys.argv[6], [1, 2, 3])
-        names = ["background", "text", "border", "shadow"]
-        lines = set()
-        for state, records in snapshots.items():
-            for i, slot, rule, old in follows_2404(records, yaru, yaru24, ours):
-                lines.add(f"{state}: {cascade.describe(records, i)} {names[slot]}: ours "
-                          f"{evaluate(rule.corners[slot])} from '{rule.selector}' ({rule.source}), 24.04's "
-                          f"{evaluate(old.corners[slot]) if old else (0, 0, 0, 0)} from '{old.selector if old else '-'}'")
-        print("\n".join(sorted(lines)))
-        return 1 if lines else 0
-    if len(sys.argv) == 6 and sys.argv[1] == "follows-rows":
-        lines = rows_follow_2404(sys.argv[4], sys.argv[5], parse_color_rules(open(sys.argv[2]).read(), origin=0),
-                                 parse_color_rules(open(sys.argv[3]).read(), origin=0))
-        print("\n".join(lines))
-        return 1 if lines else 0
-    if len(sys.argv) < 4 or sys.argv[1] not in ("check", "clobbered", "shadowed"):
+    if len(sys.argv) != 5 or sys.argv[1] != "check":
         print(__doc__.strip(), file=sys.stderr)
         return 2
-    if sys.argv[1] == "shadowed":
-        pairs = shadowed(parse_color_rules(open(sys.argv[2]).read(), origin=0),
-                         parse_color_rules(open(sys.argv[3]).read(), origin=1),
-                         sys.argv[4] if len(sys.argv) > 4 else None)
-        print("\n".join(f"our '{d}' would erase Yaru's '{y}'" for d, y in pairs))
-        return 1 if pairs else 0
     snapshots = json.load(open(sys.argv[2]))
-    yaru = parse_color_rules(open(sys.argv[3]).read(), origin=0)
-    dusk = parse_color_rules(open(sys.argv[4]).read(), origin=1)
-    if sys.argv[1] == "check":
-        problems = check(snapshots, yaru + dusk)
-        print("\n".join(problems))
-        return 1 if problems else 0
-    lines = set()
-    for records in snapshots.values():
-        stock = cascade.winners(records, yaru)
-        ours = cascade.winners(records, yaru + dusk)
-        for i in cascade.clobbered(records, yaru, dusk):
-            for b, a in zip(stock[i], ours[i]):
-                if b and a and a in dusk and a.specificity < b.specificity:
-                    lines.add(f"{cascade.describe(records, i)}: our '{a.selector}' overrides Yaru's '{b.selector}'")
-    print("\n".join(sorted(lines)))
-    return 1 if lines else 0
+    rules = (parse_color_rules(open(sys.argv[3]).read(), origin=0)
+             + parse_color_rules(open(sys.argv[4]).read(), origin=1))
+    problems = check(snapshots, rules)
+    print("\n".join(problems))
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":
