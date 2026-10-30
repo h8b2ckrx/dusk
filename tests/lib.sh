@@ -64,3 +64,54 @@ assert_inventory_current() {
 $(echo "$d" | head -20)
 See README, 'Updating after a GNOME, Yaru or libadwaita update'."
 }
+
+# probe_dir SCHEME [dock]: a finished probe run for the current code, reused
+# across tests while src/, extension/, tests/headless/, the probe tool and the
+# installed system (stock_key) are unchanged.
+# "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
+# extended, shrink); "accent" picks the blue accent instead of slate; "blur"
+# loads Blur my Shell with its Contrasted top bar (dark pills behind the top
+# bar's items).
+probe_dir() {
+  local key out variant="${2:-}"
+  key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
+    ! -name 'stylesheet-*.css' -print0 | sort -z | xargs -0 sha1sum; stock_key; } \
+    | sha1sum | cut -c1-16)
+  out="${TMPDIR:-/tmp}/dusk-probe-$key-$1${variant:+-$variant}"
+  if [ "$(cat "$out/done" 2> /dev/null)" != ok ]; then
+    local extra="" settings=""
+    if [ "$variant" = accent ]; then
+      settings="org.gnome.desktop.interface accent-color blue"
+    fi
+    if [ "$variant" = blur ]; then
+      extra=blur-my-shell@aunetx
+      settings="org.gnome.shell.extensions.blur-my-shell.panel style-panel 3"
+    fi
+    if [ "$variant" = dock ]; then
+      extra=ubuntu-dock@ubuntu.com
+      settings="org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM"
+      settings+=";org.gnome.shell.extensions.dash-to-dock extend-height false"
+      settings+=";org.gnome.shell.extensions.dash-to-dock custom-theme-shrink true"
+    fi
+    DUSK_EXTRA_EXTENSIONS="$extra" DUSK_GSETTINGS="$settings" \
+      "$REPO/tools/headless-probe.sh" "$out" "$1" > /dev/null 2>&1 \
+      || fail "headless probe failed ($1 $variant): $(cat "$out/error.txt" 2> /dev/null)"
+  fi
+  echo "$out"
+}
+
+# The stylesheet Shell loads for Yaru (dark), extracted for the cascade check.
+yaru_dark_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell-dark.css > "$css"
+  echo "$css"
+}
+
+# The light one (Shell loads it in light mode).
+yaru_light_css() {
+  local css; css=$(mktemp --suffix=.css)
+  gresource extract /usr/share/gnome-shell/theme/Yaru/gnome-shell-theme.gresource \
+    /org/gnome/shell/theme/Yaru/gnome-shell.css > "$css"
+  echo "$css"
+}
