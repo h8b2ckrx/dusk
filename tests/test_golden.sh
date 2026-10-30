@@ -213,3 +213,23 @@ test_golden_colors_match_theme_notifications() {
 test_golden_colors_match_theme_dialogs() {
   check_golden_colors "$GOLDEN_DIALOGS"
 }
+
+# A highlighted button is filled with the accent, with no ring (owner,
+# 2026-10-30). A default button already is, and a slider's bar is accent, so
+# those keep their ring, as text entries do.
+test_theme_focused_buttons_fill_with_accent() {
+  local mode selector
+  for mode in dark light; do
+    for selector in .button:focus .icon-button:focus \
+      '.modal-dialog .modal-dialog-button-box .modal-dialog-button:focus' \
+      '.app-folder-dialog .icon-button:focus'; do
+      assert_eq "$(look "$mode" "$selector")" '["-st-accent-color", "-st-accent-fg-color", null, null]' "$mode $selector"
+    done
+    for selector in .button.default:focus '.quick-slider .slider-bin:focus' StEntry:focus; do
+      case "$(look "$mode" "$selector")" in
+        *inset*|*st-transparentize*|*"-st-accent"*) ;;
+        *) fail "$mode: $selector lost its ring" ;;
+      esac
+    done
+  done
+}

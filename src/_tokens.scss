@@ -126,8 +126,8 @@ $topbar-indicator-side-padding: 8px;
 $app-grid-icon-size: 96px;
 
 // Dialog buttons: separate buttons in Yaru 26.04's layout (decision 23), on
-// the same step as app dialogs' response buttons.
-$radius-dialog-button: $r-md;
+// the same step as the Shell's other buttons (owner, 2026-10-30).
+$radius-dialog-button: $r-sm;
 
 // ---------------------------------------------------------------------------
 // Colors (§7.2). null = leave the stock Yaru color alone (no rule is emitted).

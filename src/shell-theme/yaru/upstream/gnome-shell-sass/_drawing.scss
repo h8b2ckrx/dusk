@@ -299,9 +299,13 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
     background-color: $active_button_bg_color;
     &:hover { background-color: $active_hover_button_bg_color;}
     &:focus {
-      // otherwise use focus bg color mixin
-      $bg: focus_bg_color($active_button_bg_color);
-      background-color: $bg;
+      // dusk: still the accent while it's pressed.
+      @if $style == 'default' or $style == 'ring' {
+        background-color: focus_bg_color($active_button_bg_color);
+      } @else {
+        color: -st-accent-fg-color;
+        background-color: if($variant == 'light', st-darken(-st-accent-color, 9%), st-lighten(-st-accent-color, 9%));
+      }
     }
   }
 
@@ -326,23 +330,31 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
   }
 
   // focused button
+  // dusk: filled with the accent instead of a ring (owner, 2026-10-30). A
+  // default button already is, and 'ring' is for what sits on the accent (a
+  // slider's bar), so those keep theirs.
   @else if $type == 'focus' {
-    color: $tc;
-    @include focus_ring();
+    @if $style == 'default' or $style == 'ring' {
+      color: $tc;
+      @include focus_ring();
 
-    // use a different focus ring color for default style
-    @if $style == 'default' {
-      @include focus_ring($fc:$accent_borders_color);
-    }
-    // change background color if style is flat
-    @if $style == 'flat' {
-      $button_bg_color: transparentize($button_bg_color, 0.75);
-    }
+      // use a different focus ring color for default style
+      @if $style == 'default' {
+        @include focus_ring($fc:$accent_borders_color);
+      }
 
-    background-color: focus_bg_color($button_bg_color);
+      background-color: focus_bg_color($button_bg_color);
 
-    &:hover {
-      background-color: focus_bg_color($hover_button_bg_color);
+      &:hover {
+        background-color: focus_bg_color($hover_button_bg_color);
+      }
+    } @else {
+      color: -st-accent-fg-color;
+      background-color: -st-accent-color;
+
+      &:hover {
+        background-color: if($variant == 'light', st-darken(-st-accent-color, 4%), st-lighten(-st-accent-color, 4%));
+      }
     }
   }
 
@@ -411,7 +423,7 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
   &:hover {
     @include button(hover, $c:$bg);
   }
-  &:active {@include button(active, $c:$bg);}
+  &:active {@include button(active, $c:$bg, $style: ring);} // dusk: not a highlighted button's fill
   &:selected,
   &:checked {@include button(checked, $c:$bg);}
   &:insensitive {@include button(insensitive, $c:$bg);}

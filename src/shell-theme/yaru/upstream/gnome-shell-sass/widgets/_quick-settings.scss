@@ -141,7 +141,7 @@ $quick_toggle_checked_separator_color: if(
   .icon-button { padding: $base_padding; }
 
   .slider-bin {
-    &:focus {@include button(focus);}
+    &:focus {@include button(focus, $style: ring);} // dusk: its bar is the accent
     padding: $base_padding;
     border-radius: $radius-slider; /* dusk: corner */
   }
