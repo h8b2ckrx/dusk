@@ -135,7 +135,10 @@ Anti-goals (a failure even if it technically works):
 1. This document.
 2. **dusk's loader with the unchanged Yaru copy:** the desktop looks exactly like stock Ubuntu
    with Blur my Shell as today (proves loading, dark/light, the lock screen and disabling, before
-   any look moves).
+   any look moves). The owner also logs out and in, switches dark/light and locks the screen,
+   watching for any flash of a different look: there should be none (extensions start during
+   Shell's startup, before its login animation shows the desktop, which is when dusk's look
+   arrives today; and the loader swaps its theme back before the next frame is drawn).
 3. **Corners, colors, the top bar pills and the fixes, in the source:** the owner turns Blur my
    Shell's top bar style off at this gate (while it's on, it outranks any Shell theme) and checks
    that everything looks like today's dusk, plus the pills and the fixes.
