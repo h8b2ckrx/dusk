@@ -82,7 +82,7 @@ stage {
 
 // icon tiles
 %tile {
-  border-radius: $base_border_radius * 2;
+  border-radius: $radius-tile; // dusk: corner
   padding: $base_padding;
   spacing: $base_padding;
   text-align: center;
@@ -91,7 +91,7 @@ stage {
 
 // common button styling
 %button_common {
-  border-radius: $base_border_radius;
+  border-radius: $radius-button; // dusk: corner
   padding: $base_padding * .5 $base_padding * 4;
   font-weight: bold;
   transition: border-width 300ms $ease_out_quad,
@@ -137,7 +137,7 @@ stage {
 
 // common style for card elements
 %card_common {
-  border-radius: $base_border_radius * 1.5;
+  border-radius: $radius-card; // dusk: corner
   padding: $scaled_padding * 2;
   margin: $base_margin;
   background-color: $card_bg_color;
@@ -173,7 +173,7 @@ stage {
 
 // normal entry style
 %entry_common {
-  border-radius: $base_border_radius;
+  border-radius: $radius-entry; // dusk: corner
   padding: $base_padding * 1.5 $base_padding * 1.5;
 
   selection-background-color: st-transparentize(-st-accent-color, 0.7);
@@ -197,7 +197,7 @@ stage {
 %notification_button {
   font-weight: bold;
   padding: $base_padding $base_padding * 2;
-  border-radius: $base_border_radius;
+  border-radius: $radius-button; // dusk: corner
 
   @include button(normal, $style: notification);
   &:focus { @include button(focus, $style: notification);}
@@ -211,7 +211,7 @@ stage {
 %dialog_button {
   font-weight: bold;
   padding: $base_padding * 2;
-  border-radius: $base_border_radius * 1.5;
+  border-radius: $radius-dialog-button; /* dusk: corner */
 
   @include button(normal, $style: dialog);
   &:focus { @include button(focus, $style: dialog);}
@@ -227,7 +227,7 @@ stage {
   border: 1px solid transparentize($light_1, 0.9);
   color: $light_1;
 
-  border-radius: $forced_circular_radius;
+  border-radius: $radius-tooltip; /* dusk: corner */
   padding: $base_padding $base_padding * 2;
   text-align: center;
 
@@ -292,7 +292,7 @@ stage {
   color: $osd_fg_color;
   background-color: $osd_bg_color;
   border: 1px solid $osd_outer_borders_color;
-  border-radius: $forced_circular_radius;
+  border-radius: $radius-osd; // dusk: corner
   padding: $base_padding * 2;
   @if $contrast == 'high' {
     @include draw_hc_inset($width: 2px,$border: true);

@@ -91,14 +91,14 @@ test_headless_dock_follows_tokens() {
   mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO/tests/headless/dock.selectors")
   "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
     || fail "dock selectors not found on screen"
-  python3 - "$out/snapshots.json" "$(theme_css dark)" <<'EOF' || fail "dock tokens not applied"
-import json, re, sys
-css = open(sys.argv[2]).read()
-def px(selector):
-    return int(re.search(re.escape(selector) + r"[^{]*\{[^}]*?border-radius: (\d+)px", css).group(1))
-dock = px("#dashtodockContainer.bottom.shrink #dash .dash-background")
-item = px("#dashtodockContainer.bottom .dash-item-container .overview-tile .overview-icon")
-recs = json.load(open(sys.argv[1]))["desktop"]
+  python3 - "$REPO" "${SASSC:-sassc}" "$out/snapshots.json" <<'EOF' || fail "dock tokens not applied"
+import json, sys
+repo, sassc = sys.argv[1], sys.argv[2]
+sys.path.insert(0, f"{repo}/tests/headless")
+from tokens import token_values
+t = {k: float(v.rstrip("px")) for k, v in token_values(repo, sassc, ["dock", "dock-item"]).items()}
+dock, item = t["dock"], t["dock-item"]
+recs = json.load(open(sys.argv[3]))["desktop"]
 def under_dock(i):
     while i >= 0:
         if recs[i]["id"] == "dashtodockContainer":

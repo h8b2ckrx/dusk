@@ -8,7 +8,7 @@ $notification_banner_width: 34em;
   min-height: $notification_banner_height;
   width: $notification_banner_width;
   box-shadow: 0 2px 4px 2px $shadow_color;
-  border-radius: $modal_radius;
+  border-radius: $radius-notification; /* dusk: corner */
   margin: $base_margin;
 
   @if $contrast == 'high' {

@@ -289,19 +289,25 @@
 $yaru_popup_radius: $modal_radius * 1.05;
 
 .datemenu-popover {
-  border-radius: $base_border_radius;
+  border-radius: $radius-popover; // dusk: corner
 }
 
 .popup-menu-content {
-  border-radius: $yaru_popup_radius;
+  border-radius: $radius-popover; // dusk: corner
+}
+
+// dusk: corner: the quick settings panel is a menu too, so the rule above
+// would give it a menu's corner; it has its own.
+.popup-menu-content.quick-settings {
+  border-radius: $radius-quick-settings;
 }
 
 .quick-toggle-menu {
-  border-radius: $yaru_popup_radius;
+  border-radius: $radius-popover; // dusk: corner
 }
 
 .quick-toggle {
-  border-radius: $yaru_popup_radius;
+  border-radius: $radius-quick-toggle; // dusk: corner
 }
 
 /* More squircles...
@@ -335,23 +341,23 @@ $yaru_popup_radius: $modal_radius * 1.05;
 .quick-toggle-has-menu {
   & .quick-toggle {
     &:ltr {
-      border-radius: $yaru_popup_radius 0 0 $yaru_popup_radius;
+      border-radius: $radius-quick-toggle 0 0 $radius-quick-toggle; // dusk: corner
     }
 
     &:rtl {
-      border-radius: 0 $yaru_popup_radius $yaru_popup_radius 0;
+      border-radius: 0 $radius-quick-toggle $radius-quick-toggle 0; // dusk: corner
     }
 
-    &:ltr:last-child { border-radius: $yaru_popup_radius; }
-    &:rtl:last-child { border-radius: $yaru_popup_radius; }
+    &:ltr:last-child { border-radius: $radius-quick-toggle; } // dusk: corner
+    &:rtl:last-child { border-radius: $radius-quick-toggle; } // dusk: corner
   }
 
   & .quick-toggle-menu-button {
     &:ltr {
-      border-radius: 0 $yaru_popup_radius $yaru_popup_radius 0;
+      border-radius: 0 $radius-quick-toggle $radius-quick-toggle 0; // dusk: corner
     }
     &:rtl {
-      border-radius: $yaru_popup_radius 0 0 $yaru_popup_radius;
+      border-radius: $radius-quick-toggle 0 0 $radius-quick-toggle; // dusk: corner
     }
   }
 }

@@ -1,1 +1,3 @@
 # key regex	slot	task	reason
+^\.popup-sub-menu \.popup-menu-item:checked	radius	Task 4	a checked item inside a submenu (Shell doesn't nest submenus) was square only because the old override layer beat Yaru's !important checked corner; Yaru's own corner stands
+^\.popup-sub-menu \.popup-menu-section:last-child \.popup-menu-item:last-child:hover	radius	Task 4	a submenu's last item went square on hover only through the old override layer's rule order (rounded at rest); Yaru keeps it rounded in both

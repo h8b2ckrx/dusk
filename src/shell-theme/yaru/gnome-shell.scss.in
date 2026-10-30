@@ -3,6 +3,8 @@ $use_gresource: @UseGResource@;
 $contrast: @Contrast@;
 
 @import 'sass-utils';
+// dusk: dusk's tokens (src/_tokens.scss): its corners, sizes and colors.
+@import 'tokens';
 
 @function yaru_url_handler($arg) {
     $url: unquote($arg);

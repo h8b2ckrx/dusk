@@ -273,7 +273,7 @@ $dock_style_modes: [null, shrink, extended, extended-shrink];
                 is_extended: $is_extended,
                 base_padding: $base_padding,
                 spacing: $dock_spacing,
-                border_radius: $dash_border_radius,
+                border_radius: $radius-dock, // dusk: corner
                 side_margin: $dock_side_margin,
                 padding: $dash_padding,
                 margin: $base_margin,
@@ -285,7 +285,7 @@ $dock_style_modes: [null, shrink, extended, extended-shrink];
                 $parameters: map-merge($parameters, (
                     base_padding: shrink($base_padding),
                     spacing: shrink($dock_spacing),
-                    border_radius: shrink_light($dash_border_radius),
+                    border_radius: $radius-dock, // dusk: corner
                     side_margin: /* not shrunk */ $dock_side_margin,
                     padding: shrink($dash_padding),
                     margin: shrink($base_margin),
@@ -471,7 +471,7 @@ $dock_style_modes: [null, shrink, extended, extended-shrink];
     color: rgba(255, 255, 255, 1);
     background-color: rgba(255, 0, 0, 1);
     padding: 0.2em 0.5em;
-    border-radius: 1em;
+    border-radius: $radius-round; // dusk: corner
     font-weight: bold;
     text-align: center;
     margin: 2px;
@@ -533,7 +533,7 @@ $dock_color: $yaru_panel_bg_color;
               // border radius will be the icon radius increased by dash padding;
               // this is the correct way of making a consistent look instead of
               // hard coding
-              border-radius: $dock_item_border_radius + $dash_padding;
+              border-radius: $radius-dock; // dusk: corner
             }
         }
 
@@ -543,7 +543,7 @@ $dock_color: $yaru_panel_bg_color;
               // border radius will be the icon radius increased by shrink($dash padding)
               // this is the correct way of making a consistent look instead of
               // hard coding
-              border-radius: $dock_item_border_radius + shrink($dash_padding);
+              border-radius: $radius-dock; // dusk: corner
             }
         }
 
@@ -574,7 +574,7 @@ $dock_color: $yaru_panel_bg_color;
 
         .dash-item-container {
             .show-apps, .app-well-app {
-                border-radius: $dock_item_border_radius; //Yaru: sync with pop-over
+                border-radius: $radius-dock-item; // dusk: corner (Yaru: sync with pop-over)
                 &:active, &:checked {
                     .overview-icon {
                         background-color: $active_bg_color; box-shadow: none;
@@ -603,7 +603,7 @@ $dock_color: $yaru_panel_bg_color;
                 .overview-icon {
                     @extend %tile;
                     @include button(normal, $tc:$fg, $c:$normal_bg, $style: flat, $always_dark: true);
-                    border-radius: $dock_item_border_radius;
+                    border-radius: $radius-dock-item; // dusk: corner
                 }
 
                 &:focus .overview-icon { @include button(focus, $tc:$fg, $c:$bg, $style: flat, $always_dark: true);}

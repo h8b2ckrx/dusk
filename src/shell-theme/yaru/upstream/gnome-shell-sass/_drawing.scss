@@ -404,7 +404,7 @@
   transition-duration: 150ms;
   border: 3px solid transparent;
   background-color: transparent;
-  border-radius: $forced_circular_radius;
+  border-radius: $radius-topbar-item; // dusk: corner
 
   font-weight: bold;
   color: $fg;
@@ -448,7 +448,7 @@
     #{$child_class} {
       transition-duration: 150ms;
       border: 3px solid transparent;
-      border-radius: $forced_circular_radius;
+      border-radius: $radius-topbar-item; // dusk: corner
     }
 
     &:focus, &:hover {

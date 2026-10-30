@@ -31,33 +31,11 @@ compile() {
 }
 
 # compile_shell_theme MODE: dusk's Shell theme (design 2026-10-30) from the
-# Yaru copy in src/shell-theme/yaru, the way Yaru's own build does it: every
-# Sass file with `url(` going through yaru_url_handler( and the upstream
-# default colors swapped for Yaru's, the template filled for MODE (images
-# next to the file, not in Yaru's resource), compiled to
-# extension/theme/dusk-MODE.css with the same atomic write as compile.
+# Yaru copy in src/shell-theme/yaru, to extension/theme/dusk-MODE.css
+# (tools/build-shell-theme.sh).
 compile_shell_theme() {
-  local mode="$1" yaru=src/shell-theme/yaru out="extension/theme/dusk-$1.css" work tmp
-  work=$(mktemp -d)
-  (cd "$yaru" && find gnome-shell-sass upstream -name '*.scss') | while read -r f; do
-    mkdir -p "$work/$(dirname "$f")"
-    sed "s,[[:space:]]*url[[:space:]]*(, yaru_url_handler(,g" "$yaru/$f" \
-      | sed -E "s,[\'](_default-colors([.]scss)?)[\'],'_yaru-default-colors.scss',g" > "$work/$f"
-  done
-  sed -e "s/@Variant@/$mode/" -e "s/@YaruVariant@/$mode/" -e "s/@UseGResource@/false/" \
-    -e "s/@Contrast@/normal/" -e "s/@Colors@/colors/" "$yaru/gnome-shell.scss.in" > "$work/gnome-shell-$mode.scss"
-  tmp=$(mktemp "$(dirname "$out")/.$(basename "$out").XXXXXX")
-  if ! "$SASSC" --style expanded -I "$work" -I "$yaru/common" -I "$work/gnome-shell-sass" -I "$work/upstream" \
-      "$work/gnome-shell-$mode.scss" > "$tmp" 2> "$work/sassc.log"; then
-    rm -f "$tmp"
-    cat "$work/sassc.log" >&2
-    echo "build.sh: failed to compile the Shell theme ($mode)" >&2
-    exit 1
-  fi
-  rm -rf "$work"
-  mv "$tmp" "$out"
-  chmod 644 "$out"
-  echo "$out"
+  tools/build-shell-theme.sh src/shell-theme/yaru "$1" "extension/theme/dusk-$1.css"
+  echo "extension/theme/dusk-$1.css"
 }
 
 mkdir -p build extension extension/theme

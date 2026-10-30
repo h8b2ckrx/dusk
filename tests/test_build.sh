@@ -81,13 +81,17 @@ stock_shell_theme() {
 }
 
 # dusk's Shell theme is built from its copy of Yaru 26.04's source (design
-# 2026-10-30, §5). Built unchanged, the copy gives exactly the installed
-# Yaru's rules, in order: the copy is complete and the build matches Ubuntu's.
+# 2026-10-30, §5). The copy as first committed (Yaru's files, unchanged)
+# builds to exactly the installed Yaru's rules, in order: the copy was
+# complete and the build matches Ubuntu's. (dusk's edits come after it.)
 test_shell_theme_copy_matches_installed_yaru() {
-  local mode d
-  build > /dev/null
+  local mode d first pristine
+  first=$(git -C "$REPO" log --diff-filter=A --format=%h -- src/shell-theme/yaru/TAG | tail -1)
+  pristine=$(mktemp -d)
+  git -C "$REPO" archive "$first" src/shell-theme/yaru | tar -x -C "$pristine"
   for mode in dark light; do
-    d=$(diff <(css_rules "$(stock_shell_theme "$mode")") <(css_rules "$REPO/extension/theme/dusk-$mode.css")) \
+    "$REPO/tools/build-shell-theme.sh" "$pristine/src/shell-theme/yaru" "$mode" "$pristine/$mode.css"
+    d=$(diff <(css_rules "$(stock_shell_theme "$mode")") <(css_rules "$pristine/$mode.css")) \
       || fail "$mode: the built copy differs from the installed Yaru (< Yaru, > dusk):
 $(head -12 <<< "$d")"
   done

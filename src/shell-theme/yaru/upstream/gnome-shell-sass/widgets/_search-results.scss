@@ -25,7 +25,7 @@
 .search-section-content {
   background-color: $system_overlay_bg_color;
   color: $system_fg_color;
-  border-radius: $modal_radius * 1.5;
+  border-radius: $radius-tile; /* dusk: corner */
   padding: $base_padding * 2;
   margin:0 $base_margin * 3;
   border: 2px solid transparent;
@@ -37,7 +37,7 @@
 
 %search_section_content_item {
   @include tile_button($bg:$system_overlay_bg_color);
-  border-radius: $base_border_radius * 1.65;
+  border-radius: $radius-card; /* dusk: corner */
 }
 
 .search-statusbox {
@@ -52,6 +52,12 @@
 
 .grid-search-results {
   spacing: $base_padding * 5;
+
+  // dusk: search's other icons (system actions such as Lock Screen) read
+  // their size from CSS: the app grid's (decision 20).
+  .overview-icon {
+    icon-size: $app-grid-icon-size;
+  }
 }
 
 // Search results with icons

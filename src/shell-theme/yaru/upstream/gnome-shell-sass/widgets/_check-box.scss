@@ -4,7 +4,7 @@
   StBoxLayout { spacing: .8em; }
 
   StBin {
-    border-radius: 7px;
+    border-radius: $radius-checkbox; /* dusk: corner */
     padding: 2px;
   }
 
@@ -19,7 +19,7 @@
     padding: 1px;
 
     color: transparent;
-    border-radius: 6px;
+    border-radius: $radius-checkbox; /* dusk: corner */
     border: 2px solid transparentize(if($variant == 'light', black, white), .85);
   }
 

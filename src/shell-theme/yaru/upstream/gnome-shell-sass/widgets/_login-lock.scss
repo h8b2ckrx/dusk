@@ -153,7 +153,7 @@ $_gdm_dialog_width: 25em;
   .login-dialog-auth-list-item {
     @extend %lockscreen_button;
 
-    border-radius: $modal_radius * 0.6;
+    border-radius: $radius-menu-item; /* dusk: corner */
     padding: $base_padding * 1.2;
   }
 }
@@ -253,7 +253,7 @@ $_gdm_dialog_width: 25em;
   .unlock-dialog-clock-hint {
     margin-top: 2em;
     padding: $base_padding $base_padding * 3;
-    border-radius: $base_border_radius * 2;
+    border-radius: $radius-osd-label; /* dusk: corner */
     font-weight: bold;
   }
 }
@@ -279,7 +279,7 @@ $_gdm_dialog_width: 25em;
     padding: $base_margin * 4 $base_margin * 11;
     color: $_gdm_fg;
     background-color: transparentize($_gdm_fg, .9);
-    border-radius: $forced_circular_radius;
+    border-radius: $radius-pill-button; /* dusk: corner */
   }
 }
 
@@ -309,7 +309,7 @@ $_gdm_dialog_width: 25em;
     border: none;
     background-color: transparentize($_gdm_fg,0.9);
     color: $_gdm_fg;
-    border-radius: $modal_radius;
+    border-radius: $radius-notification; /* dusk: corner */
 
     &.critical { background-color: transparentize($_gdm_fg,0.8) }
     &:active { background-color: transparentize($_gdm_fg,0.9); }

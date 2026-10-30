@@ -19,7 +19,7 @@ StScrollBar {
   }
 
   > .vhandle, > .hhandle {
-    border-radius: 8px;
+    border-radius: $radius-scrollbar; /* dusk: corner */
     background-color: mix($fg_color, $bg_color, 30%);
     border: 3px solid transparent; //would be nice to margin or at least to transparent
     transition: 500ms all ease;

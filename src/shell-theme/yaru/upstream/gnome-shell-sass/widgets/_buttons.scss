@@ -18,7 +18,7 @@
 .icon-button {
   @extend %button;
 
-  border-radius: $forced_circular_radius; // is circular
+  border-radius: $radius-icon-button; // dusk: corner (Yaru: is circular)
   padding: $scaled_padding * 2;
   min-height: $scalable_icon_size;
 

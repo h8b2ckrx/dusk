@@ -13,6 +13,10 @@ $app_folder_size: 720px;
   page-padding-bottom: $base_padding * 4;
   page-padding-left: $base_padding * 3;
   page-padding-right: $base_padding * 3;
+  // dusk: the app grid's icon size (decision 20), a dusk property:
+  // extension.js reads it on the main app grid only, and gives search's app
+  // results the same; folder grids keep Shell's size.
+  -dusk-app-icon-size: $app-grid-icon-size;
 }
 
 /* App Icons */
@@ -22,7 +26,7 @@ $app_folder_size: 720px;
   @include tile_button($bg:$system_base_color);
 
   // override the %tile style
-  border-radius: $base_border_radius*3;
+  border-radius: $radius-tile; /* dusk: corner */
   padding: $base_padding * 2;
 
   // the icon itself
@@ -45,7 +49,7 @@ $app_folder_size: 720px;
 .app-grid-running-dot {
   height: 5px;
   width: 5px;
-  border-radius:5px;
+  border-radius: $radius-round; /* dusk: corner */
   background-color: $system_fg_color;
   offset-y: 6px;
 }
@@ -60,7 +64,7 @@ $app_folder_size: 720px;
   width: $app_folder_size;
   height: $app_folder_size;
 
-  border-radius: $modal_radius * 4;
+  border-radius: $radius-folder-dialog; /* dusk: corner */
   background-color: $system_overlay_bg_color;
   color: $system_fg_color;
 
@@ -70,6 +74,12 @@ $app_folder_size: 720px;
   } @else {
     padding: 0 1px;
     box-shadow: inset 0 0 0 1px $system_borders_color;
+  }
+
+  // dusk: corner: tiles inside an open folder (Yaru gives them the shared
+  // tile corner only).
+  & .overview-tile, & .grid-search-result {
+    border-radius: $radius-folder-tile;
   }
 
   & .folder-name-container {
@@ -157,7 +167,7 @@ $page_indicator_size: 10px;
     background-gradient-start: rgba(255, 255, 255, 0.05);
     background-gradient-end: transparent;
     background-gradient-direction: horizontal;
-    border-radius: $modal_radius * 1.5 0px 0px $modal_radius * 1.5;
+    border-radius: $radius-tile 0 0 $radius-tile; /* dusk: corner */
   }
 
   &.previous:ltr,
@@ -165,7 +175,7 @@ $page_indicator_size: 10px;
     background-gradient-start: transparent;
     background-gradient-end: rgba(255, 255, 255, 0.05);
     background-gradient-direction: horizontal;
-    border-radius: 0px $modal_radius * 1.5 $modal_radius * 1.5 0px;
+    border-radius: 0 $radius-tile $radius-tile 0; /* dusk: corner */
   }
 }
 
@@ -174,7 +184,7 @@ $page_indicator_size: 10px;
   padding: $base_padding * 3;
   width: $medium_icon_size;
   height: $medium_icon_size;
-  border-radius: $forced_circular_radius;
+  border-radius: $radius-icon-button; /* dusk: corner */
   transition-duration: 100ms;
 
   > StIcon { color: $system_fg_color;}

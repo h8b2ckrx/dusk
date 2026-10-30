@@ -3,7 +3,7 @@
 // style for all dialogs
 .modal-dialog {
   background-color: $bg_color;
-  border-radius: $alert_radius;
+  border-radius: $radius-dialog; /* dusk: corner */
   padding: $base_padding * 4;
   spacing: $base_padding * 3;
   box-shadow: 0 12px 8px 12px rgba(0,0,0,0.03);
@@ -57,7 +57,7 @@
     color: $warning_color;
     background-color: transparentize($warning_color, 0.9);
     padding: $base_padding * 1.5;
-    border-radius: $base_border_radius;
+    border-radius: $radius-inset; /* dusk: corner */
     margin: $base_margin 0;
   }
 }
@@ -127,7 +127,7 @@
     @extend %caption;
     text-align: center;
     padding: $base_padding * 1.5;
-    border-radius: $base_border_radius;
+    border-radius: $radius-inset; /* dusk: corner */
     margin: $base_margin 0;
   }
 
@@ -168,6 +168,7 @@
     // styled similar to switcher-popup
     .audio-selection-device {
       @include tile_button($fg:$fg_color, $bg:$bg_color, $system:false);
+      border-radius: $radius-dialog-tile; // dusk: corner
 
       .audio-selection-device-box {
         padding: $base_padding * 2;

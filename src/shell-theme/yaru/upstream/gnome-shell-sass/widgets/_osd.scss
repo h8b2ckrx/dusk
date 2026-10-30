@@ -38,7 +38,7 @@ $osd_levelbar_height:6px;
 .osd-monitor-label, .osd-break-countdown-label {
   background-color: -st-accent-color;
   color: -st-accent-fg-color;
-  border-radius: $modal_radius;
+  border-radius: $radius-osd-label; /* dusk: corner */
   font-size: 3em;
   font-weight: bold;
   font-feature-settings: "tnum";

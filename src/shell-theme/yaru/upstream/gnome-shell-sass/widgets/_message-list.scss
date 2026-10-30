@@ -35,7 +35,7 @@
   .message {
     margin-bottom: $base_padding * 2 !important;
     // manually adjust radius to account for popover corners
-    border-radius: $modal_radius + 2px;
+    border-radius: $radius-notification; /* dusk: corner */
   }
 }
 
@@ -48,7 +48,7 @@
   @extend %heading;
 
   .message-list-clear-button {
-    border-radius: $forced_circular_radius;
+    border-radius: $radius-pill-button; /* dusk: corner */
   }
 }
 
@@ -81,7 +81,7 @@
   @extend %card;
   padding: $base_padding;
   margin: 0;
-  border-radius: $modal_radius;
+  border-radius: $radius-notification; /* dusk: corner */
 
   background-color: if($variant == 'light', $card_bg_color, lighten($card_bg_color, 5%));
 
@@ -140,7 +140,7 @@
     .message-close-button {
       @extend .icon-button;
       @extend %notification_button;
-      border-radius: $forced_circular_radius; // make circular
+      border-radius: $radius-icon-button; /* dusk: corner */ // make circular
       color: $fg_color;
     }
 
@@ -225,7 +225,7 @@
 /* Media Controls */
 .message-media-control {
   padding: 0 $base_padding * 3;
-  border-radius: $base_border_radius;
+  border-radius: $radius-button; /* dusk: corner */
   color: $fg_color;
   border: 1px solid transparent;
 
@@ -259,7 +259,7 @@
 .media-message {
   // album-art
   .message-icon {
-    border-radius: $base_border_radius !important;
+    border-radius: $radius-inset !important; /* dusk: corner */
 
     &.message-themed-icon {
       icon-size: $large_icon_size !important; // 32px

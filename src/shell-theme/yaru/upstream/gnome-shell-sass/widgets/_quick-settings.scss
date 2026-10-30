@@ -1,6 +1,6 @@
 .quick-settings {
   padding: $base_padding * 3;
-  border-radius: $modal_radius * 2.25;
+  border-radius: $radius-quick-settings; /* dusk: corner */
 
   .icon-button, .button {
     padding: $base_padding * 1.75;
@@ -13,7 +13,7 @@
 }
 
 .quick-toggle, .quick-toggle-has-menu {
-  border-radius: $forced_circular_radius;
+  border-radius: $radius-quick-toggle; /* dusk: corner */
   min-width: 12em;
   max-width: 12em;
   min-height: $scalable_icon_size * 3; // use icon size so the button scales
@@ -54,27 +54,27 @@
     max-width: auto;
 
     &:ltr {
-      border-radius: $forced_circular_radius 0 0 $forced_circular_radius;
+      border-radius: $radius-quick-toggle 0 0 $radius-quick-toggle; /* dusk: corner */
       > StBoxLayout { padding-right: $scaled_padding * 1.5; }
     }
 
     &:rtl {
-      border-radius: 0 $forced_circular_radius $forced_circular_radius 0;
+      border-radius: 0 $radius-quick-toggle $radius-quick-toggle 0; /* dusk: corner */
       > StBoxLayout { padding-left: $scaled_padding * 1.5; }
     }
 
-    &:ltr:last-child { border-radius: $forced_circular_radius; }
-    &:rtl:last-child { border-radius: $forced_circular_radius; }
+    &:ltr:last-child { border-radius: $radius-quick-toggle; /* dusk: corner */ }
+    &:rtl:last-child { border-radius: $radius-quick-toggle; /* dusk: corner */ }
   }
 
   & .quick-toggle-menu-button {
     padding: $scaled_padding $scaled_padding * 1.75;
 
     &:ltr {
-      border-radius: 0 $forced_circular_radius $forced_circular_radius 0;
+      border-radius: 0 $radius-quick-toggle $radius-quick-toggle 0; /* dusk: corner */
     }
     &:rtl {
-      border-radius: $forced_circular_radius 0 0 $forced_circular_radius;
+      border-radius: $radius-quick-toggle 0 0 $radius-quick-toggle; /* dusk: corner */
     }
   }
 
@@ -143,7 +143,7 @@ $quick_toggle_checked_separator_color: if(
   .slider-bin {
     &:focus {@include button(focus);}
     padding: $base_padding;
-    border-radius: $forced_circular_radius;
+    border-radius: $radius-slider; /* dusk: corner */
   }
 }
 
@@ -155,7 +155,7 @@ $quick_toggle_checked_separator_color: if(
     @include button(normal);
   }
 
-  border-radius: $base_border_radius * 3;
+  border-radius: $radius-popover; /* dusk: corner */
 
   margin: $base_padding * 2 0 0;
 

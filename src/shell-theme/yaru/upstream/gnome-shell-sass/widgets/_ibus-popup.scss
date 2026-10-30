@@ -7,7 +7,7 @@
 .candidate-popup-content {
   padding: $base_padding;
   spacing: $base_padding;
-  border-radius: $base_padding * 2;
+  border-radius: $radius-popover; /* dusk: corner */
   @extend .popup-menu-content;
 }
 
@@ -19,7 +19,7 @@
 
 .candidate-box {
   padding: $base_padding $base_padding * 2 $base_padding $base_padding * 2;
-  border-radius: $base_border_radius;
+  border-radius: $radius-menu-item; /* dusk: corner */
   &:selected { background-color: -st-accent-color; color: -st-accent-fg-color; }
   &:hover { background-color: $hover_bg_color; color: $hover_fg_color; }
 }
@@ -36,5 +36,5 @@
   & StIcon { icon-size: $base_icon_size; }
 }
 
-.candidate-page-button-previous { border-radius: $base_border_radius 0px 0px $base_border_radius; border-right-width: 0;box-shadow: none;}
-.candidate-page-button-next { border-radius: 0px $base_border_radius $base_border_radius 0px;box-shadow: none;}
+.candidate-page-button-previous { border-radius: $radius-button 0 0 $radius-button; /* dusk: corner */ border-right-width: 0;box-shadow: none;}
+.candidate-page-button-next { border-radius: 0 $radius-button $radius-button 0; /* dusk: corner */box-shadow: none;}

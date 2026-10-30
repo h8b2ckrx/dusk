@@ -32,6 +32,21 @@ test_golden_probe_matches_theme() {
   done
 }
 
+# Corners: dusk's theme alone gives every recorded corner, predicted for
+# every selector and measured on every probed widget (Task 4).
+test_golden_radii_match_theme() {
+  local mode v out
+  for mode in dark light; do
+    "$REPO/tests/headless/golden.py" check-static "$(theme_css "$mode")" "$REPO/tests/golden/static-$mode.json" \
+      "$REPO/tests/golden/exceptions.tsv" --slots radius || fail "$mode: corners differ from the record"
+  done
+  for v in $GOLDEN_VARIANTS; do
+    out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
+    "$REPO/tests/headless/golden.py" check-probe "$out/snapshots.json" "$(golden_probe_file "$v")" \
+      "$REPO/tests/golden/exceptions.tsv" --slots radius || fail "$v: measured corners differ from the record"
+  done
+}
+
 # A changed record is reported, naming the selector and the slot: a record
 # of dusk's theme checks clean against it, and with one menu background
 # changed reports exactly that.

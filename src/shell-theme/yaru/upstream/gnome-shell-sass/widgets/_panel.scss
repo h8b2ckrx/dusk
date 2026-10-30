@@ -91,6 +91,11 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
 
       .messages-indicator {
         icon-size: $scalable_icon_size;
+        // dusk: corner and padding (decision 24): the clock's corners, and
+        // its pill's height with the whole icon showing.
+        border-radius: $radius-topbar-item;
+        padding-top: $topbar-indicator-padding;
+        padding-bottom: $topbar-indicator-padding;
       }
     }
   }
