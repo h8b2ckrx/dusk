@@ -45,16 +45,11 @@ test_headless_light_dialogs_stock_layout() {
 }
 
 # In every probed UI state, each widget's computed radius is what dusk's
-# theme alone predicts (it's the only stylesheet in Shell's base slot), and
-# every chunk selector expected on screen matches a real element.
+# theme alone predicts (it's the only stylesheet in Shell's base slot).
 test_headless_shell_radii_match_stylesheets() {
   local out; out=$(probe_dir dark)
   "$REPO/tests/headless/cascade.py" check "$out/snapshots.json" "$(theme_css dark)" "$(empty_css)" \
     || fail "computed radii differ from dusk's theme"
-  local selectors=()
-  mapfile -t selectors < <(grep -hvE '^(# |~)|^$' "$REPO"/tests/headless/chunk-*.selectors)
-  "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "${selectors[@]}" \
-    || fail "selectors not found on screen"
 }
 
 # The overview's workspace wallpaper is clipped at a radius Shell sets in code
@@ -351,27 +346,15 @@ test_headless_shell_colors_match_stylesheets() {
   done
 }
 
-# check_chunk_colors CHUNKS SELECTOR...: in dark and light, the labels on the
-# surfaces a row of CHUNKS decides stay legible (contrast 4.5), and the
-# SELECTORS are on screen. Their colors are the golden records' to check.
-check_chunk_colors() {
-  local chunks="$1" mode out yaru on
-  shift
-  # The chunks switched on in src/_tokens.scss (what the stylesheet has).
-  on=$(sed -n 's/^\$shell-color-chunks: (\(.*\));/\1/p' "$REPO/src/_tokens.scss" \
-    | tr ',' '\n' | sed -n 's/ *\([0-9]\): true/\1/p' | paste -sd, -)
+# Labels stay legible on their surfaces, in dark and light: contrast 4.5, or no
+# worse than stock Yaru 26.04 or 24.04 draws them (some text is dim by design).
+test_headless_text_stays_legible() {
+  local mode out
   for mode in dark light; do
     out=$(probe_dir "$mode")
-    yaru=$(theme_css "$mode")
-    "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$yaru" \
-      "$REPO/docs/inventory-shell-colors.tsv" "$mode" "$chunks" "$on" || fail "$mode: chunk $chunks text isn't legible"
-    "$REPO/tests/headless/cascade.py" unmatched "$out/snapshots.json" "$@" || fail "$mode: chunk $chunks surfaces not on screen"
+    "$REPO/tests/headless/colors.py" contrast "$out/snapshots.json" "$(yaru_${mode}_css)" \
+      "$REPO/docs/reference/yaru-24.04-gnome-shell-$mode.css" || fail "$mode: text isn't legible"
   done
-}
-
-# Chunk 1: menus and quick settings, and the controls drawn on them.
-test_headless_popup_colors_follow_2404() {
-  check_chunk_colors 1 .popup-menu-content .popup-menu-item .quick-settings .quick-toggle-menu .button
 }
 
 # The accent still follows the Settings picker: a checked quick toggle with
@@ -387,18 +370,6 @@ slate, blue = checked(sys.argv[1]), checked(sys.argv[2])
 assert slate and blue, ("no checked quick toggle", slate, blue)
 assert slate != blue, ("same color with both accents", slate)
 EOF
-}
-
-# Chunk 2: notifications and the date menu.
-test_headless_notification_colors_follow_2404() {
-  check_chunk_colors 2 .message .calendar .events-button .datemenu-today-button
-}
-
-# Chunk 3: dialogs, OSDs, switchers, tooltips and the screenshot panel. The
-# switchers and tooltips need windows and dash hovers the headless session
-# doesn't have; the mirror and shadowing tests cover their rules.
-test_headless_dialog_osd_colors_follow_2404() {
-  check_chunk_colors 3 .modal-dialog .modal-dialog-button .osd-window .screenshot-ui-panel
 }
 
 # A menu's separator and its items you can't click draw no background of
@@ -462,19 +433,14 @@ EOF
   done
 }
 
-# Other extensions' stylesheets (Ubuntu Dock's, Blur my Shell's) stay loaded
-# through every one of those rebuilds.
+# Other extensions' stylesheets (Ubuntu Dock's) stay loaded through every one of
+# those rebuilds.
 test_headless_theme_keeps_extension_stylesheets() {
-  local variant uuid
-  for variant in dock blur; do
-    uuid=ubuntu-dock@ubuntu.com
-    [ "$variant" = blur ] && uuid=blur-my-shell@aunetx
-    python3 - "$(probe_dir dark "$variant")/switches.json" "$uuid" <<'EOF' || fail "$variant: $uuid's stylesheet was dropped"
+  python3 - "$(probe_dir dark dock)/switches.json" <<'EOF' || fail "Ubuntu Dock's stylesheet was dropped"
 import json, sys
 for name, state in json.load(open(sys.argv[1])).items():
-    assert any(sys.argv[2] in path for path in state["theme"]["custom"]), (name, state["theme"]["custom"])
+    assert any("ubuntu-dock@ubuntu.com" in path for path in state["theme"]["custom"]), (name, state["theme"]["custom"])
 EOF
-  done
 }
 
 # Disabling dusk gives Shell's own theme back (Yaru, from its resource, with

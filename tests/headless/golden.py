@@ -19,7 +19,7 @@ description in a state.
 Usage:
   golden.py record-static BASE.css OVERLAY.css OUT.json
   golden.py record-probe SNAPSHOTS.json OUT.json
-  golden.py check-static THEME.css GOLDEN.json EXCEPTIONS.tsv [--overlay OVERLAY.css] [--only REGEX] [--slots LIST]
+  golden.py check-static THEME.css GOLDEN.json EXCEPTIONS.tsv [--only REGEX] [--slots LIST]
   golden.py check-probe SNAPSHOTS.json GOLDEN.json EXCEPTIONS.tsv [--only REGEX] [--slots LIST]
   golden.py look THEME.css SELECTOR
 The checks print one line per key and slot that differs from the record
@@ -163,16 +163,15 @@ def _compare(key, want, got, exceptions, slots):
     return lines
 
 
-def check_static(theme_css, golden, exceptions, only=None, slots=None, overlay_css=None):
+def check_static(theme_css, golden, exceptions, only=None, slots=None):
     slots = slots or SLOTS + ["radius"]
     theme_c, theme_r = _rules(theme_css, 0)
-    over_c, over_r = _rules(overlay_css, 1) if overlay_css else ([], [])
     lines = []
     for key, want in golden.items():
         if only and not re.search(only, key):
             continue
         records = colors.element(want["selector"], tuple(want["states"]))
-        got = _predicted_look(records, theme_c + over_c, theme_r + over_r, len(records) - 1)
+        got = _predicted_look(records, theme_c, theme_r, len(records) - 1)
         lines += _compare(key, want, got, exceptions, slots)
     return lines
 
@@ -196,7 +195,6 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["record-static", "record-probe", "check-static", "check-probe", "look"])
     ap.add_argument("paths", nargs="+")
-    ap.add_argument("--overlay")
     ap.add_argument("--only")
     ap.add_argument("--slots")
     args = ap.parse_args()
@@ -218,7 +216,7 @@ def main():
     source, golden_path, exceptions_path = args.paths
     golden, exceptions = json.load(open(golden_path)), load_exceptions(exceptions_path)
     if args.command == "check-static":
-        lines = check_static(source, golden, exceptions, args.only, slots, args.overlay)
+        lines = check_static(source, golden, exceptions, args.only, slots)
     else:
         lines = check_probe(json.load(open(source)), golden, exceptions, args.only, slots)
     print("\n".join(lines[:60]) + (f"\n… {len(lines)} differences" if len(lines) > 60 else ""))

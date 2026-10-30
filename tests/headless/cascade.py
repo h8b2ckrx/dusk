@@ -19,22 +19,6 @@ Usage:
   cascade.py check SNAPSHOTS.json YARU.css DUSK.css
       Print every element whose computed radius differs from the prediction;
       exit 1 if any.
-  cascade.py clobbered SNAPSHOTS.json YARU.css DUSK.css
-      Print every element where one of our rules overrides a more specific
-      Yaru rule: a deliberate special case (e.g. square items inside a
-      submenu) that a general rule of ours would erase; exit 1 if any.
-  cascade.py shadowed YARU.css DUSK.css [EXCLUDE_REGEX]
-      Static version of `clobbered`, for UI states the probe doesn't show:
-      print every Yaru radius rule that targets a subset of what one of our
-      rules targets, is more specific, and isn't re-asserted in ours; exit 1
-      if any. EXCLUDE_REGEX skips Yaru selectors (e.g. the lock screen, where
-      dusk is off).
-  cascade.py drift SNAPSHOTS.json YARU.css DUSK.css [STOCK=>OURS ...]
-      Print every element whose winning rule changed meaning: in stock Yaru
-      rule STOCK decided its radius, ours has a rule for STOCK too, but a
-      different rule of ours wins and gives a different value (e.g. an element
-      with two classes). STOCK=>OURS pairs are reviewed, intended drifts.
-      Exit 1 if any other.
   cascade.py unmatched SNAPSHOTS.json SELECTOR...
       Print the selectors that match no element in any snapshot; exit 1 if any.
 """
@@ -221,65 +205,6 @@ def predict(records, rules):
             for best in winners(records, rules)]
 
 
-def clobbered(records, yaru, dusk):
-    """Indices of records where our winning rule is less specific than the
-    rule Yaru alone would apply, on some corner."""
-    stock = winners(records, yaru)
-    ours = winners(records, yaru + dusk)
-    hits = []
-    for i, (before, after) in enumerate(zip(stock, ours)):
-        for b, a in zip(before, after):
-            if b and a and a in dusk and a.specificity < b.specificity:
-                hits.append(i)
-                break
-    return hits
-
-
-def narrows(y, d):
-    """True if Yaru rule y's subject has everything rule d's subject has."""
-    a, b = y.compounds[-1][1], d.compounds[-1][1]
-    return ((not b["type"] or b["type"] == a["type"])
-            and set(b["ids"]) <= set(a["ids"])
-            and set(b["classes"]) <= set(a["classes"])
-            and set(b["pseudo"]) <= set(a["pseudo"] + ["ltr"]))
-
-
-def shadowed(yaru, dusk, exclude=None):
-    """(our selector, Yaru selector) pairs where ours would erase Yaru's."""
-    ours = {r.selector for r in dusk}
-    pairs = set()
-    for d in dusk:
-        for y in yaru:
-            if y.selector in ours or y.specificity <= d.specificity:
-                continue
-            if exclude and re.search(exclude, y.selector):
-                continue
-            if narrows(y, d):
-                pairs.add((d.selector, y.selector))
-    return sorted(pairs)
-
-
-def drifts(records, yaru, dusk):
-    """(index, stock selector, our winning selector) where ours has a rule for
-    the stock winner's selector but another of our rules wins with a different
-    value."""
-    by_selector = {}
-    for d in dusk:
-        by_selector.setdefault(d.selector, []).append(d)
-    found = []
-    stock = winners(records, yaru)
-    now = winners(records, yaru + dusk)
-    for i, (before, after) in enumerate(zip(stock, now)):
-        for corner, (b, a) in enumerate(zip(before, after)):
-            if not (b and a and a in dusk) or b.selector == a.selector:
-                continue
-            mirror = [d for d in by_selector.get(b.selector, []) if corner in d.corners]
-            if mirror and mirror[-1].corners[corner] != a.corners[corner]:
-                found.append((i, b.selector, a.selector))
-                break
-    return found
-
-
 def px(value):
     """Pixels for '12px' / '0', None for em, % or anything else."""
     if value is None:
@@ -319,15 +244,9 @@ def check(snapshots, rules):
 
 
 def main():
-    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "clobbered", "drift", "shadowed", "unmatched"):
+    if len(sys.argv) < 3 or sys.argv[1] not in ("check", "unmatched"):
         print(__doc__.strip(), file=sys.stderr)
         return 2
-    if sys.argv[1] == "shadowed":
-        pairs = shadowed(parse_rules(open(sys.argv[2]).read(), origin=0),
-                         parse_rules(open(sys.argv[3]).read(), origin=1),
-                         sys.argv[4] if len(sys.argv) > 4 else None)
-        print("\n".join(f"our '{d}' would erase Yaru's '{y}'" for d, y in pairs))
-        return 1 if pairs else 0
     snapshots = json.load(open(sys.argv[2]))
     if sys.argv[1] == "check":
         rules = (parse_rules(open(sys.argv[3]).read(), origin=0)
@@ -335,30 +254,6 @@ def main():
         problems = check(snapshots, rules)
         print("\n".join(problems))
         return 1 if problems else 0
-    if sys.argv[1] == "drift":
-        yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
-        dusk = parse_rules(open(sys.argv[4]).read(), origin=1)
-        allowed = {tuple(a.split("=>")) for a in sys.argv[5:]}
-        lines = set()
-        for records in snapshots.values():
-            for i, stock_sel, our_sel in drifts(records, yaru, dusk):
-                if (stock_sel, our_sel) not in allowed:
-                    lines.add(f"{describe(records, i)}: stock '{stock_sel}', ours '{our_sel}'")
-        print("\n".join(sorted(lines)))
-        return 1 if lines else 0
-    if sys.argv[1] == "clobbered":
-        yaru = parse_rules(open(sys.argv[3]).read(), origin=0)
-        dusk = parse_rules(open(sys.argv[4]).read(), origin=1)
-        lines = set()
-        for records in snapshots.values():
-            stock = winners(records, yaru)
-            ours = winners(records, yaru + dusk)
-            for i in clobbered(records, yaru, dusk):
-                for b, a in zip(stock[i], ours[i]):
-                    if b and a and a in dusk and a.specificity < b.specificity:
-                        lines.add(f"{describe(records, i)}: our '{a.selector}' overrides Yaru's '{b.selector}'")
-        print("\n".join(sorted(lines)))
-        return 1 if lines else 0
     unmatched = []
     for selector in sys.argv[3:]:
         compounds, _ = parse_selector(selector)

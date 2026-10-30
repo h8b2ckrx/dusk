@@ -69,9 +69,7 @@ See README, 'Updating after a GNOME, Yaru or libadwaita update'."
 # across tests while src/, extension/, tests/headless/, the probe tool and the
 # installed system (stock_key) are unchanged.
 # "dock" also loads Ubuntu Dock, laid out like the owner's (bottom, not
-# extended, shrink); "accent" picks the blue accent instead of slate; "blur"
-# loads Blur my Shell with its Contrasted top bar (dark pills behind the top
-# bar's items).
+# extended, shrink); "accent" picks the blue accent instead of slate.
 probe_dir() {
   local key out variant="${2:-}"
   key=$({ cd "$REPO" && find src extension tests/headless tools/headless-probe.sh -type f \
@@ -82,10 +80,6 @@ probe_dir() {
     local extra="" settings=""
     if [ "$variant" = accent ]; then
       settings="org.gnome.desktop.interface accent-color blue"
-    fi
-    if [ "$variant" = blur ]; then
-      extra=blur-my-shell@aunetx
-      settings="org.gnome.shell.extensions.blur-my-shell.panel style-panel 3"
     fi
     if [ "$variant" = dock ]; then
       extra=ubuntu-dock@ubuntu.com

@@ -1,7 +1,6 @@
 # key regex	slot	task	reason
 ^\.popup-sub-menu \.popup-menu-item:checked	radius	Task 4	a checked item inside a submenu (Shell doesn't nest submenus) was square only because the old override layer beat Yaru's !important checked corner; Yaru's own corner stands
 ^\.popup-sub-menu \.popup-menu-section:last-child \.popup-menu-item:last-child:hover	radius	Task 4	a submenu's last item went square on hover only through the old override layer's rule order (rounded at rest); Yaru keeps it rounded in both
-^\.(appfolder-dialogs|overview-components)-	*	Task 5	Blur my Shell's own classes: the old overlay copied its look so it would not override it; dusk's theme copies nothing of Blur my Shell (design, what goes away)
 ^\.(calendar|datemenu-today-button|events-button|weather-button|world-clocks-button|quick-toggle-menu|message)(:active)?:focus(:hover)?$	bg	Task 6	a keyboard-focused card mixes the accent into 24.04's white card, not the pop-up surface as the old overlay's derived row did: 5 steps of 255 in light mode, not visible
 (\.flat|\.calendar-day|\.calendar-day-heading|\.calendar-month-label|\.pager-button|\.audio-selection-device)[^ ]*:focus$	bg	Task 5	a keyboard-focused flat button mixes the accent into 24.04's surface at 25%, not 26.04's white: under 2 steps of 255 once drawn, not visible
 (\.notification-button|\.message-close-button|\.message-expand-button)(:active)?:focus(:hover)?$	bg	Task 6	keyboard focus on a notification button now follows 24.04's bubble values, as 24.04 does; the old overlay kept 26.04's stronger ones inside the accent mix

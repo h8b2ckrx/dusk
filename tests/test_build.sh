@@ -51,10 +51,6 @@ test_check_gtk_css_rejects_bad_css() {
   done
 }
 
-# Shell pop-up colors (decision 22): src/_shell-colors.scss (rules) and
-# src/_shell-color-values.scss (their 24.04 values) are generated from
-# docs/inventory-shell-colors.tsv by tools/mirror-colors.py.
-
 # css_rules FILE: FILE's rules in order, one per line ("selectors { decls }"),
 # comments dropped, whitespace normalized, and each url() reduced to its file
 # name (the copy resolves images next to the file, Yaru from its resource).

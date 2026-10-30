@@ -4,20 +4,11 @@
 # (tests/headless/golden.py; tests/golden/).
 
 # The recorded probe variants: MODE or MODE:VARIANT (probe_dir's names).
-GOLDEN_VARIANTS="dark light dark:dock dark:blur dark:accent"
+GOLDEN_VARIANTS="dark light dark:dock dark:accent"
 
 # golden_probe_file MODE[:VARIANT]: its record, e.g. probe-dark-dock.json.
 golden_probe_file() {
   echo "$REPO/tests/golden/probe-${1/:/-}.json"
-}
-
-# golden_exceptions MODE[:VARIANT]: the exceptions file for that record: the
-# Blur my Shell run also lists its own top bar, which sits on top of any theme.
-golden_exceptions() {
-  local file; file=$(mktemp)
-  cat "$REPO/tests/golden/exceptions.tsv" > "$file"
-  [ "$1" != dark:blur ] || cat "$REPO/tests/golden/exceptions-blur.tsv" >> "$file"
-  echo "$file"
 }
 
 # dusk's theme alone gives the recorded look for every selector, apart from
@@ -37,7 +28,7 @@ test_golden_probe_matches_theme() {
   for v in $GOLDEN_VARIANTS; do
     out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
     "$REPO/tests/headless/golden.py" check-probe "$out/snapshots.json" "$(golden_probe_file "$v")" \
-      "$(golden_exceptions "$v")" || fail "$v: the probed look differs from the record"
+      "$REPO/tests/golden/exceptions.tsv" || fail "$v: the probed look differs from the record"
   done
 }
 
@@ -52,7 +43,7 @@ test_golden_radii_match_theme() {
   for v in $GOLDEN_VARIANTS; do
     out=$(probe_dir "${v%%:*}" $([ "$v" != "${v#*:}" ] && echo "${v#*:}"))
     "$REPO/tests/headless/golden.py" check-probe "$out/snapshots.json" "$(golden_probe_file "$v")" \
-      "$(golden_exceptions "$v")" --slots radius || fail "$v: measured corners differ from the record"
+      "$REPO/tests/golden/exceptions.tsv" --slots radius || fail "$v: measured corners differ from the record"
   done
 }
 
@@ -196,8 +187,8 @@ EOF
   done
 }
 
-# The surface groups of decision 22 (tools/color-inventory-table.py's CHUNKS):
-# first match wins, tested against a key's first compound.
+# The surface groups of decision 22; a key belongs to the first that matches its
+# first compound, and to the menus if none does.
 GOLDEN_NOTIFICATIONS='^\.(message|notification|calendar|events-|world-clocks|weather|datemenu|shell-link)'
 GOLDEN_DIALOGS='^\.(modal-dialog|prompt-dialog|end-session|run-dialog|audio-device|polkit|dialog-list|osd-|pad-osd|resize-popup|workspace-switcher|ws-switcher|switcher-|cycler|dash-label|window-caption|screenshot-ui-|candidate-)'
 
