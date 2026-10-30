@@ -21,3 +21,4 @@ StLabel\.(date|day)-label < StBoxLayout < Gjs_ui_dateMenu_TodayButton	fg	Task 8	
 \.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	fg	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
 \.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	border	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
 \.panel-button|#panel\b|StLabel\.clock|\.messages-indicator	shadow	Task 9	dusk draws the grouped top bar: see-through, a dark pill behind each button (test_headless_topbar_*)
+Gjs_status_powerProfiles_Indicator	*	decision 27	the power mode's icon is off the top bar (test_headless_topbar_has_no_power_mode_icon)

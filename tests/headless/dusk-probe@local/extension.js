@@ -113,6 +113,7 @@ function themeState() {
         custom: theme.get_custom_stylesheets().map(name),
         duskHandler: Main.extensionManager.lookup('dusk@local')?.stateObj?._themeChangedId ?? null,
         variant: Main.getStyleVariant(),
+        powerModeIcon: !!Main.panel.statusArea.quickSettings._powerProfiles?.get_parent(),
     };
 }
 

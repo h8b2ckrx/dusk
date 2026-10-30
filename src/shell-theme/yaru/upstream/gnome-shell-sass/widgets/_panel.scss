@@ -142,7 +142,7 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
   // use system text styles for overview panel
   &:overview {
     .panel-button {
-      @include panel_button($fg:$system_panel_fg_color, $style: pill); // dusk: pills
+      @include panel_button($fg:$system_panel_fg_color, $style: overview-pill); // dusk: pills
 
       &#panelActivities .workspace-dot {
         background-color: $system_panel_fg_color;
@@ -150,7 +150,11 @@ $panel_transition_duration: 250ms; // same as the overview transition duration
 
       // clock
       &.clock-display {
-        @include panel_button($fg:$system_panel_fg_color, $style: pill, $highlighted_child: true, $child_class: '.clock'); // dusk: pills
+        @include panel_button($fg:$system_panel_fg_color, $style: overview-pill, $highlighted_child: true, $child_class: '.clock'); // dusk: pills
+
+        .messages-indicator {
+          @include topbar_pill($overview: true);
+        }
       }
     }
   }

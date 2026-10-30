@@ -88,11 +88,11 @@ $pill_fg_color: if($variant == 'light', $topbar-pill-text-light, $topbar-pill-te
 $pill_highlight_color: if($variant == 'light', $topbar-pill-highlight-light, $topbar-pill-highlight);
 $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_fg_color);
 
-@mixin topbar_pill() {
-  color: $pill_fg_color;
-  background-color: $pill_bg_color;
+@mixin topbar_pill($overview: false) {
+  color: if($overview, $topbar-pill-text, $pill_fg_color);
+  background-color: if($overview, $topbar-pill-background-overview, $pill_bg_color);
   border: $topbar-pill-border-width solid transparent;
-  box-shadow: inset 0 0 0 1px $pill_highlight_color;
+  box-shadow: inset 0 0 0 1px if($overview, $topbar-pill-highlight, $pill_highlight_color);
 }
 
 // Text entries drawing function
@@ -423,7 +423,7 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
   // $bg:                 background color, derived from $panel_fg_color
   // $fg:                 foreground color, also derived from $panel_fg_color
   // $style:              can be set to 'filled' if button uses a colored background,
-  //                      or 'pill' for dusk's top bar pill
+  //                      or 'pill' / 'overview-pill' for dusk's top bar pills
   //
   // $highlighted_child:  if true, applies some special overrides for to a
   //                      child element, see _panel.scss for details
@@ -451,8 +451,10 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
     $active_hover_fill: if($variant == 'light', darken($bg, 11%), lighten($bg, 11%));
   }
 
-  @if $style == 'pill' {
-    @include topbar_pill();
+  $pill: $style == 'pill' or $style == 'overview-pill';
+
+  @if $pill {
+    @include topbar_pill($style == 'overview-pill');
   } @else {
     @include panel_button_fill($fill);
 
@@ -483,12 +485,12 @@ $pill_icon_color: if($variant == 'light', $topbar-pill-text-light, $yaru_panel_f
       border: 3px solid transparent;
       border-radius: $radius-topbar-item; // dusk: corner
 
-      @if $style == 'pill' {
-        @include topbar_pill();
+      @if $pill {
+        @include topbar_pill($style == 'overview-pill');
       }
     }
 
-    @if $style != 'pill' {
+    @if not $pill {
       &:focus, &:hover {
         #{$child_class} {
           @include panel_button_fill($hover_fill);

@@ -98,6 +98,15 @@
   // Keep panel dark in overview too
   &:overview {
     background-color: $topbar-background !important; // dusk: see-through
+
+    // dusk: the overview is dark in both modes.
+    .panel-button#panelActivities .workspace-dot {
+      background-color: $yaru_panel_fg_color !important;
+    }
+
+    .system-status-icon {
+      color: $yaru_panel_fg_color !important;
+    }
   }
 
   // Override all panel button styling to use white text and normal font weight

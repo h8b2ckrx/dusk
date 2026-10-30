@@ -95,11 +95,13 @@ $titlebutton-backdrop-bg: transparent;
 // The top bar (owner, 2026-10-30; decision 26): see-through, with a pill behind
 // each button, the same under the pointer and with its menu open, and none on
 // the lock screen. The clock's pill is on its label. Dark mode has dark pills;
-// light mode has the light pop-ups' colors (owner, 2026-10-30).
+// light mode has the light pop-ups' colors (owner, 2026-10-30). The overview is
+// dark in both modes, and its pills match its search box.
 // ---------------------------------------------------------------------------
 $topbar-background: transparent;
 $topbar-pill-background: rgba(0, 0, 0, 0.8);
 $topbar-pill-background-light: rgba(250, 250, 250, 0.8);
+$topbar-pill-background-overview: #353535;
 $topbar-pill-text: white;
 $topbar-pill-text-light: #3D3D3D;
 $topbar-pill-border-width: 3px; // transparent

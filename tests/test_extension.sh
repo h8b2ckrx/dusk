@@ -18,7 +18,7 @@ EOF
 # app grid, search's app results) honour -dusk-app-icon-size, and dusk's
 # theme takes the base slot of Shell's theme, in Yaru's place, coming back
 # whenever Shell rebuilds its theme. Nothing else.
-test_extension_js_has_three_exceptions() {
+test_extension_js_has_four_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
@@ -48,6 +48,9 @@ test_extension_js_has_three_exceptions() {
   assert_contains "$js" ".connect('changed'"
   assert_contains "$js" "dusk-\${Main.getStyleVariant()}.css"
   assert_contains "$js" "Main.loadTheme();"
+  # The power mode's icon: off the top bar, and back on disable.
+  assert_contains "$js" "indicators.remove_child(icon);"
+  assert_contains "$js" "indicators.insert_child_at_index(icon, index);"
 }
 
 # gjs can't resolve Shell's resource:// imports outside Shell, but it parses

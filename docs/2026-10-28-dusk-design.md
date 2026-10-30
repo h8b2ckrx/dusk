@@ -212,6 +212,13 @@ Success looks like:
     in light mode, the same on hover, none on the lock screen, so Blur my
     Shell isn't needed. The theme loader is a third JS exception. Design:
     [2026-10-30-dusk-shell-theme-design.md](2026-10-30-dusk-shell-theme-design.md).
+    In the overview, which is dark in both modes, the pills take the search
+    box's color (owner, same day).
+27. The power mode's icon off the top bar (owner, 2026-10-30): Quick Settings
+    shows it beside Wi-Fi, Bluetooth, sound and battery whenever the mode
+    isn't Balanced. CSS can't remove an actor, so `extension.js` takes it out
+    of Quick Settings' indicator box, a fourth JS exception, and `disable()`
+    puts it back. The power mode control stays in Quick Settings' menu.
 
 ## 5. Architecture
 

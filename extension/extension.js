@@ -1,9 +1,9 @@
 // dusk is a Shell theme: theme/dusk-dark.css and theme/dusk-light.css in this
 // folder, built from dusk's copy of Yaru's source (src/shell-theme).
 //
-// Three owner-approved exceptions (design §2, §4.16, §4.20; the Shell theme
-// design, 2026-10-30), each doing in code what Shell doesn't let a
-// stylesheet do:
+// Four owner-approved exceptions (design §2, §4.16, §4.20, decision 27; the
+// Shell theme design, 2026-10-30), each doing in code what Shell doesn't let
+// a stylesheet do:
 //
 // 1. Shell clips the overview's workspace wallpaper at 30px. It follows the
 //    theme's border-radius on .workspace-background instead.
@@ -16,6 +16,8 @@
 //    theme itself on dark/light, High Contrast and Shell color-scheme
 //    changes, putting Yaru back; dusk puts its own back right away, keeping
 //    the other extensions' stylesheets.
+// 4. Shell shows the power mode's icon in the top bar. dusk takes it off; the
+//    control stays in Quick Settings' menu.
 //
 // disable() gives everything back to Shell. If a future Shell renames what a
 // patch relies on, that patch is skipped: that one value stays Shell's (the
@@ -38,12 +40,14 @@ export default class DuskExtension extends Extension {
         this._themeContext = St.ThemeContext.get_for_stage(global.stage);
         this._themeChangedId = null;
         this._applyingTheme = false;
+        this._powerMode = null;
         try {
-            // First: the other two read their values from the theme.
+            // First: the others read their values from the theme.
             this._loadTheme();
             this._patchWorkspaceBackgrounds();
             this._patchAppGridIconSize();
             this._patchSearchIcons();
+            this._hidePowerModeIcon();
         } catch (e) {
             // Shell never calls disable() after enable() throws: give back
             // whatever was patched already.
@@ -87,6 +91,33 @@ export default class DuskExtension extends Extension {
             result.icon.setIconSize(Main.defaultIconSize);
         }
         this._searchIcons = null;
+
+        if (this._powerMode) {
+            const {indicators, handlerId, icon, index} = this._powerMode;
+            indicators.disconnect(handlerId);
+            if (icon)
+                indicators.insert_child_at_index(icon, index);
+            this._powerMode = null;
+        }
+    }
+
+    // Exception 4: the power mode's icon off the top bar. Shell adds its
+    // indicators some time after it starts, so this also watches for it.
+    _hidePowerModeIcon() {
+        const quickSettings = Main.panel.statusArea.quickSettings;
+        const indicators = quickSettings?._indicators;
+        if (!indicators)
+            return;
+        const hide = () => {
+            const icon = quickSettings._powerProfiles;
+            if (icon?.get_parent() !== indicators)
+                return;
+            this._powerMode.icon = icon;
+            this._powerMode.index = indicators.get_children().indexOf(icon);
+            indicators.remove_child(icon);
+        };
+        this._powerMode = {indicators, handlerId: indicators.connect('child-added', hide)};
+        hide();
     }
 
     // Exception 3: dusk's theme in the base slot of Shell's theme, and back

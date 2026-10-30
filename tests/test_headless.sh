@@ -234,8 +234,9 @@ EOF
 }
 
 # check_topbar MODE: runs the python on stdin with MODE's `snapshots`, `is_panel`
-# (a record is the top bar), PILL (the colors of a top bar pill), ICON (the color
-# of the icons on it) and RADIUS (its corner) defined.
+# (a record is the top bar), PILL and OVERVIEW_PILL (the colors of a top bar pill
+# on the desktop and in the overview), ICON and OVERVIEW_ICON (the color of the
+# icons on them) and RADIUS (its corner) defined.
 check_topbar() {
   local mode="$1" out; out=$(probe_dir "$mode")
   python3 - "$out/snapshots.json" "$REPO/tests/headless" <<EOF
@@ -248,6 +249,8 @@ def is_panel(rec):
 PILL = {"dark": [[0, 0, 0, 204], [255, 255, 255, 255], [0, 0, 0, 0], [255, 255, 255, 7]],
         "light": [[250, 250, 250, 204], [61, 61, 61, 255], [0, 0, 0, 0], [0, 0, 0, 7]]}["$mode"]
 ICON = {"dark": [242, 242, 242, 255], "light": [61, 61, 61, 255]}["$mode"]
+OVERVIEW_PILL = [[53, 53, 53, 255], [255, 255, 255, 255], [0, 0, 0, 0], [255, 255, 255, 7]]
+OVERVIEW_ICON = [242, 242, 242, 255]
 RADIUS = float(tokens.token_values("$REPO", "sassc", ["topbar-item"])["topbar-item"].removesuffix("px"))
 $(cat)
 EOF
@@ -266,33 +269,50 @@ PY
   done
 }
 
-# Each top bar button has a pill of its own in the mode's colors, the same under
-# the pointer and with its menu open; the clock's pill is on its label, the
-# bell's its own, and the icons on them read in the mode's colors.
+# Each top bar button has a pill of its own, the same under the pointer and with
+# its menu open: in the mode's colors on the desktop, and the search box's in
+# the overview, which is dark in both modes. The clock's pill is on its label,
+# the bell's its own, and the icons on them read in the pill's colors.
 test_headless_topbar_buttons_have_pills() {
   local mode
   for mode in dark light; do
     check_topbar "$mode" <<'PY' || fail "$mode"
 bad = []
-for state in ("desktop", "overview", "topbar-hover", "quick-settings"):
+for state in ("desktop", "topbar-hover", "quick-settings", "overview", "app-grid", "search"):
     records = snapshots[state]
+    pill, icon = (OVERVIEW_PILL, OVERVIEW_ICON) if state in ("overview", "app-grid", "search") else (PILL, ICON)
     buttons = [r for r in records if "panel-button" in r["classes"]]
     assert len(buttons) > 3, f"{state}: {len(buttons)} top bar buttons"
     for r in buttons:
         if "clock-display" in r["classes"]:
             if r["colors"][0][3] != 0:
                 bad.append(f"{state}: the clock button itself has {r['colors'][0]}")
-        elif r["colors"] != PILL or r["radii"][0] != RADIUS:
+        elif r["colors"] != pill or r["radii"][0] != RADIUS:
             bad.append(f"{state}: {r['types'][0]} {r['colors']} {r['radii']}")
     for r in records:
-        if "clock" in r["classes"] and (r["colors"] != PILL or r["radii"][0] != RADIUS):
+        if "clock" in r["classes"] and (r["colors"] != pill or r["radii"][0] != RADIUS):
             bad.append(f"{state}: clock {r['colors']} {r['radii']}")
-        if "system-status-icon" in r["classes"] and r["colors"][1] != ICON:
+        if "system-status-icon" in r["classes"] and r["colors"][1] != icon:
             bad.append(f"{state}: an icon in {r['colors'][1]}")
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 PY
   done
+}
+
+# The power mode's icon is off the top bar (owner, 2026-10-30), and comes back
+# when dusk is disabled. Quick Settings' menu keeps the control itself.
+test_headless_topbar_has_no_power_mode_icon() {
+  check_topbar dark <<'PY' || fail "the power mode's icon is in the top bar"
+for state in ("desktop", "overview", "quick-settings"):
+    assert not [r for r in snapshots[state] if "Gjs_status_powerProfiles_Indicator" in r["types"]], state
+PY
+  python3 - "$(probe_dir dark)/result.json" <<'EOF' || fail "disabling dusk doesn't give the icon back"
+import json, sys
+theme = json.load(open(sys.argv[1]))["theme"]
+assert (theme["start"]["powerModeIcon"], theme["disabled"]["powerModeIcon"], theme["reenabled"]["powerModeIcon"]) \
+    == (False, True, False), theme
+EOF
 }
 
 # The lock screen's top bar has no pills, and stays light on the wallpaper in
