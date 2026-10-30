@@ -1,6 +1,6 @@
 # dusk: its own GNOME Shell theme (design)
 
-Status: draft for the owner's approval (2026-10-30). Builds on
+Status: approved by the owner (2026-10-30), after a builder check. Builds on
 [2026-10-28-dusk-design.md](2026-10-28-dusk-design.md) (decisions 1–25) and
 [2026-10-29-dusk-shell-colors-design.md](2026-10-29-dusk-shell-colors-design.md).
 
