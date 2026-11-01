@@ -12,18 +12,19 @@ assert m["session-modes"] == ["user", "unlock-dialog"], m.get("session-modes")
 EOF
 }
 
-# extension.js holds exactly four approved exceptions (design §2, §4.16,
+# extension.js holds exactly five approved exceptions (design §2, §4.16,
 # §4.20; the Shell theme design 2026-10-30): the overview's workspace
 # wallpaper honours .workspace-background's CSS radius, app icons (the main
 # app grid, search's app results) honour -dusk-app-icon-size, dusk's theme
 # takes the base slot of Shell's theme, in place of each theme Shell applies,
-# and the power mode's icon leaves the top bar.
+# the power mode's icon leaves the top bar, and the Dark Style fade takes the
+# theme's timing.
 # Nothing else.
-test_extension_js_has_four_exceptions() {
+test_extension_js_has_five_exceptions() {
   local js="$REPO/extension/extension.js"
   assert_contains "$js" "import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';"
   grep -qE '^export default class \w+ extends Extension \{' "$js" || fail "no default-exported Extension class"
-  assert_eq "$(grep -c 'overrideMethod(' "$js")" 2 "number of overrides"
+  assert_eq "$(grep -c 'overrideMethod(' "$js")" 3 "number of overrides"
   assert_not_contains "$js" "dialog.js"
   assert_contains "$js" "this._injections.clear();"
   # The workspace wallpaper: Shell's own method still runs first, and
@@ -49,6 +50,9 @@ test_extension_js_has_four_exceptions() {
   assert_contains "$js" "overrideMethod(St.ThemeContext.prototype, 'set_theme'"
   assert_contains "$js" "dusk-\${variant ?? Main.getStyleVariant()}.css"
   assert_contains "$js" "Main.loadTheme();"
+  # The fade: the theme's timing, and a picture still held on disable goes.
+  assert_contains "$js" "lookup_time('-dusk-theme-fade-hold', false)"
+  assert_contains "$js" "Main.layoutManager.screenTransition.hide();"
   # The power mode's icon: off the top bar, and back on disable.
   assert_contains "$js" "indicators.remove_child(icon);"
   assert_contains "$js" "indicators.insert_child_at_index(icon, index);"

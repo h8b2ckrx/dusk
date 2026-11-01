@@ -1,9 +1,9 @@
 // dusk is a Shell theme: theme/dusk-dark.css and theme/dusk-light.css in this
 // folder, built from dusk's copy of Yaru's source (src/shell-theme).
 //
-// Four owner-approved exceptions (design §2, §4.16, §4.20, decision 27; the
-// Shell theme design, 2026-10-30), each doing in code what Shell doesn't let
-// a stylesheet do:
+// Five owner-approved exceptions (design §2, §4.16, §4.20, decisions 27 and
+// 28; the Shell theme design, 2026-10-30), each doing in code what Shell
+// doesn't let a stylesheet do:
 //
 // 1. Shell clips the overview's workspace wallpaper at 30px. It follows the
 //    theme's border-radius on .workspace-background instead.
@@ -17,10 +17,14 @@
 //    the other extensions' stylesheets, so Yaru is never applied.
 // 4. Shell shows the power mode's icon in the top bar. dusk takes it off; the
 //    control stays in Quick Settings' menu.
+// 5. Shell fixes the timing of the fade on a dark/light switch in code. It
+//    follows the theme's -dusk-theme-fade-* instead, with a softer curve.
 //
 // disable() gives everything back to Shell. If a future Shell renames what a
 // patch relies on, that patch is skipped: that one value stays Shell's (the
 // workspace wallpaper its 30px corners, app icons Shell's size).
+import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
 import St from 'gi://St';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Util from 'resource:///org/gnome/shell/misc/util.js';
@@ -37,6 +41,7 @@ export default class DuskExtension extends Extension {
         this._searchGrid = null;
         this._searchIcons = new Map();
         this._powerMode = null;
+        this._fadeHoldId = null;
         try {
             // First: the others read their values from the theme.
             this._loadTheme();
@@ -44,6 +49,7 @@ export default class DuskExtension extends Extension {
             this._patchAppGridIconSize();
             this._patchSearchIcons();
             this._hidePowerModeIcon();
+            this._softenThemeFade();
         } catch (e) {
             // Shell never calls disable() after enable() throws: give back
             // whatever was patched already.
@@ -53,6 +59,12 @@ export default class DuskExtension extends Extension {
     }
 
     disable() {
+        if (this._fadeHoldId) {
+            GLib.source_remove(this._fadeHoldId);
+            this._fadeHoldId = null;
+            Main.layoutManager.screenTransition.hide();
+        }
+
         this._injections.clear();
         this._injections = null;
 
@@ -91,6 +103,29 @@ export default class DuskExtension extends Extension {
                 indicators.insert_child_at_index(icon, index);
             this._powerMode = null;
         }
+    }
+
+    // Exception 5: Shell's picture of the screen on a dark/light switch. Shell
+    // waits a fixed time on the frame clock, so a slow switch eats into its
+    // fade. dusk times the hold on the main loop, which only gets there once
+    // that work is done, then fades with the theme's duration and a softer
+    // curve. Without those values, Shell's own fade runs.
+    _softenThemeFade() {
+        const extension = this;
+        this._injections.overrideMethod(Main.layoutManager.screenTransition, 'ease', original => function (params) {
+            const node = Main.panel.get_theme_node();
+            const [hasHold, hold] = node.lookup_time('-dusk-theme-fade-hold', false);
+            const [hasDuration, duration] = node.lookup_time('-dusk-theme-fade-duration', false);
+            if (!hasHold || !hasDuration) {
+                original.call(this, params);
+                return;
+            }
+            extension._fadeHoldId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, Math.round(hold), () => {
+                extension._fadeHoldId = null;
+                original.call(this, {...params, delay: 0, duration, mode: Clutter.AnimationMode.EASE_IN_OUT_QUAD});
+                return GLib.SOURCE_REMOVE;
+            });
+        });
     }
 
     // Exception 4: the power mode's icon off the top bar. Shell adds its

@@ -490,6 +490,24 @@ for name in ("scheme-switched", "scheme-back"):
 EOF
 }
 
+# The Dark Style button's fade (owner, 2026-11-01): Shell's picture of the screen
+# is held until the switch has had time to finish, then fades out softly, for
+# as long as the tokens say.
+test_headless_theme_switch_fades_softly() {
+  local out; out=$(probe_dir dark)
+  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF' || fail "the fade isn't dusk's"
+import json, re, sys
+fade = json.load(open(sys.argv[1]))["screenFade"]
+css = open(sys.argv[2]).read()
+duration = int(re.search(r"-dusk-theme-fade-duration: (\d+)ms", css).group(1))
+assert fade["held"]["visible"] and fade["held"]["fade"] is None, fade["held"]
+easing = fade["fading"]["fade"]
+EASE_IN_OUT_QUAD = 4
+assert easing == {"delay": 0, "duration": duration, "mode": EASE_IN_OUT_QUAD}, easing
+assert not fade["done"]["visible"], fade["done"]
+EOF
+}
+
 # Other extensions' stylesheets (Ubuntu Dock's) stay loaded through every one of
 # those rebuilds.
 test_headless_theme_keeps_extension_stylesheets() {
