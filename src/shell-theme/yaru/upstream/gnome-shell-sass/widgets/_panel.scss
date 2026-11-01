@@ -4,7 +4,9 @@
 $privacy_indicator_color: if($variant == 'light', $orange_4, $orange_3);
 $recording_indicator_color: $red_4;
 
-$transparent_panel_fg_color: $light_1;    // always white for transparent lock screens
+// dusk: nothing shows on the lock screen's top bar (owner, 2026-11-01). Its
+// buttons stay, so Quick Settings still opens from that corner.
+$transparent_panel_fg_color: transparent;
 $system_panel_fg_color: $system_fg_color; // always light for lockscreen, overview
 
 $panel_height: 2.2em;
