@@ -616,6 +616,27 @@ export default class DuskProbe extends Extension {
         themeContext.disconnect(themeUpdatesId);
         write('switches.json', JSON.stringify(switches));
 
+        // Quick Settings' Dark Style button: its picture of the screen, how
+        // long that's held, and how it fades.
+        const screenFade = () => {
+            const transition = Main.layoutManager.screenTransition;
+            const fade = transition.get_transition('opacity');
+            return {
+                visible: transition.visible,
+                fade: fade ? {delay: fade.get_delay(), duration: fade.get_duration(), mode: fade.get_progress_mode()} : null,
+            };
+        };
+        const darkStyle = Main.panel.statusArea.quickSettings._darkMode.quickSettingsItems[0];
+        darkStyle._toggleMode();
+        await sleep(60);
+        const held = screenFade();
+        await sleep(340);
+        const fading = screenFade();
+        await sleep(1000);
+        results.screenFade = {held, fading, done: screenFade()};
+        darkStyle._toggleMode();
+        await sleep(1200);
+
         write('result.json', JSON.stringify(results, null, 1));
         write('done', 'ok');
     }

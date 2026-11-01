@@ -219,6 +219,13 @@ Success looks like:
     isn't Balanced. CSS can't remove an actor, so `extension.js` takes it out
     of Quick Settings' indicator box, a fourth JS exception, and `disable()`
     puts it back. The power mode control stays in Quick Settings' menu.
+28. A softer dark/light fade (owner, 2026-11-01): Shell's fade waits a fixed
+    250ms on the frame clock, then fades over 500ms, so a slow switch eats into
+    it. `extension.js` keeps Shell's picture of the screen, holds it for
+    `$theme-fade-hold` on the main loop, which only gets there once the switch
+    has done its work, then fades over `$theme-fade-duration` with a soft start
+    and finish, a fifth JS exception. Quick Settings' button is the only way in
+    that has a picture, so other ways of switching stay instant.
 
 ## 5. Architecture
 

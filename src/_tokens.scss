@@ -118,6 +118,15 @@ $topbar-indicator-padding: 5px;
 $topbar-indicator-side-padding: 8px;
 
 // ---------------------------------------------------------------------------
+// The fade when the Dark Style button switches dark and light (owner,
+// 2026-11-01; decision 28): Shell's picture of the screen is held while the
+// switch finishes, then fades out softly. After changing these, build and
+// switch dark and back to feel them.
+// ---------------------------------------------------------------------------
+$theme-fade-hold: 200ms;
+$theme-fade-duration: 450ms;
+
+// ---------------------------------------------------------------------------
 // The app grid's icon size (owner, 2026-10-29; decision 20), also used by
 // search results. Shell picks 64px in code; extension.js gives the main grid
 // and search's app results this size instead. Folder grids and the dock keep
