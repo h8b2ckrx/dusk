@@ -11,11 +11,10 @@
 //    main app grid, and the app results in search, use the theme's
 //    -dusk-app-icon-size instead.
 // 3. Shell builds its theme from a base stylesheet (Yaru, which Ubuntu's
-//    session names) and an optional one on top. dusk's theme takes the base
-//    slot, with nothing on top, so Yaru isn't loaded. Shell rebuilds its
-//    theme itself on dark/light, High Contrast and Shell color-scheme
-//    changes, putting Yaru back; dusk puts its own back right away, keeping
-//    the other extensions' stylesheets.
+//    session names) and an optional one on top, and rebuilds it on dark/light,
+//    High Contrast and Shell color-scheme changes. dusk's theme replaces each
+//    one as Shell applies it, in the base slot with nothing on top, keeping
+//    the other extensions' stylesheets, so Yaru is never applied.
 // 4. Shell shows the power mode's icon in the top bar. dusk takes it off; the
 //    control stays in Quick Settings' menu.
 //
@@ -37,9 +36,6 @@ export default class DuskExtension extends Extension {
         this._appGrid = null;
         this._searchGrid = null;
         this._searchIcons = new Map();
-        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
-        this._themeChangedId = null;
-        this._applyingTheme = false;
         this._powerMode = null;
         try {
             // First: the others read their values from the theme.
@@ -57,15 +53,11 @@ export default class DuskExtension extends Extension {
     }
 
     disable() {
-        if (this._themeChangedId) {
-            this._themeContext.disconnect(this._themeChangedId);
-            this._themeChangedId = null;
-        }
-        // Shell's own theme again (keeping the extensions' stylesheets).
-        Main.loadTheme();
-
         this._injections.clear();
         this._injections = null;
+
+        // Shell's own theme again (keeping the extensions' stylesheets).
+        Main.loadTheme();
 
         // Shell's own method is back; re-run it so its radius returns.
         for (const [background, handlerIds] of this._backgrounds) {
@@ -120,46 +112,33 @@ export default class DuskExtension extends Extension {
         hide();
     }
 
-    // Exception 3: dusk's theme in the base slot of Shell's theme, and back
-    // there whenever Shell rebuilds its theme.
+    // Exception 3: Shell hands every theme it builds to set_theme; dusk's goes
+    // in its place, so Yaru's is never applied. Rebuilding Shell's theme here
+    // puts dusk's on.
     _loadTheme() {
-        this._applyTheme();
-        this._themeChangedId = this._themeContext.connect('changed', () => this._applyTheme());
+        const extension = this;
+        this._injections.overrideMethod(St.ThemeContext.prototype, 'set_theme', original => function (theme) {
+            original.call(this, extension._duskTheme(theme));
+        });
+        Main.loadTheme();
     }
 
-    // dusk's theme file for the current variant. Shell only follows dark/light
-    // in the primary session mode: the lock screen can report dark for a light
-    // desktop, and keeps the desktop's stylesheet, so dusk keeps its variant.
-    _themeFile(current) {
-        const variant = !Main.sessionMode.isPrimary &&
-            current.default_stylesheet?.get_basename().match(/-(dark|light)\.css$/)?.[1];
-        return this.dir.get_child('theme').get_child(`dusk-${variant || Main.getStyleVariant()}.css`);
-    }
-
-    // Puts dusk's theme in the base slot, alone (nothing on top), keeping the
-    // other extensions' stylesheets, unless it's there already. Setting the
-    // theme emits `changed` again, which finds it there. Without a built
-    // theme file Shell keeps its own (stock Ubuntu, not a blank Shell).
-    _applyTheme() {
-        if (this._applyingTheme)
-            return;
-        const current = this._themeContext.get_theme();
-        const file = this._themeFile(current);
-        if (current.default_stylesheet?.equal(file) && !current.application_stylesheet)
-            return;
+    // dusk's theme for the one Shell built: the same variant (the lock screen
+    // can report dark for a light desktop, and keeps the desktop's stylesheet),
+    // alone in the base slot (nothing on top), with the other extensions'
+    // stylesheets. Without a built theme file Shell keeps its own (stock
+    // Ubuntu, not a blank Shell).
+    _duskTheme(shellTheme) {
+        const variant = shellTheme.default_stylesheet?.get_basename().match(/-(dark|light)\.css$/)?.[1];
+        const file = this.dir.get_child('theme').get_child(`dusk-${variant ?? Main.getStyleVariant()}.css`);
         if (!file.query_exists(null)) {
             console.warn(`dusk: ${file.get_path()} is missing; run build.sh`);
-            return;
+            return shellTheme;
         }
-        this._applyingTheme = true;
-        try {
-            const theme = new St.Theme({default_stylesheet: file});
-            for (const stylesheet of current.get_custom_stylesheets())
-                theme.load_stylesheet(stylesheet);
-            this._themeContext.set_theme(theme);
-        } finally {
-            this._applyingTheme = false;
-        }
+        const theme = new St.Theme({default_stylesheet: file});
+        for (const stylesheet of shellTheme.get_custom_stylesheets())
+            theme.load_stylesheet(stylesheet);
+        return theme;
     }
 
     // Exception 1: the overview's workspace wallpaper follows the

@@ -26,7 +26,8 @@ The checks print one line per key and slot that differs from the record
 (colors by more than 2 per channel, raw values under three accents, radii by
 more than half a pixel) and
 isn't covered by an exception, and exit 1 if any. EXCEPTIONS.tsv: key regex,
-slot (bg, fg, border, shadow, radius or *), task, reason. `look` prints what
+slot (bg, fg, border, shadow, radius, gone for a probed key that may be
+missing, or * for all of them), task, reason. `look` prints what
 THEME.css gives SELECTOR's element: [bg, fg, border, shadow], as JSON.
 """
 import argparse
@@ -184,7 +185,7 @@ def check_probe(snapshots, golden, exceptions, only=None, slots=None):
         if only and not re.search(only, key):
             continue
         if key not in now:
-            if not _excepted(key, "*", exceptions):
+            if not _excepted(key, "gone", exceptions):
                 lines.append(f"{key}: no longer on screen")
             continue
         lines += _compare(key, want, now[key], exceptions, slots)

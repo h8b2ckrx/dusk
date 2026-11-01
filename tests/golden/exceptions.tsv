@@ -24,3 +24,4 @@ Gjs_status_(bluetooth|network)_Indicator	*	machine	these icons show only while s
 \.modal-dialog-button	radius	owner	dialog buttons on the Shell's button step, 4px (owner, 2026-10-30)
 ^\.check-box:focus StBin$	bg	Task 8	St needs this faint background to draw the focus ring; the old overlay's transparent lost it
 ^search\|.*overview-icon-with-label|#GDM Settings	*	machine	installed apps come and go with the laptop, not the theme
+StButton\.calendar-day	gone	machine	the calendar's cells change with the date; the ones on screen are still checked

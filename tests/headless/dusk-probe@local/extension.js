@@ -103,7 +103,7 @@ function snapshotStage() {
 
 // Shell's theme now: the stylesheet in its base slot (Yaru's, or dusk's while
 // dusk runs), the one on top (what User Themes sets), the extensions' ones,
-// and dusk's handler for Shell's theme rebuilds (design 2026-10-30).
+// and whether dusk's hook on Shell's theme is on (design 2026-10-30).
 function themeState() {
     const theme = St.ThemeContext.get_for_stage(global.stage).get_theme();
     const name = file => file ? (file.get_path() ?? file.get_uri()) : null;
@@ -111,7 +111,7 @@ function themeState() {
         default: name(theme.default_stylesheet),
         application: name(theme.application_stylesheet),
         custom: theme.get_custom_stylesheets().map(name),
-        duskHandler: Main.extensionManager.lookup('dusk@local')?.stateObj?._themeChangedId ?? null,
+        duskHook: !!Main.extensionManager.lookup('dusk@local')?.stateObj?._injections,
         variant: Main.getStyleVariant(),
         powerModeIcon: !!Main.panel.statusArea.quickSettings._powerProfiles?.get_parent(),
     };
@@ -586,9 +586,13 @@ export default class DuskProbe extends Extension {
         const a11y = new Gio.Settings({schema_id: 'org.gnome.desktop.a11y.interface'});
         const scheme = desktop.get_string('color-scheme');
         const switches = {};
+        let themeUpdates = 0;
+        const themeContext = St.ThemeContext.get_for_stage(global.stage);
+        const themeUpdatesId = themeContext.connect('changed', () => themeUpdates++);
         const record = async name => {
             await sleep(800);
-            switches[name] = {theme: themeState(), records: snapshotStage()};
+            switches[name] = {theme: themeState(), records: snapshotStage(), themeUpdates};
+            themeUpdates = 0;
         };
         const menu = Main.panel.statusArea.quickSettings.menu;
         menu.open();
@@ -609,6 +613,7 @@ export default class DuskProbe extends Extension {
         Main.loadTheme();
         await record('foreign-gone');
         menu.close();
+        themeContext.disconnect(themeUpdatesId);
         write('switches.json', JSON.stringify(switches));
 
         write('result.json', JSON.stringify(results, null, 1));
