@@ -633,7 +633,7 @@ export default class DuskProbe extends Extension {
         await sleep(340);
         const fading = screenFade();
         await sleep(1000);
-        results.screenFade = {held, fading, done: screenFade()};
+        write('screen-fade.json', JSON.stringify({held, fading, done: screenFade()}));
         darkStyle._toggleMode();
         await sleep(1200);
 

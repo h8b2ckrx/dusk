@@ -495,9 +495,9 @@ EOF
 # as long as the tokens say.
 test_headless_theme_switch_fades_softly() {
   local out; out=$(probe_dir dark)
-  python3 - "$out/result.json" "$(theme_css dark)" <<'EOF' || fail "the fade isn't dusk's"
+  python3 - "$out/screen-fade.json" "$(theme_css dark)" <<'EOF' || fail "the fade isn't dusk's"
 import json, re, sys
-fade = json.load(open(sys.argv[1]))["screenFade"]
+fade = json.load(open(sys.argv[1]))
 css = open(sys.argv[2]).read()
 duration = int(re.search(r"-dusk-theme-fade-duration: (\d+)ms", css).group(1))
 assert fade["held"]["visible"] and fade["held"]["fade"] is None, fade["held"]
