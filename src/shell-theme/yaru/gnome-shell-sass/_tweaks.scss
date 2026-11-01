@@ -144,9 +144,9 @@
 #panel.login-screen {
   background-color: transparent !important;
 
-  // dusk: light on the wallpaper in both modes: no pills here.
+  // dusk: nothing shows here.
   .system-status-icon {
-    color: $yaru_panel_fg_color;
+    color: $transparent_panel_fg_color;
   }
 }
 

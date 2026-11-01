@@ -315,20 +315,21 @@ assert (theme["start"]["powerModeIcon"], theme["disabled"]["powerModeIcon"], the
 EOF
 }
 
-# The lock screen's top bar has no pills, and stays light on the wallpaper in
-# both modes.
-test_headless_lock_screen_topbar_has_no_pills() {
+# The lock screen's top bar shows nothing, no pills and no icons (owner,
+# 2026-11-01). Its buttons stay, so Quick Settings still opens from that corner.
+test_headless_lock_screen_topbar_shows_nothing() {
   local mode
   for mode in dark light; do
     check_topbar "$mode" <<'PY' || fail "$mode"
-bad = []
+bad, buttons = [], 0
 for r in snapshots["lock-screen"]:
-    if {"panel-button", "clock", "messages-indicator"} & set(r["classes"]):
+    if "panel-button" in r["classes"]:
+        buttons += 1
+    if {"panel-button", "system-status-icon"} & set(r["classes"]):
         shadow = r["colors"][3]
-        if r["colors"][0][3] != 0 or (shadow and shadow[3] != 0):
+        if r["colors"][0][3] or r["colors"][1][3] or (shadow and shadow[3]):
             bad.append(f"{r['types'][0]} {r['colors']}")
-    if {"panel-button", "clock", "system-status-icon"} & set(r["classes"]) and min(r["colors"][1][:3]) < 240:
-        bad.append(f"{r['types'][0]} text {r['colors'][1]}")
+assert buttons, "no top bar buttons on the lock screen"
 print("\n".join(bad))
 sys.exit(1 if bad else 0)
 PY

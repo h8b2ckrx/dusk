@@ -209,11 +209,13 @@ Success looks like:
     anything and Yaru's updates can't reach it. Decisions 22 to 25 are now
     made in that source. dusk also draws the top bar itself: see-through, a
     pill behind each button, black in dark mode and the light pop-ups' colors
-    in light mode, the same on hover, none on the lock screen, so Blur my
+    in light mode, the same on hover, so Blur my
     Shell isn't needed. The theme loader is a third JS exception. Design:
     [2026-10-30-dusk-shell-theme-design.md](2026-10-30-dusk-shell-theme-design.md).
     In the overview, which is dark in both modes, the pills take the search
-    box's color (owner, same day).
+    box's color (owner, same day). The lock screen's top bar shows nothing,
+    no pills and no icons; its buttons stay, so Quick Settings still opens
+    from that corner (owner, 2026-11-01).
 27. The power mode's icon off the top bar (owner, 2026-10-30): Quick Settings
     shows it beside Wi-Fi, Bluetooth, sound and battery whenever the mode
     isn't Balanced. CSS can't remove an actor, so `extension.js` takes it out
