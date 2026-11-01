@@ -84,6 +84,24 @@ PY
 )" "False True"
 }
 
+# A `gone` exception lets a probed key be missing, and only that: a key it names
+# that is on screen with another color is still reported.
+test_golden_gone_exception_keeps_colors() {
+  assert_eq "$(python3 - "$REPO/tests/headless" <<'PY'
+import re, sys
+sys.path.insert(0, sys.argv[1])
+import golden
+exceptions = [(re.compile("day"), "gone", "", "")]
+look = {"colors": [[1, 2, 3, 255], None, None, None], "radii": None}
+other = {"colors": [[9, 9, 9, 255], None, None, None], "radii": None}
+print(len(golden.check_probe({}, {"s|day|0": look}, exceptions)))
+golden.record_probe = lambda snapshots: {"s|day|0": other}
+print(len(golden.check_probe({}, {"s|day|0": look}, exceptions)))
+PY
+)" "$(printf '0
+1')"
+}
+
 # look MODE SELECTOR: the colors dusk's theme gives SELECTOR's element, as JSON.
 look() {
   "$REPO/tests/headless/golden.py" look "$(theme_css "$1")" "$2"

@@ -479,6 +479,17 @@ assert result["lock"]["theme"]["default"].endswith("/dusk-light.css"), result["l
 EOF
 }
 
+# A dark/light switch costs what it costs stock Shell: two theme updates, not
+# Yaru's applied first and dusk's on top of it (measured: twice the freeze).
+test_headless_theme_switch_rebuilds_once() {
+  python3 - "$(probe_dir dark)/switches.json" <<'EOF' || fail "a switch rebuilds the theme twice"
+import json, sys
+switches = json.load(open(sys.argv[1]))
+for name in ("scheme-switched", "scheme-back"):
+    assert switches[name]["themeUpdates"] <= 2, (name, switches[name]["themeUpdates"])
+EOF
+}
+
 # Other extensions' stylesheets (Ubuntu Dock's) stay loaded through every one of
 # those rebuilds.
 test_headless_theme_keeps_extension_stylesheets() {
@@ -490,7 +501,7 @@ EOF
 }
 
 # Disabling dusk gives Shell's own theme back (Yaru, from its resource, with
-# nothing on top) and drops dusk's handler; enabling it again puts dusk's
+# nothing on top) and drops dusk's hook; enabling it again puts dusk's
 # theme back with one handler.
 test_headless_theme_disable_restores_stock() {
   python3 - "$(probe_dir dark)/result.json" <<'EOF' || fail "disabling dusk doesn't give Shell's theme back"
@@ -498,7 +509,7 @@ import json, sys
 theme = json.load(open(sys.argv[1]))["theme"]
 off, on = theme["disabled"], theme["reenabled"]
 assert off["default"].startswith("resource:///org/gnome/shell/theme/Yaru/"), off
-assert off["application"] is None and off["duskHandler"] is None, off
-assert on["default"].endswith("/dusk@local/theme/dusk-dark.css") and on["duskHandler"], on
+assert off["application"] is None and not off["duskHook"], off
+assert on["default"].endswith("/dusk@local/theme/dusk-dark.css") and on["duskHook"], on
 EOF
 }

@@ -25,9 +25,9 @@ token, run `./install.sh && tools/shell-reload.sh`, and the Shell and every GTK 
 [src/shell-theme/](src/shell-theme/README.md), and it replaces Yaru: Yaru isn't loaded, so nothing
 overrides anything and no Yaru update can change the look. Every change dusk makes is in the copy,
 where the value is defined, marked `// dusk:`. Ubuntu's session names Yaru as Shell's base theme, so
-the extension swaps dusk's in as it starts, and again whenever Shell rebuilds its theme (dark/light,
-High Contrast). It doesn't need the User Themes extension, and other extensions' stylesheets keep
-working on top.
+the extension hands Shell dusk's theme in place of each one Shell applies, as it starts and whenever
+it rebuilds its theme (dark/light, High Contrast). It doesn't need the User Themes extension, and
+other extensions' stylesheets keep working on top.
 
 **GTK4 and GTK3:** a user `gtk.css` beats the GTK theme outright, whatever the selectors'
 specificity, so a general rule of dusk's would also erase the theme's deliberate special cases, like
